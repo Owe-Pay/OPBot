@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 PORT = int(os.environ.get('PORT', '8443'))
 
-TOKEN = os.environ(API_TOKEN)
+TOKEN = os.environ["API_TOKEN"]
 
 def start(update, context):
     """Send a message when the command /start is issued."""
