@@ -46,6 +46,13 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==2.10"
         },
+        "telegram": {
+            "hashes": [
+                "sha256:d405a0af4c868a8dbeae6d03e297e21c7ee6269e11e2ed3810e15544aba02591"
+            ],
+            "index": "pypi",
+            "version": "==0.0.1"
+        },
         "python-telegram-bot": {
             "hashes": [
                 "sha256:3f2887317ab045fc65d3c2905a66fd2c5dafcaa96af36700ac8cfaa5a51fd3ee",
@@ -84,13 +91,6 @@
             ],
             "index": "pypi",
             "version": "==0.0.4"
-        },
-        "telegram": {
-            "hashes": [
-                "sha256:d405a0af4c868a8dbeae6d03e297e21c7ee6269e11e2ed3810e15544aba02591"
-            ],
-            "index": "pypi",
-            "version": "==0.0.1"
         },
         "tornado": {
             "hashes": [
