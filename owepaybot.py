@@ -1,8 +1,8 @@
 import logging
 import os
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
