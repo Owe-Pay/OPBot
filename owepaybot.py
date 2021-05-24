@@ -56,7 +56,7 @@ def main():
                           port=PORT,
                           url_path=TOKEN,
                           webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
-
+    # updater.start_polling()
     updater.idle()
 
 
