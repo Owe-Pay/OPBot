@@ -126,11 +126,13 @@ def inlineQueryHelper(update):
                 id=str(uuid4()),
                 title="Split $" + str(query) + ".00 among everyone",
                 input_message_content=InputTextMessageContent("Split among everyone: $" + query + ".00"),
+                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
             ),
             InlineQueryResultArticle(
                 id=str(uuid4()),
                 title="Split $" + str(query) + ".00 among some only",
                 input_message_content=InputTextMessageContent("Split among some only: $" + query + ".00"),
+                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962386/icons8-user-groups-64_d9uktr.png'
             ),
         ]
     
@@ -143,11 +145,14 @@ def inlineQueryHelper(update):
                 id=str(uuid4()),
                 title="Split $" + formatted_query + " among everyone",
                 input_message_content=InputTextMessageContent("Split among everyone: $" + formatted_query),
+                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
+
             ),
             InlineQueryResultArticle(
                 id=str(uuid4()),
                 title="Split $" + formatted_query + " among some only",
                 input_message_content=InputTextMessageContent("Split among some only: $" + formatted_query),
+                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962386/icons8-user-groups-64_d9uktr.png'
             ),
         ]
     
@@ -158,7 +163,8 @@ def inlineQueryHelper(update):
                 title=query + " is not a valid amount.",
                 input_message_content=InputTextMessageContent(
                     "Trying to split invalid amount: \n" + query + "\n\nPlease key in a valid amount to split!"
-                )
+                ),
+                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962567/icons8-cross-mark-96_zrk1p9.png',
             ),
         ]
 
