@@ -1,8 +1,10 @@
 import logging
 import os
 
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from uuid import uuid4
+from telegram.utils.helpers import escape_markdown
+from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
+from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Update
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -13,26 +15,212 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 TOKEN = os.environ["API_TOKEN"]
 
-def start(update, context):
-    """Send a message when the command /start is issued."""
-    update.message.reply_text('Hi!')
+def start(update, context): 
+    """Depending if start was issued in a Group or via PM, it will execute the
+    respective /start command."""
+    if update.message.chat.type == 'group':
+        startGroup(update, context)
+
+    if update.message.chat.type == 'private':
+        startPrivate(update, context)
+
+def startGroup(update, context):
+    """Send the welcome message when the command /start is issued in a group."""
+   
+    # The registration keyboard used to register groups into our Group Database.
+    keyboard = [
+        [
+            InlineKeyboardButton("Register", callback_data='groupRegister'),
+        ],
+        [
+            InlineKeyboardButton("Don't Register", callback_data='groupDontRegister')  
+        ],
+    ]
+
+    ## This section is to send a logo before the registration process!
+    # context.bot.send_photo(
+    #     chat_id=update.effective_chat.id, 
+    #     photo='https://res.cloudinary.com/jianoway/image/upload/v1621939877/O%24P%24_Logo.png',
+    # )
+
+    # Sets up the InlineKeyboardMarkup as the reply_markup to be used in the message.
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    # Sends the welcome message for the group.
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=
+        "Hello this is O$P$, your personal Telegram loan chaser and debt tracker!\n\n"
+        + "We aim to make the process of tracking which of your 'friends' still owe you "
+        + "and reminding them as impersonal as possible so you won't feel the paiseh!"
+        + "Along with that, you can now also notify people who you've returned money to"
+        + "with a simple click of a  button.\n\n"
+        + "Simply register your group with us by pressing the button below!",
+        reply_markup=reply_markup,
+    )
+
+def startPrivate(update, context):
+    """Send the welcome message when the command /start is issued via PM"""
+    # Logic check to be implemented:
+    # 1. If user is not registered in our database
+    # Registers the user as notifiable.
+    #
+    # 2. If user is already registered in our database BUT not notifiable:
+    # Will register them as notifiable.
+    #
+    # 3. If user is already registered in our database and is also notifiable:
+    # Will inform the user that his profile is already setup.
+    #
+    # Until we setup our database, the following boilerplate code will be executed.
+
+    # The registration keyboard used to register groups into our User Database.
+    keyboard = [
+        [
+            InlineKeyboardButton("Register", callback_data='userRegister'),
+        ],
+        [
+            InlineKeyboardButton("Don't Register", callback_data='userDontRegister')  
+        ],
+    ]
+
+    ## This section is to send a logo before the registration process!
+    # context.bot.send_photo(
+    #     chat_id=update.effective_chat.id, 
+    #     photo='https://res.cloudinary.com/jianoway/image/upload/v1621939877/O%24P%24_Logo.png',
+    # )
+
+    # Sets up the InlineKeyboardMarkup as the reply_markup to be used in the message.
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=
+        "Hi! Thank you for choosing O$P$, your one stop debt chaser!\n\n"
+        + "Simply register with us by clicking pressing the button below!",
+        reply_markup=reply_markup,
+    )
 
 def error(update, context):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
-def inlineKeyboardTest(update, context):
-    keyboard = [
-        [
-            InlineKeyboardButton("Option 1", callback_data='1'),
-            InlineKeyboardButton("Option 2", callback_data='2'),
-        ],
-        [InlineKeyboardButton("Option 3", callback_data='3')],
-    ]
+def inline(update: Update, context: CallbackContext) -> None:
+    query = update.inline_query.query
+    
+    if query == "":
+        return
 
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    # print(query)
 
-    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+    # update.inline_query.from_user.send_message(query)
+    results = inlineQueryHelper(update)
+
+    update.inline_query.answer(results)
+
+def inlineQueryHelper(update):
+    query = update.inline_query.query
+    if query.replace('$','',1).isdigit():
+        query = query.replace('$','',1)
+        return [
+            InlineQueryResultArticle(
+                id=str(uuid4()),
+                title="Split $" + str(query) + ".00 among everyone",
+                input_message_content=InputTextMessageContent("Split among everyone: $" + query + ".00"),
+            ),
+            InlineQueryResultArticle(
+                id=str(uuid4()),
+                title="Split $" + str(query) + ".00 among some only",
+                input_message_content=InputTextMessageContent("Split among some only: $" + query + ".00"),
+            ),
+        ]
+    
+    if query.replace('.', '', 1).replace('$','',1).isnumeric():
+        query = query.replace('$', '', 1) + "00"
+        queryfloat = float(query)
+        formatted_query = "{:.2f}".format(queryfloat)
+        return [
+            InlineQueryResultArticle(
+                id=str(uuid4()),
+                title="Split $" + formatted_query + " among everyone",
+                input_message_content=InputTextMessageContent("Split among everyone: $" + formatted_query),
+            ),
+            InlineQueryResultArticle(
+                id=str(uuid4()),
+                title="Split $" + formatted_query + " among some only",
+                input_message_content=InputTextMessageContent("Split among some only: $" + formatted_query),
+            ),
+        ]
+    
+    if isinstance(query, str):
+        return [
+            InlineQueryResultArticle(
+                id=str(uuid4()),
+                title=query + " is not a valid amount.",
+                input_message_content=InputTextMessageContent(
+                    "Trying to split invalid amount: \n" + query + "\n\nPlease key in a valid amount to split!"
+                )
+            ),
+        ]
+
+def button(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    
+    choice = query.data
+
+    if choice == 'groupRegister':
+        groupRegister(update, context)
+
+    if choice == 'groupDontRegister':
+        groupDontRegister(update, context)
+
+    if choice == 'userRegister':
+        userRegister(update, context)
+
+    if choice == 'userDontRegister':
+        userDontRegister(update, context)
+
+def groupRegister(update, context):
+    query = update.callback_query
+    context.bot.editMessageText(
+        chat_id=query.message.chat_id,
+        message_id=query.message.message_id, 
+        text="Your group is now registered!",
+    )
+
+def groupDontRegister(update, context):
+    query = update.callback_query
+    context.bot.editMessageText(
+        chat_id=query.message.chat_id,
+        message_id=query.message.message_id,
+        text=
+        "Thank you for your interest in our bot! We hope to see you soon!\n\n"
+        + "If you ever feel like registering your Group with our bot in the future,"
+        + " simply run /start to get started!",
+    )
+
+def userRegister(update, context):
+    query = update.callback_query
+    context.bot.editMessageText(
+        chat_id=query.message.chat_id,
+        message_id=query.message.message_id, 
+        text="You are now registered!",
+    )
+
+def userDontRegister(update, context):
+    query = update.callback_query
+    context.bot.editMessageText(
+        chat_id=query.message.chat_id,
+        message_id=query.message.message_id,
+        text=
+        "Thank you for your interest in our bot! We hope to see you soon!\n\n"
+        + "If you ever feel like registering with our bot in the future, simply run /start"
+        + " to get started!",
+    )
+
+def echo(update: Update, _: CallbackContext) -> None:
+    """Echo the user message for debugging purposes."""
+    print(update)
 
 def main():
     """Start the bot."""
@@ -44,11 +232,13 @@ def main():
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
+    
+    dp.add_handler(CallbackQueryHandler(button))
 
-    # on noncommand i.e message - echo the message on Telegram
+    dp.add_handler(InlineQueryHandler(inline))
 
-    dp.add_handler(CommandHandler("testInline", inlineKeyboardTest))    
-
+    dp.add_handler(MessageHandler(Filters.text, echo))
+    
     # log all errors
     dp.add_error_handler(error)
 
@@ -61,4 +251,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
