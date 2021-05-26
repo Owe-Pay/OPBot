@@ -24,9 +24,16 @@ def start(update, context):
     if update.message.chat.type == 'private':
         startPrivate(update, context)
 
+def help(update, context):
+    update.message.reply_text(
+        "List of commands:\n\n" +
+        "/start Initialise and register with us.\n" +
+        "/help For the confused souls\n" +
+        "\nSplit bills with us by simply typing @OwePay_bot followed by the amount to be split!"
+        )
+
 def startGroup(update, context):
     """Send the welcome message when the command /start is issued in a group."""
-   
     # The registration keyboard used to register groups into our Group Database.
     keyboard = [
         [
@@ -50,12 +57,12 @@ def startGroup(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=
-        "Hello this is O$P$, your personal Telegram loan chaser and debt tracker!\n\n"
-        + "We aim to make the process of tracking which of your 'friends' still owe you "
-        + "and reminding them as impersonal as possible so you won't feel the paiseh!"
-        + "Along with that, you can now also notify people who you've returned money to"
-        + "with a simple click of a  button.\n\n"
-        + "Simply register your group with us by pressing the button below!",
+        "Hello this is O$P$, your personal Telegram loan chaser and debt tracker!\n\n" +
+        "We aim to make the process of tracking which of your 'friends' still owe you " +
+        "and reminding them as impersonal as possible so you won't feel the paiseh!"
+        "Along with that, you can now also notify people who you've returned money to" +
+        "with a simple click of a  button.\n\n" +
+        "Simply register your group with us by pressing the button below!",
         reply_markup=reply_markup,
     )
 
@@ -95,8 +102,8 @@ def startPrivate(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=
-        "Hi! Thank you for choosing O$P$, your one stop debt chaser!\n\n"
-        + "Simply register with us by clicking pressing the button below!",
+        "Hi! Thank you for choosing O$P$, your one stop debt chaser!\n\n" +
+        "Simply register with us by clicking pressing the button below!",
         reply_markup=reply_markup,
     )
 
@@ -200,9 +207,9 @@ def groupDontRegister(update, context):
         chat_id=query.message.chat_id,
         message_id=query.message.message_id,
         text=
-        "Thank you for your interest in our bot! We hope to see you soon!\n\n"
-        + "If you ever feel like registering your Group with our bot in the future,"
-        + " simply run /start to get started!",
+        "Thank you for your interest in our bot! We hope to see you soon!\n\n" +
+        "If you ever feel like registering your Group with our bot in the future," +
+        " simply run /start to get started!",
     )
 
 def userRegister(update, context):
@@ -219,9 +226,9 @@ def userDontRegister(update, context):
         chat_id=query.message.chat_id,
         message_id=query.message.message_id,
         text=
-        "Thank you for your interest in our bot! We hope to see you soon!\n\n"
-        + "If you ever feel like registering with our bot in the future, simply run /start"
-        + " to get started!",
+        "Thank you for your interest in our bot! We hope to see you soon!\n\n" +
+        "If you ever feel like registering with our bot in the future, simply run /start" +
+        " to get started!",
     )
 
 def echo(update: Update, _: CallbackContext) -> None:
@@ -238,6 +245,8 @@ def main():
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
+
+    dp.add_handler(CommandHandler("help", help))
     
     dp.add_handler(CallbackQueryHandler(button))
 
