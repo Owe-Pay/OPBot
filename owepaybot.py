@@ -28,7 +28,7 @@ def help(update, context):
     update.message.reply_text(
         "List of commands:\n\n" +
         "/start Initialise and register with us.\n" +
-        "/help For the confused souls\n" +
+        "/help For the confused souls.\n" +
         "\nSplit bills with us by simply typing @OwePay_bot followed by the amount to be split!"
         )
 
