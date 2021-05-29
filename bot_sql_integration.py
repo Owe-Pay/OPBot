@@ -5,7 +5,7 @@ import time
 
 ##connect to mysql database##
 mysqldb = mysql.connector.connect(
-    host='localhost', user='root', passwd='', db='bot',
+    host='localhost', user='root', password='', db='bot',
     auth_plugin = 'mysql_native_password')
 
 mycursor = mysqldb.cursor()
@@ -29,12 +29,13 @@ def addingUsers(input):
         mycursor.execute(sql,val)
         mysqldb.commit()
         print('Records inserted successfully!')
+
     except:
         print("entry already in database")
         mysqldb.rollback()
     mysqldb.close()
 
-#addingUsers(normalUser2)
+# addingUsers(normalUser1)
 
 def display_Users():
     mycursor.execute("SELECT * from bot.users")
@@ -98,4 +99,4 @@ def addGroup(input):
         mysqldb.rollback()
     mysqldb.close()
 
-addGroup(group1)
+# addGroup(group1)
