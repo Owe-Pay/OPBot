@@ -20,6 +20,10 @@ def connect():
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
+
+def closeConnection():
+    mycursor.close()
+    mysqldb.close()
     
 
 def massDelete(table):  # Do note that this mass delete removes everything from a table, but it does not reset the auto-increment value (drop table to reset it)
