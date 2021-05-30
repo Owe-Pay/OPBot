@@ -19,20 +19,13 @@ mycursor = mysqldb.cursor()
 def connect():
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
-
     mycursor = mysqldb.cursor()
-
-def closeConnection():
-    mysqldb.close()
     
-
-closeConnection()
 
 def massDelete(table):  # Do note that this mass delete removes everything from a table, but it does not reset the auto-increment value (drop table to reset it)
     connect()
     mycursor.execute("DELETE FROM " + table)
     mysqldb.commit()
-    closeConnection()
     print('Records updated successfully! Your table is now empty')
 
 # massDelete("users")
@@ -55,9 +48,7 @@ def addingUsers(input):
 # addingUsers(normalUser1)
 
 def display_Users():
-    mysqldb = pymysql.connect(
-    host=db_host, user=db_username, password=db_password, db=db_database)
-    mycursor = mysqldb.cursor()
+    connect()
     mycursor.execute("SELECT * from users")
     result = mycursor.fetchall()
     print(tabulate(result, headers=[
