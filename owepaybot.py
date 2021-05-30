@@ -1,6 +1,7 @@
 import logging
 import os
 
+from bot_sql_integration import *
 from uuid import uuid4
 from telegram.utils.helpers import escape_markdown
 from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
@@ -214,6 +215,11 @@ def groupDontRegister(update, context):
 
 def userRegister(update, context):
     query = update.callback_query
+    user = (str(query.message.chat_id), str(query.message.chat.username), 1)
+    addingUsers(user)
+    # print(user)
+    # print(query.message.chat_id)
+    # print(query.message.chat.username)
     context.bot.editMessageText(
         chat_id=query.message.chat_id,
         message_id=query.message.message_id, 
@@ -232,7 +238,7 @@ def userDontRegister(update, context):
     )
 
 def echo(update: Update, _: CallbackContext) -> None:
-    """Echo the user message for debugging purposes."""
+    """Echo the update for debugging purposes."""
     print(update)
 
 def main():
@@ -257,11 +263,11 @@ def main():
     # log all errors
     dp.add_error_handler(error)
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN,
-                          webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
-    # updater.start_polling()
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=PORT,
+    #                       url_path=TOKEN,
+    #                       webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':

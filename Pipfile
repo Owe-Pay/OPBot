@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 python-telegram-bot = "*"
+tabulate = "*"
+mysql-connector-python = "*"
 
 [dev-packages]
 
