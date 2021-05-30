@@ -19,6 +19,7 @@ TOKEN = os.environ["API_TOKEN"]
 def start(update, context): 
     """Depending if start was issued in a Group or via PM, it will execute the
     respective /start command."""
+    
     if update.message.chat.type == 'group':
         startGroup(update, context)
 
