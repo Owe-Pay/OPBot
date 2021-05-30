@@ -1,3 +1,4 @@
+from Users.jianwei.development.personal_git_repo.OP.OPBot.bot_sql_integration import containsUser, userAlreadyAdded
 import logging
 import os
 
@@ -217,15 +218,19 @@ def groupDontRegister(update, context):
 def userRegister(update, context):
     query = update.callback_query
     user = (str(query.message.chat_id), str(query.message.chat.username), 1)
-    addingUsers(user)
-    # print(user)
-    # print(query.message.chat_id)
-    # print(query.message.chat.username)
-    context.bot.editMessageText(
-        chat_id=query.message.chat_id,
-        message_id=query.message.message_id, 
-        text="You are now registered!",
-    )
+    if (userAlreadyAdded(str(query.message.chat_id))):
+        context.bot.editMessageText(
+            chat_id=query.message.chat_id,
+            message_id=query.message.message_id, 
+            text="You have already been registered with us.",
+        )
+    else:
+        addingUsers(user)
+        context.bot.editMessageText(
+            chat_id=query.message.chat_id,
+            message_id=query.message.message_id, 
+            text="You are now registered!",
+        )
 
 def userDontRegister(update, context):
     query = update.callback_query

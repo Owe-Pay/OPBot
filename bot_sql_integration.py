@@ -23,7 +23,7 @@ def massDelete(table):  # Do note that this mass delete removes everything from 
 
 # massDelete("users")
 #userr is stored as {'id': 497722299 ,'username': 'jianowa',"notifiable": boolean 1}
-normalUser1 = ('497722299', 'bear', 1)
+normalUser1 = ('4997722299', 'bear', 1)
 normalUser2 = ('487722299', 'apple',0)
 normalUser3 = ('477722299', 'donkey',1)
 
@@ -36,14 +36,20 @@ def addingUsers(input):
     print('Records inserted successfully!')
 
 
-# addingUsers(normalUser3)
+# addingUsers(normalUser1)
 
 def display_Users():
     mycursor.execute("SELECT * from users")
     result = mycursor.fetchall()
     print(tabulate(result, headers=[
           "UserID", "UserName", "notifiable"]))
-#display_Users
+# display_Users()
+
+def userAlreadyAdded(primary_key):
+    mysql = "SELECT * FROM users WHERE UserID LIKE " + primary_key
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    return (t!=None)
 
 # timing = datetime.datetime.now()
 # dt_obj = datetime.datetime.strptime(str(timing), '%Y-%m-%d %H:%M:%S.%f')
