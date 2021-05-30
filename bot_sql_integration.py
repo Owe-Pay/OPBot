@@ -10,23 +10,27 @@ db_username = os.environ['DB_USER']
 db_database = os.environ['DB_DB']
 db_password = os.environ['DB_PASSWORD']
 
-##connect to mysql database##
-# mysqldb_orig = pymysql.connect(
-#     host=db_host, user=db_username, password=db_password, db=db_database)
-#     # auth_plugin = 'mysql_native_password')
 
-# mycursor_orig = mysqldb_orig.cursor
+mysqldb = pymysql.connect(
+    host=db_host, user=db_username, password=db_password, db=db_database)
+mycursor = mysqldb.cursor()
 
-# mysqldb = mysqldb_orig()
+def connect():
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
 
-# mycursor = mysqldb.cursor()
+def closeConnection():
+    mysqldb.close()
+    mycursor.close()
+
+closeConnection()
 
 def massDelete(table):  # Do note that this mass delete removes everything from a table, but it does not reset the auto-increment value (drop table to reset it)
-    mysqldb = pymysql.connect(
-    host=db_host, user=db_username, password=db_password, db=db_database)
-    mycursor = mysqldb.cursor()
+    connect()
     mycursor.execute("DELETE FROM " + table)
     mysqldb.commit()
+    closeConnection()
     print('Records updated successfully! Your table is now empty')
 
 # massDelete("users")
@@ -37,15 +41,13 @@ normalUser3 = ('477722299', 'donkey',1)
 
 
 def addingUsers(input):
-    mysqldb = pymysql.connect(
-    host=db_host, user=db_username, password=db_password, db=db_database)
-    mycursor = mysqldb.cursor()
+    connect()
     sql = "INSERT into users(UserID, UserName, notifiable) VALUES (%s, %s, %s)"
     val = input
     mycursor.execute(sql,val)
     mysqldb.commit()
     print('Records inserted successfully!')
-    mysqldb.close()
+    closeConnection()
 
 
 # addingUsers(normalUser1)
@@ -57,17 +59,16 @@ def display_Users():
     mycursor.execute("SELECT * from users")
     result = mycursor.fetchall()
     print(tabulate(result, headers=[
-          "UserID", "UserName", "notifiable"]))
+        "UserID", "UserName", "notifiable"]))
+    closeConnection()
 # display_Users()
 
 def userAlreadyAdded(primary_key):
-    mysqldb = pymysql.connect(
-    host=db_host, user=db_username, password=db_password, db=db_database)
-    mycursor = mysqldb.cursor()
+    connect()
     mysql = "SELECT * FROM users WHERE UserID LIKE " + primary_key
     mycursor.execute(mysql)
     t = mycursor.fetchone()
-    mysqldb.close()
+    closeConnection()
     return (t!=None)
 
 # timing = datetime.datetime.now()
@@ -78,19 +79,18 @@ transaction1 =('1288299','123213124','2021-05-29', 10, '497722299', '487722299')
 # transaction2=
 ### transaction stored as (transactionid, OrderID, date, AmountOwed, UserID_Creditor, User_id_debitor)
 def addTransaction(input):
-    mysqldb = pymysql.connect(
-    host=db_host, user=db_username, password=db_password, db=db_database)
-    mycursor = mysqldb.cursor()
+    connect()
     try:
         sql = "INSERT into transactions(transaction_id, OrderID, date, AmountOwed, UserID_Creditor, UserID_Debitor) VALUES (%s, %s, %s, %s, %s, %s)"
         val = input
         mycursor.execute(sql,val)
         mysqldb.commit()
+        closeConnection()
         print('Records inserted successfully!')
     except:
         print("entry already in database")
         # mysqldb.rollback()
-    # mysqldb.close()
+        closeConnection()
 
 # addTransaction(transaction1)
 
@@ -99,17 +99,17 @@ def addTransaction(input):
 order1 = ('1289923','241414')
 
 def addOrder(input):
-    mysqldb = pymysql.connect(
-    host=db_host, user=db_username, password=db_password, db=db_database)
-    mycursor = mysqldb.cursor()
+    connect()
     try:
         sql = "INSERT into orders(OrderID, GroupID) VALUES (%s, %s)"
         val = input
         mycursor.execute(sql,val)
         mysqldb.commit()
+        closeConnection()
         print('Records inserted successfully!')
     except:
         print("entry already in database")
+        closeConnection()
         # mysqldb.rollback()
     # mysqldb.close()
 
@@ -120,18 +120,17 @@ def addOrder(input):
 group1=('241414',3)
 
 def addGroup(input):
-    mysqldb = pymysql.connect(
-    host=db_host, user=db_username, password=db_password, db=db_database)
-    mycursor = mysqldb.cursor()
+    connect()
     try:
         sql = "INSERT into groups(GroupID, Number_of_members) VALUES (%s, %s)"
         val = input
         mycursor.execute(sql,val)
         mysqldb.commit()
         print('Records inserted successfully!')
+        closeConnection()
     except:
         print("entry already in database")
+        closeConnection()
         # mysqldb.rollback()
-    # mysqldb.close()
 
 # addGroup(group1)
