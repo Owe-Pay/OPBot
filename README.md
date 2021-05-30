@@ -1,7 +1,5 @@
 # O$P$
 
-Introduction
-
 We at Owe$Pay$ hope to make the tracking payments for ordering of food simple and integrable into Telegram group chats.
 
 In the future, we also hope to create a system to simplify the process of tracking orders and payments in a cohesive app.
@@ -84,6 +82,12 @@ We have decided to start by implementing our Telegram Bot and our MySQL database
   1. Replies users with a list of commands that can be used with the bot.
   1. Provides instructions to users on how to split bills.
 
+![SQL Flow](https://res.cloudinary.com/jianoway/image/upload/v1622380661/Screenshot_2021-05-30_at_9.17.34_PM_nccz5l.png)
+This is a ER diagram displaying how our data will be stored.
+Each transaction would be any exchange of money between 2 users 
+Each order can consist of multiple transactions. 
+Each group will consist of the total orders in the group. The group will be the telegram groupid
 
+Our backend will be connected to the frontend using python
 
 
