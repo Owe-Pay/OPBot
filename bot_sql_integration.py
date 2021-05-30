@@ -35,6 +35,7 @@ def addingUsers(input):
     mycursor.execute(sql,val)
     mysqldb.commit()
     print('Records inserted successfully!')
+    mysqldb.close()
 
 
 # addingUsers(normalUser1)
@@ -50,6 +51,7 @@ def userAlreadyAdded(primary_key):
     mysql = "SELECT * FROM users WHERE UserID LIKE " + primary_key
     mycursor.execute(mysql)
     t = mycursor.fetchone()
+    mysqldb.close()
     return (t!=None)
 
 # timing = datetime.datetime.now()
