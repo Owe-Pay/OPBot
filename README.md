@@ -42,7 +42,7 @@ We have decided to start by implementing our Telegram Bot and our MySQL database
 ![New User Registration](https://res.cloudinary.com/jianoway/image/upload/v1622368793/O_P_-_First_Time_Registration_Fixed_mdpff8.jpg)
 *Figure 1: Registration process for Users and Groups*
 
-* Registration
+* **Registration**
    1. /start will initiate the bot and ask users to register.
    1. Users and groups will have the option of choosing if they wish to register with us in order to give users control over their private data. We have implemented this feature by using Inline Keyboard Buttons that appear under the registration message.
    1. Registration for groups and individuals would be a different process. Using the Telegram Bot API allows us to register groups and individuals separately and we will be able to use a relational database to link users to the groups they belong to.
@@ -52,7 +52,7 @@ We have decided to start by implementing our Telegram Bot and our MySQL database
 ![New Order Flow](https://res.cloudinary.com/jianoway/image/upload/v1622368925/O_P_-_TeleBot_New_Order_Flow_qfpbtr.jpg)
 *Figure 2: Process of creating a new order*
 
-* Bill Splitting (Partial implementation)
+* **Bill Splitting (Partial implementation)**
   1. The bot can be prompted to split bills via an Inline Query from the group that they’re splitting from (e.g @OwePay_bot <Amount to be split>).
   1. After entering the Inline Query, the user will be prompted to choose if they wish to split amongst either everyone in the group or only some people in the group and will also be prompted to input an order name.
   1. Splitting bills will create an Order in the Orders database so each Order is unique and will be associated with the group it was split in.
