@@ -29,18 +29,12 @@ normalUser3 = ('477722299', 'donkey',1)
 
 
 def addingUsers(input):
-    try:
-        sql = "INSERT into users(UserID, UserName, notifiable) VALUES (%s, %s, %s)"
-        val = input
-        print(input)
-        mycursor.execute(sql,val)
-        print("ok")
-        mysqldb.commit()
-        print('Records inserted successfully!')
-    except:
-        print("entry already in database")
-        # mysqldb.rollback()
-    # mysqldb.close()
+    sql = "INSERT into users(UserID, UserName, notifiable) VALUES (%s, %s, %s)"
+    val = input
+    mycursor.execute(sql,val)
+    mysqldb.commit()
+    print('Records inserted successfully!')
+
 
 # addingUsers(normalUser3)
 
