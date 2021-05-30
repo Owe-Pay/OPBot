@@ -5,10 +5,15 @@ import datetime
 import time
 import os
 
-db_host = os.environ['DB_HOST']
-db_username = os.environ['DB_USER']
-db_database = os.environ['DB_DB']
-db_password = os.environ['DB_PASSWORD']
+db_host='us-cdbr-east-04.cleardb.com'
+db_database='heroku_f058d679264bed5'
+db_password='35523111'
+db_username='bded5c9cf73ec3'
+
+# db_host = os.environ['DB_HOST']
+# db_username = os.environ['DB_USER']
+# db_database = os.environ['DB_DB']
+# db_password = os.environ['DB_PASSWORD']
 
 ##connect to mysql database##
 mysqldb = pymysql.connect(
@@ -24,7 +29,7 @@ def massDelete(table):  # Do note that this mass delete removes everything from 
 
 # massDelete("users")
 #userr is stored as {'id': 497722299 ,'username': 'jianowa',"notifiable": boolean 1}
-normalUser1 = ('4997722299', 'bear', 1)
+normalUser1 = ('4997399', 'bear', 1)
 normalUser2 = ('487722299', 'apple',0)
 normalUser3 = ('477722299', 'donkey',1)
 
@@ -37,7 +42,7 @@ def addingUsers(input):
     print('Records inserted successfully!')
 
 
-# addingUsers(normalUser1)
+addingUsers(normalUser1)
 
 def display_Users():
     mycursor.execute("SELECT * from users")
