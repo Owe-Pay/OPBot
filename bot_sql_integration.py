@@ -23,7 +23,6 @@ def connect():
     mycursor = mysqldb.cursor()
 
 def closeConnection():
-    mycursor.close()
     mysqldb.close()
     
 
