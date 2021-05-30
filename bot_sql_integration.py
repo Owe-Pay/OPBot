@@ -32,11 +32,11 @@ def addingUsers(input):
     try:
         sql = "INSERT into users(UserID, UserName, notifiable) VALUES (%s, %s, %s)"
         val = input
-        # print(input)
+        print(input)
         mycursor.execute(sql,val)
+        print("ok")
         mysqldb.commit()
         print('Records inserted successfully!')
-
     except:
         print("entry already in database")
         # mysqldb.rollback()
