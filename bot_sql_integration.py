@@ -1,4 +1,5 @@
-import mysql.connector
+# import mysql.connector
+import pymysql
 from tabulate import tabulate
 import datetime
 import time
@@ -10,7 +11,7 @@ db_database = os.environ['DB_DB']
 db_password = os.environ['DB_PASSWORD']
 
 ##connect to mysql database##
-mysqldb = mysql.connector.connect(
+mysqldb = pymysql.connect(
     host=db_host, user=db_username, password=db_password, db=db_database)
     # auth_plugin = 'mysql_native_password')
 
