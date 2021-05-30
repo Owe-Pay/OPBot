@@ -20,10 +20,6 @@ def connect():
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-
-def closeConnection():
-    mycursor.close()
-    mysqldb.close()
     
 
 def massDelete(table):  # Do note that this mass delete removes everything from a table, but it does not reset the auto-increment value (drop table to reset it)
@@ -46,7 +42,6 @@ def addingUsers(input):
     mycursor.execute(sql,val)
     mysqldb.commit()
     print('Records inserted successfully!')
-    closeConnection()
 
 
 # addingUsers(normalUser1)
@@ -57,7 +52,6 @@ def display_Users():
     result = mycursor.fetchall()
     print(tabulate(result, headers=[
         "UserID", "UserName", "notifiable"]))
-    closeConnection()
 # display_Users()
 
 def userAlreadyAdded(primary_key):
@@ -65,7 +59,6 @@ def userAlreadyAdded(primary_key):
     mysql = "SELECT * FROM users WHERE UserID LIKE " + primary_key
     mycursor.execute(mysql)
     t = mycursor.fetchone()
-    closeConnection()
     return (t!=None)
 
 # timing = datetime.datetime.now()
@@ -82,12 +75,11 @@ def addTransaction(input):
         val = input
         mycursor.execute(sql,val)
         mysqldb.commit()
-        closeConnection()
         print('Records inserted successfully!')
     except:
         print("entry already in database")
         # mysqldb.rollback()
-        closeConnection()
+
 
 # addTransaction(transaction1)
 
@@ -102,11 +94,11 @@ def addOrder(input):
         val = input
         mycursor.execute(sql,val)
         mysqldb.commit()
-        closeConnection()
+
         print('Records inserted successfully!')
     except:
         print("entry already in database")
-        closeConnection()
+
         # mysqldb.rollback()
     # mysqldb.close()
 
@@ -124,10 +116,10 @@ def addGroup(input):
         mycursor.execute(sql,val)
         mysqldb.commit()
         print('Records inserted successfully!')
-        closeConnection()
+
     except:
         print("entry already in database")
-        closeConnection()
+
         # mysqldb.rollback()
 
 # addGroup(group1)
