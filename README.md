@@ -43,11 +43,11 @@ We have decided to start by implementing our Telegram Bot and our MySQL database
 *Figure 1: Registration process for Users and Groups*
 
 1. Registration
-  1. /start will initiate the bot and ask users to register.
-  1. Users and groups will have the option of choosing if they wish to register with us in order to give users control over their private data. We have implemented this feature by using Inline Keyboard Buttons that appear under the registration message.
-  1. Registration for groups and individuals would be a different process. Using the Telegram Bot API allows us to register groups and individuals separately and we will be able to use a relational database to link users to the groups they belong to.
-  1. After Users and Groups are registered, we will store their unique chat_ids in our database 
-  1. Due to the nature of Telegram Bots, for our bot to message the user, the user will have had to have messaged our bot first. Hence, to ensure our Notification feature works we will have a column dedicated to keeping track if a registered user is Notifiable.
+   1. /start will initiate the bot and ask users to register.
+   1. Users and groups will have the option of choosing if they wish to register with us in order to give users control over their private data. We have implemented this feature by using Inline Keyboard Buttons that appear under the registration message.
+   1. Registration for groups and individuals would be a different process. Using the Telegram Bot API allows us to register groups and individuals separately and we will be able to use a relational database to link users to the groups they belong to.
+   1. After Users and Groups are registered, we will store their unique chat_ids in our database 
+   1. Due to the nature of Telegram Bots, for our bot to message the user, the user will have had to have messaged our bot first. Hence, to ensure our Notification feature works we will have a column dedicated to keeping track if a registered user is Notifiable.
 
 
 
