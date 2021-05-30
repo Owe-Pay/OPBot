@@ -13,16 +13,19 @@ db_password = os.environ['DB_PASSWORD']
 
 mysqldb = pymysql.connect(
     host=db_host, user=db_username, password=db_password, db=db_database)
+
 mycursor = mysqldb.cursor()
 
 def connect():
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
+
     mycursor = mysqldb.cursor()
 
 def closeConnection():
-    mysqldb.close()
     mycursor.close()
+    mysqldb.close()
+    
 
 closeConnection()
 
