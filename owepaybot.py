@@ -1,4 +1,3 @@
-from Users.jianwei.development.personal_git_repo.OP.OPBot.bot_sql_integration import containsUser, userAlreadyAdded
 import logging
 import os
 
