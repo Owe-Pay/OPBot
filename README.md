@@ -21,4 +21,16 @@ Having a system that integrates with Telegram, a common group messaging platform
 
 Going further, We aim to have a fully fledged app that is able to scan menu entries in receipts that reduces the input of each item manually.
 
-![GitHub Logo](https://res.cloudinary.com/jianoway/image/upload/v1622368925/O_P_-_TeleBot_New_Order_Flow_qfpbtr.jpg)
+# User Stories
+
+* As the person who usually helps to pay first for food when ordering in deliveries for my hostel mates, I wish I had a way to easily visualise who is in debt with me.
+
+* As the person who mainly orders food for my hostel level mates, I want presets that accomodate for common additional fees such as Goods and Services Charge (GST) and service charge. 
+
+* As a student who tags on to food orders, I want to have a system that keeps track of how much I still owe to people and the breakdown of the debt.
+
+* As a person who goes out to eat with friends , I want a simple system to create new orders to be repaid and update the status of my debts. 
+
+* As a person who eats out with friends, I want a system that tracks the food items bought without the need for manually inputting the data, which reduces inconvenience for me.
+
+![New Order Flow](https://res.cloudinary.com/jianoway/image/upload/v1622368925/O_P_-_TeleBot_New_Order_Flow_qfpbtr.jpg)
