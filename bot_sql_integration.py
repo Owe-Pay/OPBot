@@ -5,15 +5,10 @@ import datetime
 import time
 import os
 
-db_host='us-cdbr-east-04.cleardb.com'
-db_database='heroku_f058d679264bed5'
-db_password='35523111'
-db_username='bded5c9cf73ec3'
-
-# db_host = os.environ['DB_HOST']
-# db_username = os.environ['DB_USER']
-# db_database = os.environ['DB_DB']
-# db_password = os.environ['DB_PASSWORD']
+db_host = os.environ['DB_HOST']
+db_username = os.environ['DB_USER']
+db_database = os.environ['DB_DB']
+db_password = os.environ['DB_PASSWORD']
 
 ##connect to mysql database##
 mysqldb = pymysql.connect(
@@ -42,7 +37,7 @@ def addingUsers(input):
     print('Records inserted successfully!')
 
 
-addingUsers(normalUser1)
+# addingUsers(normalUser1)
 
 def display_Users():
     mycursor.execute("SELECT * from users")
