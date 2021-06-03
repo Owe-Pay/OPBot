@@ -31,7 +31,7 @@ Going further, We aim to have a fully fledged app that is able to scan menu entr
 
 * As a person who eats out with friends, I want a system that tracks the food items bought without the need for manually inputting the data, which reduces inconvenience for me.
 
-Development Plan:
+# Development Plan
 
 We have decided to start by implementing our Telegram Bot and our MySQL database to store user information for us to manage and use for our Telegram Bot.
 
