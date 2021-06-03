@@ -1,4 +1,3 @@
-# import mysql.connector
 import pymysql
 from tabulate import tabulate
 import datetime
@@ -10,25 +9,25 @@ db_username = os.environ['DB_USER']
 db_database = os.environ['DB_DB']
 db_password = os.environ['DB_PASSWORD']
 
+#############################
+# Functions for General Use #
+#############################
+
 def closeConnection(connection, cursor):
     cursor.close()
     connection.close()
-    
 
-def massDelete(table):  # Do note that this mass delete removes everything from a table, but it does not reset the auto-increment value (drop table to reset it)
+def massDelete(table):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     mycursor.execute("DELETE FROM " + table)
     mysqldb.commit()
-    print('Records updated successfully! Your table is now empty')
+    print('Records updated successfully! %s is now empty') % table
 
-# massDelete("users")
-#userr is stored as {'id': 497722299 ,'username': 'jianowa',"notifiable": boolean 1}
-normalUser1 = ('4997399', 'bear', 1)
-normalUser2 = ('487722299', 'apple',0)
-normalUser3 = ('477722299', 'donkey',1)
-
+#############################
+# Functions for Users Table #
+#############################
 
 def addUser(input):
     mysqldb = pymysql.connect(
@@ -38,9 +37,7 @@ def addUser(input):
     mycursor.execute(sql, input)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
-    print('Records inserted successfully!')
-
-# addUser(normalUser3)
+    print('User added successfully!')
 
 def display_Users():
     mysqldb = pymysql.connect(
@@ -51,7 +48,6 @@ def display_Users():
     closeConnection(mysqldb, mycursor)
     print(tabulate(result, headers=[
         "UserID", "UserName", "notifiable"]))
-# display_Users()
 
 def userAlreadyAdded(primary_key):
     mysqldb = pymysql.connect(
@@ -63,13 +59,31 @@ def userAlreadyAdded(primary_key):
     closeConnection(mysqldb, mycursor)
     return (t!=None)
 
-# timing = datetime.datetime.now()
-# dt_obj = datetime.datetime.strptime(str(timing), '%Y-%m-%d %H:%M:%S.%f')
-# print(dt_obj)
+def isNotifiable(user_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM Users WHERE UserID LIKE %s and notifiable LIKE %d" % (user_id, 1)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return (t!=None)
 
-transaction1 =('1288299','123213124','2021-05-29', 10, '497722299', '487722299')
+def makeNotifiable(user_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE Users SET notifiable = 1 WHERE UserID = %s" % user_id
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+    print("User is now notifiable!")
 
-### transaction stored as (transactionid, OrderID, date, AmountOwed, UserID_Creditor, User_id_debitor)
+
+####################################
+# Functions for Transactions Table #
+####################################
+
 def addTransaction(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
@@ -84,14 +98,10 @@ def addTransaction(input):
     except:
         closeConnection(mysqldb, mycursor)
         print("entry already in database")
-        # mysqldb.rollback()
 
-
-# addTransaction(transaction1)
-
-
-#################### orders are OrderID, GroupID ###########################
-order1 = ('1289923','241414')
+##############################
+# Functions for Orders Table #
+##############################
 
 def addOrder(input):
     mysqldb = pymysql.connect(
@@ -108,14 +118,9 @@ def addOrder(input):
         closeConnection(mysqldb, mycursor)
         print("entry already in database")
 
-        # mysqldb.rollback()
-    # mysqldb.close()
-
-# addOrder(order1)
-
-
-########################## groups are groupid, Number_of_members ###############
-group1 = ('24141332', 'TestName')
+######################################
+# Functions for TelegramGroups Table #
+######################################
 
 def addGroup(input):
     mysqldb = pymysql.connect(
@@ -148,10 +153,6 @@ def addUserToGroup(userId, groupId):
     closeConnection(mysqldb, mycursor)
     print('Records inserted successfully!')
 
-# def groupMemberAdder(update, context):
-
-# addUserToGroup('2130', '2134')
-
 def increaseGroupMemberCount(group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
@@ -161,7 +162,14 @@ def increaseGroupMemberCount(group_id):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
 
-# increaseGroupMemberCount(-583617452)
+def decreaseGroupMemberCount(group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    sql = "UPDATE TelegramGroups SET Number_of_members = Number_of_members - 1 WHERE GroupID = %s"
+    mycursor.execute(sql, group_id)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
 
 def userInGroup(userId, groupId):
     mysqldb = pymysql.connect(
@@ -172,7 +180,3 @@ def userInGroup(userId, groupId):
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
     return (t!=None)
-
-# userInGroup("123","456")
-# addGroup(group1)
-# addUser(normalUser1)

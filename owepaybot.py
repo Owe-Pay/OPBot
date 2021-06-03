@@ -1,6 +1,7 @@
 import logging
 import os
 
+from HELPME.helperFunctions import *
 from bot_sql_integration import *
 from uuid import uuid4
 from telegram.utils.helpers import escape_markdown
@@ -11,28 +12,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-
 PORT = int(os.environ.get('PORT', '8443'))
-
 TOKEN = os.environ["API_TOKEN"]
-
-def start(update, context): 
-    """Depending if start was issued in a Group or via PM, it will execute the
-    respective /start command."""
-    
-    if update.message.chat.type == 'group':
-        startGroup(update, context)
-
-    if update.message.chat.type == 'private':
-        startPrivate(update, context)
-
-def help(update, context):
-    update.message.reply_text(
-        "List of commands:\n\n" +
-        "/start Initialise and register with us.\n" +
-        "/help For the confused souls.\n" +
-        "\nSplit bills with us by simply typing @OwePay_bot followed by the amount to be split!"
-        )
 
 def startGroup(update, context):
     """Send the welcome message when the command /start is issued in a group."""
@@ -70,19 +51,6 @@ def startGroup(update, context):
 
 def startPrivate(update, context):
     """Send the welcome message when the command /start is issued via PM"""
-    # Logic check to be implemented:
-    # 1. If user is not registered in our database
-    # Registers the user as notifiable.
-    #
-    # 2. If user is already registered in our database BUT not notifiable:
-    # Will register them as notifiable.
-    #
-    # 3. If user is already registered in our database and is also notifiable:
-    # Will inform the user that his profile is already setup.
-    #
-    # Until we setup our database, the following boilerplate code will be executed.
-
-    # The registration keyboard used to register groups into our User Database.
     keyboard = [
         [
             InlineKeyboardButton("Register", callback_data='userRegister'),
@@ -91,12 +59,6 @@ def startPrivate(update, context):
             InlineKeyboardButton("Don't Register", callback_data='userDontRegister')  
         ],
     ]
-
-    ## This section is to send a logo before the registration process!
-    # context.bot.send_photo(
-    #     chat_id=update.effective_chat.id, 
-    #     photo='https://res.cloudinary.com/jianoway/image/upload/v1621939877/O%24P%24_Logo.png',
-    # )
 
     # Sets up the InlineKeyboardMarkup as the reply_markup to be used in the message.
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -109,75 +71,27 @@ def startPrivate(update, context):
         reply_markup=reply_markup,
     )
 
+def help(update, context):
+    update.message.reply_text(
+        "List of commands:\n\n" +
+        "/start Initialise and register with us.\n" +
+        "/help For the confused souls.\n" +
+        "\nSplit bills with us by simply typing @OwePay_bot followed by the amount to be split!"
+    )
+
 def error(update, context):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 def inline(update: Update, context: CallbackContext) -> None:
-    query = update.inline_query.query
-    
+    query = update.inline_query.query  
     if query == "":
         return
-
-    # print(query)
-
-    # update.inline_query.from_user.send_message(query)
     results = inlineQueryHelper(update)
-
     update.inline_query.answer(results)
 
-def inlineQueryHelper(update):
-    query = update.inline_query.query
-    if query.replace('$','',1).isnumeric():
-        query = query.replace('$','',1)
-        return [
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title="Split $" + str(query) + ".00 among everyone",
-                input_message_content=InputTextMessageContent("Split among everyone: $" + query + ".00"),
-                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
-            ),
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title="Split $" + str(query) + ".00 among some only",
-                input_message_content=InputTextMessageContent("Split among some only: $" + query + ".00"),
-                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962386/icons8-user-groups-64_d9uktr.png'
-            ),
-        ]
-    
-    if query.replace('.', '', 1).replace('$','',1).isnumeric():
-        query = query.replace('$', '', 1) + "00"
-        queryfloat = float(query)
-        formatted_query = "{:.2f}".format(queryfloat)
-        return [
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title="Split $" + formatted_query + " among everyone",
-                input_message_content=InputTextMessageContent("Split among everyone: $" + formatted_query),
-                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
-
-            ),
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title="Split $" + formatted_query + " among some only",
-                input_message_content=InputTextMessageContent("Split among some only: $" + formatted_query),
-                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962386/icons8-user-groups-64_d9uktr.png'
-            ),
-        ]
-    
-    if isinstance(query, str):
-        return [
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title=query + " is not a valid amount.",
-                input_message_content=InputTextMessageContent(
-                    "Trying to split invalid amount: \n" + query + "\n\nPlease key in a valid amount to split!"
-                ),
-                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962567/icons8-cross-mark-96_zrk1p9.png',
-            ),
-        ]
-
 def button(update: Update, context: CallbackContext) -> None:
+    """Handles the button presses for Inline Keyboard Callbacks"""
     query = update.callback_query
     query.answer()
     
@@ -233,11 +147,19 @@ def userRegister(update, context):
     message_id = query.message.message_id
     user = (chat_id, username, 1)
     if (userAlreadyAdded(chat_id)):
-        context.bot.editMessageText(
-            chat_id=chat_id,
-            message_id=message_id, 
-            text="You have already been registered with us.",
-        )
+        if not(isNotifiable(chat_id)):
+            makeNotifiable(chat_id)
+            context.bot.editMessageText(
+                chat_id=chat_id,
+                message_id=message_id, 
+                text="You are now registered!",
+            )
+        else:
+            context.bot.editMessageText(
+                chat_id=chat_id,
+                message_id=message_id, 
+                text="You have already been registered with us.",
+            )
     else:
         addUser(user)
         context.bot.editMessageText(
@@ -263,10 +185,13 @@ def echo(update, context):
     print(update)
 
 def groupMemberScanner(update, context):
-    """"Checks if members are in the group or not"""
+    """"Constantly monitors group chat to check if members are counted in the group or not"""
     group_id = update.message.chat_id
     user_id = update.message.from_user.id
     username = update.message.from_user.username
+    
+    if not(groupAlreadyAdded(group_id)):
+        return
 
     if not(userAlreadyAdded(user_id)):
         user = (user_id, username, 0)
@@ -287,11 +212,11 @@ def main():
     dp = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("start", startGroup, Filters.chat_type.groups))
+    dp.add_handler(CommandHandler("start", startPrivate, Filters.chat_type.private))
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(InlineQueryHandler(inline))
-    # dp.add_handler(MessageHandler(Filters.text, echo))
     dp.add_handler(MessageHandler(Filters.chat_type.groups, groupMemberScanner))
 
 
