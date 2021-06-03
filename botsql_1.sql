@@ -1,6 +1,6 @@
  -- ------------------------------------------- Create the Tables / Collections --------------------------------------------------
 -- ------------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE `users` (
+CREATE TABLE `Users` (
   `UserID` varchar(45) NOT NULL ,
   `UserName` varchar(45) NOT NULL,
   `notifiable` BOOLEAN ,
@@ -8,14 +8,14 @@ CREATE TABLE `users` (
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `admins` (
+CREATE TABLE `Admins` (
   `UserID` varchar(45) NOT NULL ,
   `UserName` varchar(45) NOT NULL,
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `transactions` (
-	`transaction_id` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Transactions` (
+	`transaction_id` varchar(45) NOT NULL,
     `OrderID` varchar(45) NOT NULL,
     `date` DATETIME DEFAULT NULL,
     `AmountOwed` DOUBLE NOT NULL DEFAULT '0',
@@ -25,28 +25,35 @@ CREATE TABLE `transactions` (
 )  ENGINE=INNODB AUTO_INCREMENT=797 DEFAULT CHARSET=UTF8MB4 COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE `Orders` (
-  `OrderID` varchar(45) NOT NULL AUTO_INCREMENT,
-  `GroupID` varchar(45) NOT NULL DEFAULT '0',
+  `OrderID` varchar(45) NOT NULL,
+  `GroupID` varchar(45) NOT NULL,
   PRIMARY KEY (`OrderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `Groups` (
+CREATE TABLE `TelegramGroups` (
   `GroupID` varchar(45) NOT NULL,
+  `GroupName` varchar(45) NOT NULL,
   `Number_of_members` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`GroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `Owed_Amount` (
+CREATE TABLE `OwedAmount` (
   `UserID` varchar(45) NOT NULL,
   `AmountOwed` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-CREATE TABLE admins`Payment` (
-  `PaymentID` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Payment` (
+  `PaymentID` varchar(45) NOT NULL,
   `UserID` varchar(45) NOT NULL,
   `AmountCharged` double NOT NULL DEFAULT '0',
   `DateOfPayment` datetime DEFAULT NULL,
   PRIMARY KEY (`PaymentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `UserGroupRelational` (
+	`UserID` varchar(45) NOT NULL,
+    `GroupID` varchar(45) NOT NULL,
+    PRIMARY KEY (`UserID`, `GroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

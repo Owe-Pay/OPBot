@@ -10,7 +10,6 @@ db_username = os.environ['DB_USER']
 db_database = os.environ['DB_DB']
 db_password = os.environ['DB_PASSWORD']
 
-
 def closeConnection(connection, cursor):
     cursor.close()
     connection.close()
@@ -31,19 +30,17 @@ normalUser2 = ('487722299', 'apple',0)
 normalUser3 = ('477722299', 'donkey',1)
 
 
-def addingUsers(input):
+def addUser(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    sql = "INSERT into users(UserID, UserName, notifiable) VALUES (%s, %s, %s)"
-    val = input
-    mycursor.execute(sql,val)
+    sql = "INSERT into Users (UserID, UserName, notifiable) VALUES (%s, %s, %s)"
+    mycursor.execute(sql, input)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print('Records inserted successfully!')
 
-
-# addingUsers(normalUser1)
+# addUser(normalUser3)
 
 def display_Users():
     mysqldb = pymysql.connect(
@@ -60,7 +57,7 @@ def userAlreadyAdded(primary_key):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    mysql = "SELECT * FROM users WHERE UserID LIKE " + primary_key
+    mysql = "SELECT * FROM Users WHERE UserID LIKE %s" % primary_key
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
@@ -71,14 +68,14 @@ def userAlreadyAdded(primary_key):
 # print(dt_obj)
 
 transaction1 =('1288299','123213124','2021-05-29', 10, '497722299', '487722299')
-# transaction2=
+
 ### transaction stored as (transactionid, OrderID, date, AmountOwed, UserID_Creditor, User_id_debitor)
 def addTransaction(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     try:
-        sql = "INSERT into transactions(transaction_id, OrderID, date, AmountOwed, UserID_Creditor, UserID_Debitor) VALUES (%s, %s, %s, %s, %s, %s)"
+        sql = "INSERT into Transactions(transaction_id, OrderID, date, AmountOwed, UserID_Creditor, UserID_Debitor) VALUES (%s, %s, %s, %s, %s, %s)"
         val = input
         mycursor.execute(sql,val)
         mysqldb.commit()
@@ -101,7 +98,7 @@ def addOrder(input):
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     try:
-        sql = "INSERT into orders(OrderID, GroupID) VALUES (%s, %s)"
+        sql = "INSERT into Orders(OrderID, GroupID) VALUES (%s, %s)"
         val = input
         mycursor.execute(sql,val)
         mysqldb.commit()
@@ -118,23 +115,64 @@ def addOrder(input):
 
 
 ########################## groups are groupid, Number_of_members ###############
-group1=('241414',3)
+group1 = ('24141332', 'TestName')
 
 def addGroup(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    try:
-        sql = "INSERT into groups(GroupID, Number_of_members) VALUES (%s, %s)"
-        val = input
-        mycursor.execute(sql,val)
-        mysqldb.commit()
-        closeConnection(mysqldb, mycursor)
-        print('Records inserted successfully!')
+    # sql = "INSERT into `groups` (`GroupID`, `GroupName`) VALUES " + str((input))
+    sql = "INSERT into TelegramGroups (GroupID, GroupName) VALUES (%s, %s)"
+    mycursor.execute(sql, input)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+    print('Records inserted successfully!')
 
-    except:
-        closeConnection(mysqldb, mycursor)
-        print("entry already in database")
-        # mysqldb.rollback()
+def groupAlreadyAdded(primary_key):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM TelegramGroups WHERE GroupID LIKE %s" % primary_key
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return (t!=None)
 
+def addUserToGroup(userId, groupId):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    sql = "INSERT into UserGroupRelational (UserID, GroupID) VALUES (%s, %s)" % (userId, groupId)
+    mycursor.execute(sql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+    print('Records inserted successfully!')
+
+# def groupMemberAdder(update, context):
+
+# addUserToGroup('2130', '2134')
+
+def increaseGroupMemberCount(group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    sql = "UPDATE TelegramGroups SET Number_of_members = Number_of_members + 1 WHERE GroupID = %s"
+    mycursor.execute(sql, group_id)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+
+# increaseGroupMemberCount(-583617452)
+
+def userInGroup(userId, groupId):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s" % (userId, groupId)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return (t!=None)
+
+# userInGroup("123","456")
 # addGroup(group1)
+# addUser(normalUser1)

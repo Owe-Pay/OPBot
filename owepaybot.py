@@ -128,7 +128,7 @@ def inline(update: Update, context: CallbackContext) -> None:
 
 def inlineQueryHelper(update):
     query = update.inline_query.query
-    if query.replace('$','',1).isdigit():
+    if query.replace('$','',1).isnumeric():
         query = query.replace('$','',1)
         return [
             InlineQueryResultArticle(
@@ -197,11 +197,23 @@ def button(update: Update, context: CallbackContext) -> None:
 
 def groupRegister(update, context):
     query = update.callback_query
-    context.bot.editMessageText(
-        chat_id=query.message.chat_id,
-        message_id=query.message.message_id, 
-        text="Your group is now registered!",
-    )
+    chat_id = query.message.chat_id
+    groupname = query.message.chat.title
+    message_id = query.message.message_id
+    group = (chat_id, groupname)
+    if (groupAlreadyAdded(chat_id)):
+        context.bot.editMessageText(
+            chat_id=chat_id,
+            message_id=message_id,
+            text="Your group has already been registered with us."
+        )
+    else:
+        addGroup(group)
+        context.bot.editMessageText(
+            chat_id=query.message.chat_id,
+            message_id=query.message.message_id, 
+            text="Your group is now registered!",
+        )
 
 def groupDontRegister(update, context):
     query = update.callback_query
@@ -216,15 +228,18 @@ def groupDontRegister(update, context):
 
 def userRegister(update, context):
     query = update.callback_query
-    user = (str(query.message.chat_id), str(query.message.chat.username), 1)
-    if (userAlreadyAdded(str(query.message.chat_id))):
+    chat_id = query.message.chat_id
+    username = query.message.chat.username
+    message_id = query.message.message_id
+    user = (chat_id, username, 1)
+    if (userAlreadyAdded(chat_id)):
         context.bot.editMessageText(
-            chat_id=query.message.chat_id,
-            message_id=query.message.message_id, 
+            chat_id=chat_id,
+            message_id=message_id, 
             text="You have already been registered with us.",
         )
     else:
-        addingUsers(user)
+        addUser(user)
         context.bot.editMessageText(
             chat_id=query.message.chat_id,
             message_id=query.message.message_id, 
@@ -242,9 +257,26 @@ def userDontRegister(update, context):
         " to get started!",
     )
 
-def echo(update: Update, _: CallbackContext) -> None:
+# def echo(update: Update, _: CallbackContext) -> None:
+def echo(update, context):
     """Echo the update for debugging purposes."""
     print(update)
+
+def groupMemberScanner(update, context):
+    """"Checks if members are in the group or not"""
+    group_id = update.message.chat_id
+    user_id = update.message.from_user.id
+    username = update.message.from_user.username
+
+    if not(userAlreadyAdded(user_id)):
+        user = (user_id, username, 0)
+        addUser(user)
+    
+    if not(userInGroup(user_id, group_id)):
+        increaseGroupMemberCount(group_id)
+        addUserToGroup(user_id, group_id)
+        
+
 
 def main():
     """Start the bot."""
@@ -256,15 +288,13 @@ def main():
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
-
     dp.add_handler(CommandHandler("help", help))
-    
     dp.add_handler(CallbackQueryHandler(button))
-
     dp.add_handler(InlineQueryHandler(inline))
+    # dp.add_handler(MessageHandler(Filters.text, echo))
+    dp.add_handler(MessageHandler(Filters.chat_type.groups, groupMemberScanner))
 
-    dp.add_handler(MessageHandler(Filters.text, echo))
-    
+
     # log all errors
     dp.add_error_handler(error)
 
