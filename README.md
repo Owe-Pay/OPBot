@@ -35,6 +35,10 @@ Going further, We aim to have a fully fledged app that is able to scan menu entr
 
 We have decided to start by implementing our Telegram Bot and our MySQL database to store user information for us to manage and use for our Telegram Bot.
 
+You will find our proposed timeline below:
+
+![Timeline](https://res.cloudinary.com/jianoway/image/upload/v1622808447/photo_2021-06-04_20-05-45_dwnjql.jpg)
+
 **Telegram Bot (@OwePay_bot)**
 
 ![New User Registration](https://res.cloudinary.com/jianoway/image/upload/v1622368793/O_P_-_First_Time_Registration_Fixed_mdpff8.jpg)
@@ -82,6 +86,8 @@ We have decided to start by implementing our Telegram Bot and our MySQL database
   1. Replies users with a list of commands that can be used with the bot.
   1. Provides instructions to users on how to split bills.
 
+#MySQL Setup
+   
 ![SQL Flow](https://res.cloudinary.com/jianoway/image/upload/v1622380661/Screenshot_2021-05-30_at_9.17.34_PM_nccz5l.png)
 This is a ER diagram displaying how our data will be stored.
 Each transaction would be any exchange of money between 2 users 
