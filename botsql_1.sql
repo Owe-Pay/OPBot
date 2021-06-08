@@ -1,3 +1,5 @@
+
+ 
  -- ------------------------------------------- Create the Tables / Collections --------------------------------------------------
 -- ------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE `Users` (
@@ -30,6 +32,7 @@ CREATE TABLE `Transactions` (
 CREATE TABLE `Orders` (
   `OrderID` varchar(45) NOT NULL,
   `GroupID` varchar(45) NOT NULL,
+  `Order_name` varchar(45) NOT NULL,
   PRIMARY KEY (`OrderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
