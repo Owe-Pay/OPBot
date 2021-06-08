@@ -5,6 +5,8 @@ CREATE TABLE `Users` (
   `UserName` varchar(45) NOT NULL,
   `notifiable` BOOLEAN ,
   `date` DATETIME DEFAULT NULL,
+  `Temp_Amount` double NOT NULL DEFAULT '0',
+  `State` varchar(45) NOT NULL,
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -21,6 +23,7 @@ CREATE TABLE `Transactions` (
     `AmountOwed` DOUBLE NOT NULL DEFAULT '0',
     `UserID_Creditor` varchar(45) NOT NULL,
     `UserID_Debitor` varchar(45) NOT NULL,
+    
     PRIMARY KEY (`transaction_id`)
 )  ENGINE=INNODB AUTO_INCREMENT=797 DEFAULT CHARSET=UTF8MB4 COLLATE = utf8mb4_general_ci;
 
