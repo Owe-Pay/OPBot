@@ -117,6 +117,7 @@ class TestUserDontRegisterInlineKeyboardButton:
         assert user_dont_register_inline_keyboard_button_dict['callback_data'] == self.callback_data
 
 class TestBetweenUserRegisterInlineKeyboardButtons:
+    
     @flaky(3, 1)
     def test_equality(self):
         temp_user_register_inline_keyboard_button_1 = InlineKeyboardButton('Register', callback_data='userRegister')
