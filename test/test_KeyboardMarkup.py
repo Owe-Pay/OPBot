@@ -37,7 +37,8 @@ class TestReplyKeyboardMarkup:
     resize_keyboard = True
     one_time_keyboard = True
     selective = True
-
+    
+    @flaky(3, 1)
     def test_slot_behaviour(self, reply_keyboard_markup, mro_slots, recwarn):
         inst = reply_keyboard_markup
         for attr in inst.__slots__:
