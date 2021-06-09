@@ -12,7 +12,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 
-os.environ["API_TOKEN"]
+#os.environ["API_TOKEN"]
 
 def startGroup(update, context):
     """Send the welcome message when the command /start is issued in a group."""
@@ -204,11 +204,16 @@ def userDontRegister(update, context):
         "If you ever feel like registering with our bot in the future, simply run /start" +
         " to get started!",
     )
+#############################
+# checks if msg is sent from a bot
+##############    
+def viabot_check(update, context):
+    return (update.message.via_bot!=None)
 
 # def echo(update: Update, _: CallbackContext) -> None:
 def echo(update, context):
     """Echo the update for debugging purposes."""
-    print(update.message.chat_id)
+    print(update)
 
 def groupMemberScanner(update, context):
     """"Constantly monitors group chat to check if members are counted in the group or not"""
@@ -227,6 +232,8 @@ def groupMemberScanner(update, context):
         increaseGroupMemberCount(group_id)
         addUserToGroup(user_id, group_id)
 
+    if viabot_check(update, context):
+        function_when_splitall_called(update, context)
 
 
 def main():
@@ -243,7 +250,7 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(InlineQueryHandler(inline))
-    dp.add_handler(MessageHandler(Filters.chat_type.groups, function_when_splitall_called ))
+    # dp.add_handler(MessageHandler(Filters.chat_type.groups, viabot_check ))
     dp.add_handler(MessageHandler(Filters.chat_type.groups, groupMemberScanner))
 
 
