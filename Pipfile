@@ -8,6 +8,9 @@ python-telegram-bot = "*"
 tabulate = "*"
 mysql-connector-python = "*"
 pymysql = "*"
+flaky = "*"
+pytest = "*"
+cryptography = "*"
 
 [dev-packages]
 
