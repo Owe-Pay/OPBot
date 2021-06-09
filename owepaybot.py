@@ -11,9 +11,8 @@ from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageConten
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
-logger = logging.getLogger(__name__)
-PORT = int(os.environ.get('PORT', '8443'))
-TOKEN = os.environ["API_TOKEN"]
+
+os.environ["API_TOKEN"]
 
 def startGroup(update, context):
     """Send the welcome message when the command /start is issued in a group."""
@@ -23,19 +22,19 @@ def startGroup(update, context):
             InlineKeyboardButton("Register", callback_data='groupRegister'),
         ],
         [
-            InlineKeyboardButton("Don't Register", callback_data='groupDontRegister')  
+            InlineKeyboardButton("Don't Register", callback_data='groupDontRegister')
         ],
     ]
 
     ## This section is to send a logo before the registration process!
     # context.bot.send_photo(
-    #     chat_id=update.effective_chat.id, 
+    #     chat_id=update.effective_chat.id,
     #     photo='https://res.cloudinary.com/jianoway/image/upload/v1621939877/O%24P%24_Logo.png',
     # )
 
     # Sets up the InlineKeyboardMarkup as the reply_markup to be used in the message.
     reply_markup = InlineKeyboardMarkup(keyboard)
-    
+
     # Sends the welcome message for the group.
     context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -56,13 +55,13 @@ def startPrivate(update, context):
             InlineKeyboardButton("Register", callback_data='userRegister'),
         ],
         [
-            InlineKeyboardButton("Don't Register", callback_data='userDontRegister')  
+            InlineKeyboardButton("Don't Register", callback_data='userDontRegister')
         ],
     ]
 
     # Sets up the InlineKeyboardMarkup as the reply_markup to be used in the message.
     reply_markup = InlineKeyboardMarkup(keyboard)
-    
+
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=
@@ -84,7 +83,7 @@ def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 def inline(update: Update, context: CallbackContext) -> None:
-    query = update.inline_query.query  
+    query = update.inline_query.query
     if query == "":
         return
     results = inlineQueryHelper(update)
@@ -94,7 +93,7 @@ def button(update: Update, context: CallbackContext) -> None:
     """Handles the button presses for Inline Keyboard Callbacks"""
     query = update.callback_query
     query.answer()
-    
+
     choice = query.data
 
     if choice == 'groupRegister':
@@ -125,9 +124,36 @@ def groupRegister(update, context):
         addGroup(group)
         context.bot.editMessageText(
             chat_id=query.message.chat_id,
-            message_id=query.message.message_id, 
+            message_id=query.message.message_id,
             text="Your group is now registered!",
         )
+
+def splitAllevenly(update, context):
+    if "Split among everyone" in update.mesage.text:
+        GroupID = update.message.chat_id
+        groupnumber = retrieveNumberofMembers(GroupID)
+        chat_message=update.message.text
+        value = int(''.join(filter(str.isdigit, chat_message)))
+        total_amount = float(value/100)
+        return total_amount
+
+def get_totalamount(update, context):
+    chat_message=update.message.text
+    value = int(''.join(filter(str.isdigit, chat_message)))
+    total_amount = float(value/100)
+    return total_amount
+#############################
+# when split among us is called this will update register the userid and the
+# amount of money
+##############
+
+def function_when_splitall_called(update, context):
+    if "Split among everyone" in update.message.text:
+        total_amount = get_totalamount(update,context)
+        user_id = update.message.from_user.id
+        updateTempState(user_id)
+        updateTempAmount(user_id,total_amount)
+        print("updated temp amount and state")
 
 def groupDontRegister(update, context):
     query = update.callback_query
@@ -151,20 +177,20 @@ def userRegister(update, context):
             makeNotifiable(chat_id)
             context.bot.editMessageText(
                 chat_id=chat_id,
-                message_id=message_id, 
+                message_id=message_id,
                 text="You are now registered!",
             )
         else:
             context.bot.editMessageText(
                 chat_id=chat_id,
-                message_id=message_id, 
+                message_id=message_id,
                 text="You have already been registered with us.",
             )
     else:
         addUser(user)
         context.bot.editMessageText(
             chat_id=query.message.chat_id,
-            message_id=query.message.message_id, 
+            message_id=query.message.message_id,
             text="You are now registered!",
         )
 
@@ -182,25 +208,25 @@ def userDontRegister(update, context):
 # def echo(update: Update, _: CallbackContext) -> None:
 def echo(update, context):
     """Echo the update for debugging purposes."""
-    print(update)
+    print(update.message.chat_id)
 
 def groupMemberScanner(update, context):
     """"Constantly monitors group chat to check if members are counted in the group or not"""
     group_id = update.message.chat_id
     user_id = update.message.from_user.id
     username = update.message.from_user.username
-    
+
     if not(groupAlreadyAdded(group_id)):
         return
 
     if not(userAlreadyAdded(user_id)):
         user = (user_id, username, 0)
         addUser(user)
-    
+
     if not(userInGroup(user_id, group_id)):
         increaseGroupMemberCount(group_id)
         addUserToGroup(user_id, group_id)
-        
+
 
 
 def main():
@@ -217,17 +243,19 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(InlineQueryHandler(inline))
+    dp.add_handler(MessageHandler(Filters.chat_type.groups, function_when_splitall_called ))
     dp.add_handler(MessageHandler(Filters.chat_type.groups, groupMemberScanner))
+
 
 
     # log all errors
     dp.add_error_handler(error)
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN,
-                          webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
-    # updater.start_polling()
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=PORT,
+    #                       url_path=TOKEN,
+    #                       webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':

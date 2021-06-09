@@ -8,7 +8,7 @@ CREATE TABLE `Users` (
   `notifiable` BOOLEAN ,
   `date` DATETIME DEFAULT NULL,
   `Temp_Amount` double NOT NULL DEFAULT '0',
-  `State` varchar(45) NOT NULL,
+  `State` varchar(45) NOT NULL DEFAULT 'inactive',
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
