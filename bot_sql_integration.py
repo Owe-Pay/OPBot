@@ -5,10 +5,10 @@ import datetime
 import time
 import os
 
-# db_host = os.environ['DB_HOST']
-# db_username = os.environ['DB_USER']
-# db_database = os.environ['DB_DB']
-# db_password = os.environ['DB_PASSWORD']
+db_host = os.environ['DB_HOST']
+db_username = os.environ['DB_USER']
+db_database = os.environ['DB_DB']
+db_password = os.environ['DB_PASSWORD']
 
 #############################
 # Functions for General Use #
