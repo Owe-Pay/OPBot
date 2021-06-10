@@ -83,21 +83,21 @@ def makeNotifiable(user_id):
     closeConnection(mysqldb, mycursor)
     print("User is now notifiable!")
 
-def updateTempState(user_id):
+def updateTempState(userId, groupId):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    mysql = "UPDATE Users SET State = 'active' WHERE UserID = %s" % user_id
+    mysql = "UPDATE UserGroupRelational SET State = 'active' WHERE UserID LIKE %s and GroupID LIKE %s" % (userId, groupId)
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print("User is now in splitall state temporarily!")
 
-def updateTempAmount(user_id, amount):
+def updateTempAmount(user_id, group_id, amount):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    mysql = "UPDATE Users SET Temp_Amount = %s WHERE UserID = %s" % (amount,user_id)
+    mysql = "UPDATE UserGroupRelational SET Temp_Amount = %s WHERE UserID LIKE %s and GroupID LIKE %s" % (amount,user_id, group_id)
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)

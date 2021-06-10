@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 TOKEN = os.environ["API_TOKEN"]
 PORT = int(os.environ.get('PORT', '8443'))
 
+
+
 def startGroup(update, context):
     """Send the welcome message when the command /start is issued in a group."""
     # The registration keyboard used to register groups into our Group Database.
@@ -152,8 +154,9 @@ def function_when_splitall_called(update, context):
     if "Split among everyone" in update.message.text:
         total_amount = get_totalamount(update,context)
         user_id = update.message.from_user.id
-        updateTempState(user_id)
-        updateTempAmount(user_id,total_amount)
+        GroupID = update.message.chat_id
+        updateTempState(user_id,GroupID)
+        updateTempAmount(user_id,GroupID,total_amount)
         print("updated temp amount and state")
 
 def groupDontRegister(update, context):
@@ -207,7 +210,7 @@ def userDontRegister(update, context):
     )
 #############################
 # checks if msg is sent from a bot
-##############    
+##############
 def viabot_check(update, context):
     return (update.message.via_bot!=None)
 
