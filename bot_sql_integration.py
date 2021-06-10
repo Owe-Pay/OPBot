@@ -10,6 +10,7 @@ db_username = os.environ['DB_USER']
 db_database = os.environ['DB_DB']
 db_password = os.environ['DB_PASSWORD']
 
+
 #############################
 # Functions for General Use #
 #############################
@@ -103,8 +104,21 @@ def updateTempAmount(user_id, group_id, amount):
     closeConnection(mysqldb, mycursor)
     print("User amount is updated temporarily!")
 
-#updateTempAmount(339096917,20)
 
+
+def catchTempState(user_id,group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    #state ='active'
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'active' " % (user_id, group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    print(t)
+    return t
+#updateTempAmount(339096917,20)
+catchTempState(339096917,-524344128)
 ####################################
 # Functions for Transactions Table #
 ####################################
