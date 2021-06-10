@@ -56,7 +56,7 @@ from telegram.ext import (
 )
 from telegram.error import BadRequest
 from telegram.utils.helpers import DefaultValue, DEFAULT_NONE
-from bots import get_bot
+from .bots import get_bot
 
 
 # This is here instead of in setup.cfg due to https://github.com/pytest-dev/pytest/issues/8343
@@ -159,6 +159,150 @@ def create_dp(bot):
     if dispatcher.running:
         dispatcher.stop()
     thr.join()
+
+@pytest.fixture(scope='class')
+def correctStartCommandGroupUpdate():
+    return {'update_id': 916267451, 
+        'message': {
+            'supergroup_chat_created': False, 
+            'group_chat_created': False, 
+            'chat': {
+                'id':  -447010025, 
+                'all_members_are_administrators': True, 
+                'type': 'group', 
+                'title': 'orbital 2021'
+            }, 
+            'entities': [{
+                'length': 20, 
+                'offset': 0, 
+                'type': 'bot_command'
+            }],
+            'delete_chat_photo': False, 
+            'date': 1623306802, 
+            'channel_chat_created': False, 
+            'text': '/start@OwePayTestbot', 
+            'photo': [], 
+            'message_id': 2907, 
+            'new_chat_members': [], 
+            'new_chat_photo': [], 
+            'caption_entities': [], 
+            'from': {
+                'username': 'startGroupTest', 
+                'first_name': 'test', 
+                'id': 456, 
+                'language_code': 'en', 
+                'is_bot': False
+            }
+        }
+    }
+
+@pytest.fixture(scope='class')
+def wrongStartCommandGroupIDUpdate():
+    return {'update_id': 916267451, 
+        'message': {
+            'supergroup_chat_created': False, 
+            'group_chat_created': False, 
+            'chat': {
+                'id': 110333025, 
+                'all_members_are_administrators': True, 
+                'type': 'group', 
+                'title': 'orbital 2021'
+            }, 
+            'entities': [{
+                'length': 20, 
+                'offset': 0, 
+                'type': 'bot_command'
+            }],
+            'delete_chat_photo': False, 
+            'date': 1623306802, 
+            'channel_chat_created': False, 
+            'text': '/start@OwePayTestbot', 
+            'photo': [], 
+            'message_id': 2907, 
+            'new_chat_members': [], 
+            'new_chat_photo': [], 
+            'caption_entities': [], 
+            'from': {
+                'username': 'startGroupTest', 
+                'first_name': 'test', 
+                'id': 456, 
+                'language_code': 'en', 
+                'is_bot': False
+            }
+        }
+    }
+
+@pytest.fixture(scope='class')
+def correctStartCommandPrivateUpdate():
+    return {'message': {
+        'photo': [], 
+        'date': 1623312815, 
+        'message_id': 3010, 
+        'channel_chat_created': False, 
+        'entities': [{
+            'offset': 0, 
+            'type': 'bot_command', 
+            'length': 6
+        }], 
+        'new_chat_members': [], 
+        'supergroup_chat_created': False, 
+        'delete_chat_photo': False, 
+        'text': '/start', 
+        'group_chat_created': False, 
+        'caption_entities': [], 
+        'chat': {
+            'type': 'private', 
+            'id': os.environ['PRIVATE_ID'], 
+            'username': 
+            'jianoway', 
+            'first_name': 
+            'Jian Wei'
+        }, 
+        'new_chat_photo': [], 
+        'from': {
+            'language_code': 'en', 
+            'id': os.environ['PRIVATE_ID'], 
+            'first_name': 'Jian Wei', 
+            'username': 'jianoway', 
+            'is_bot': False
+        }}, 
+    'update_id': 916267500}
+
+@pytest.fixture(scope='class')
+def wrongStartCommandPrivateIDUpdate():
+    return {'message': {
+        'photo': [], 
+        'date': 1623312815, 
+        'message_id': 3010, 
+        'channel_chat_created': False, 
+        'entities': [{
+            'offset': 0, 
+            'type': 'bot_command', 
+            'length': 6
+        }], 
+        'new_chat_members': [], 
+        'supergroup_chat_created': False, 
+        'delete_chat_photo': False, 
+        'text': '/start', 
+        'group_chat_created': False, 
+        'caption_entities': [], 
+        'chat': {
+            'type': 'private', 
+            'id': 123456, 
+            'username': 
+            'jianoway', 
+            'first_name': 
+            'Jian Wei'
+        }, 
+        'new_chat_photo': [], 
+        'from': {
+            'language_code': 'en', 
+            'id': 123456, 
+            'first_name': 'Jian Wei', 
+            'username': 'jianoway', 
+            'is_bot': False
+        }}, 
+    'update_id': 916267500}
 
 
 @pytest.fixture(scope='session')

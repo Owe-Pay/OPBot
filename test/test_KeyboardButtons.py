@@ -120,10 +120,7 @@ class TestBetweenUserRegisterInlineKeyboardButtons:
     
     @flaky(3, 1)
     def test_equality(self):
-        temp_user_register_inline_keyboard_button_1 = InlineKeyboardButton(
-                TestGroupDontRegisterInlineKeyboardButton.text,
-                callback_data=TestGroupDontRegisterInlineKeyboardButton.callback_data,
-            )
+        temp_user_register_inline_keyboard_button_1 = InlineKeyboardButton('Register', callback_data='userRegister')
         temp_user_register_inline_keyboard_button_2 = InlineKeyboardButton('Register', callback_data='userRegister')
         temp_user_dont_register_inline_keyboard_button_1 = InlineKeyboardButton("Don't Register", callback_data='userDontRegister')
         temp_user_dont_register_inline_keyboard_button_2 = InlineKeyboardButton("Don't Register", callback_data='userDontRegister')

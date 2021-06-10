@@ -1,5 +1,7 @@
 import logging
 import os
+import sys
+import pytest
 
 from HELPME.helperFunctions import *
 from bot_sql_integration import *
@@ -53,6 +55,7 @@ def startGroup(update, context):
 
 def startPrivate(update, context):
     """Send the welcome message when the command /start is issued via PM"""
+    context.bot.send_message(chat_id=update.effective_chat.id,text=str(update))
     keyboard = [
         [
             InlineKeyboardButton("Register", callback_data='userRegister'),
@@ -74,7 +77,9 @@ def startPrivate(update, context):
     )
 
 def help(update, context):
-    update.message.reply_text(
+    return context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=
         "List of commands:\n\n" +
         "/start Initialise and register with us.\n" +
         "/help For the confused souls.\n" +
@@ -85,31 +90,34 @@ def error(update, context):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
-def inline(update: Update, context: CallbackContext) -> None:
+def inline(update, context):
     query = update.inline_query.query
     if query == "":
         return
     results = inlineQueryHelper(update)
     update.inline_query.answer(results)
 
-def button(update: Update, context: CallbackContext) -> None:
+def button(update, context):
     """Handles the button presses for Inline Keyboard Callbacks"""
     query = update.callback_query
-    query.answer()
 
     choice = query.data
 
     if choice == 'groupRegister':
         groupRegister(update, context)
+        return query
 
     if choice == 'groupDontRegister':
         groupDontRegister(update, context)
+        return query
 
     if choice == 'userRegister':
         userRegister(update, context)
+        return query
 
     if choice == 'userDontRegister':
         userDontRegister(update, context)
+        return query
 
 def groupRegister(update, context):
     query = update.callback_query
@@ -145,6 +153,7 @@ def get_totalamount(update, context):
     value = int(''.join(filter(str.isdigit, chat_message)))
     total_amount = float(value/100)
     return total_amount
+    
 #############################
 # when split among us is called this will update register the userid and the
 # amount of money
