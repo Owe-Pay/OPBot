@@ -11,8 +11,9 @@ from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageConten
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
-
-#os.environ["API_TOKEN"]
+logger = logging.getLogger(__name__)
+TOKEN = os.environ["API_TOKEN"]
+PORT = int(os.environ.get('PORT', '8443'))
 
 def startGroup(update, context):
     """Send the welcome message when the command /start is issued in a group."""
@@ -258,11 +259,11 @@ def main():
     # log all errors
     dp.add_error_handler(error)
 
-    # updater.start_webhook(listen="0.0.0.0",
-    #                       port=PORT,
-    #                       url_path=TOKEN,
-    #                       webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                          port=PORT,
+                          url_path=TOKEN,
+                          webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
+    # updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
