@@ -51,6 +51,7 @@ def startGroup(update, context):
 
 def startPrivate(update, context):
     """Send the welcome message when the command /start is issued via PM"""
+    context.bot.send_message(chat_id=update.effective_chat.id,text=str(update))
     keyboard = [
         [
             InlineKeyboardButton("Register", callback_data='userRegister'),
@@ -83,14 +84,14 @@ def error(update, context):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
-def inline(update: Update, context: CallbackContext) -> None:
+def inline(update, context):
     query = update.inline_query.query
     if query == "":
         return
     results = inlineQueryHelper(update)
     update.inline_query.answer(results)
 
-def button(update: Update, context: CallbackContext) -> None:
+def button(update, context):
     """Handles the button presses for Inline Keyboard Callbacks"""
     query = update.callback_query
     query.answer()
@@ -259,11 +260,11 @@ def main():
     # log all errors
     dp.add_error_handler(error)
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN,
-                          webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
-    # updater.start_polling()
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=PORT,
+    #                       url_path=TOKEN,
+    #                       webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
