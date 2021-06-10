@@ -37,9 +37,9 @@ class TestStartPrivate:
     )
 
     @flaky(3, 1)
-    def test_send_message(self, correctPrivateUpdate, test_bot, private_inline_keyboard_markup):
+    def test_send_message(self, correctStartCommandPrivateUpdate, test_bot, private_inline_keyboard_markup):
         message = test_bot.send_message(
-            chat_id=correctPrivateUpdate['message']['chat']['id'],
+            chat_id=correctStartCommandPrivateUpdate['message']['chat']['id'],
             text=self.text,
             reply_markup=private_inline_keyboard_markup,
         )
@@ -58,12 +58,12 @@ class TestStartPrivate:
         assert message.reply_markup.inline_keyboard[1][0].callback_data == 'userDontRegister'
     
     @flaky(3, 1)
-    def test_invalid_user_id(self, wrongPrivateIDUpdate, test_bot, private_inline_keyboard_markup):
+    def test_invalid_user_id(self, wrongStartCommandPrivateIDUpdate, test_bot, private_inline_keyboard_markup):
         
         # Test if a bad request error is thrown if using an invalid group id to send a message
         with pytest.raises(BadRequest, match='Chat not found'):
             message = test_bot.send_message(
-                chat_id=wrongPrivateIDUpdate['message']['chat']['id'],
+                chat_id=wrongStartCommandPrivateIDUpdate['message']['chat']['id'],
                 text=self.text,
                 reply_markup=private_inline_keyboard_markup,
             )

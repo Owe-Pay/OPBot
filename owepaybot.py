@@ -1,5 +1,7 @@
 import logging
 import os
+import sys
+import pytest
 
 from HELPME.helperFunctions import *
 from bot_sql_integration import *
@@ -75,7 +77,9 @@ def startPrivate(update, context):
     )
 
 def help(update, context):
-    update.message.reply_text(
+    return context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=
         "List of commands:\n\n" +
         "/start Initialise and register with us.\n" +
         "/help For the confused souls.\n" +
@@ -96,21 +100,24 @@ def inline(update, context):
 def button(update, context):
     """Handles the button presses for Inline Keyboard Callbacks"""
     query = update.callback_query
-    query.answer()
 
     choice = query.data
 
     if choice == 'groupRegister':
         groupRegister(update, context)
+        return query
 
     if choice == 'groupDontRegister':
         groupDontRegister(update, context)
+        return query
 
     if choice == 'userRegister':
         userRegister(update, context)
+        return query
 
     if choice == 'userDontRegister':
         userDontRegister(update, context)
+        return query
 
 def groupRegister(update, context):
     query = update.callback_query
@@ -146,6 +153,7 @@ def get_totalamount(update, context):
     value = int(''.join(filter(str.isdigit, chat_message)))
     total_amount = float(value/100)
     return total_amount
+    
 #############################
 # when split among us is called this will update register the userid and the
 # amount of money
@@ -263,11 +271,11 @@ def main():
     # log all errors
     dp.add_error_handler(error)
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN,
-                          webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
-    # updater.start_polling()
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=PORT,
+    #                       url_path=TOKEN,
+    #                       webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':

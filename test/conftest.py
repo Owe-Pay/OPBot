@@ -56,7 +56,7 @@ from telegram.ext import (
 )
 from telegram.error import BadRequest
 from telegram.utils.helpers import DefaultValue, DEFAULT_NONE
-from bots import get_bot
+from .bots import get_bot
 
 
 # This is here instead of in setup.cfg due to https://github.com/pytest-dev/pytest/issues/8343
@@ -161,7 +161,7 @@ def create_dp(bot):
     thr.join()
 
 @pytest.fixture(scope='class')
-def correctGroupUpdate():
+def correctStartCommandGroupUpdate():
     return {'update_id': 916267451, 
         'message': {
             'supergroup_chat_created': False, 
@@ -197,7 +197,7 @@ def correctGroupUpdate():
     }
 
 @pytest.fixture(scope='class')
-def wrongGroupIDUpdate():
+def wrongStartCommandGroupIDUpdate():
     return {'update_id': 916267451, 
         'message': {
             'supergroup_chat_created': False, 
@@ -233,7 +233,7 @@ def wrongGroupIDUpdate():
     }
 
 @pytest.fixture(scope='class')
-def correctPrivateUpdate():
+def correctStartCommandPrivateUpdate():
     return {'message': {
         'photo': [], 
         'date': 1623312815, 
@@ -269,7 +269,7 @@ def correctPrivateUpdate():
     'update_id': 916267500}
 
 @pytest.fixture(scope='class')
-def wrongPrivateIDUpdate():
+def wrongStartCommandPrivateIDUpdate():
     return {'message': {
         'photo': [], 
         'date': 1623312815, 
