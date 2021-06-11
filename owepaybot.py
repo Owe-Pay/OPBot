@@ -168,19 +168,6 @@ def function_when_splitall_called(update, context):
         updateTempAmount(user_id,GroupID,total_amount)
         print("updated temp amount and state")
 
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=
-            "Hi Please input the name of the order!",
-            reply_markup=reply_markup,
-        )
-
-def catcher(update,context):
-    user_id = update.message.from_user.id
-    GroupID = update.message.chat_id
-    catchTempState(user_id,GroupID)
-
-
 def groupDontRegister(update, context):
     query = update.callback_query
     context.bot.editMessageText(

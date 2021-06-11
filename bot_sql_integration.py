@@ -25,8 +25,8 @@ def massDelete(table):
     mycursor = mysqldb.cursor()
     mycursor.execute("DELETE FROM " + table)
     mysqldb.commit()
-    print('Records updated successfully! %s is now empty') % table
-#massDelete("users")
+    # print('Records updated successfully! %s is now empty') % table
+# massDelete("users")
 #############################
 # Functions for Users Table #
 #############################
