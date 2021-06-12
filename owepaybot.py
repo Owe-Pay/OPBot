@@ -18,7 +18,6 @@ TOKEN = os.environ["API_TOKEN"]
 PORT = int(os.environ.get('PORT', '8443'))
 
 
-
 def startGroup(update, context):
     """Send the welcome message when the command /start is issued in a group."""
     # The registration keyboard used to register groups into our Group Database.
@@ -264,9 +263,16 @@ def groupMemberScanner(update, context):
         increaseGroupMemberCount(group_id)
         addUserToGroup(user_id, group_id)
 
+    if checktempstate(user_id, group_id):
+        catcher(update,context)
+        setinactive(user_id,group_id)
+        resetTempAmount(user_id, group_id)
+
     if viabot_check(update, context):
         function_when_splitall_called(update, context)
-        catcher(update,context)
+
+
+
 
 
 

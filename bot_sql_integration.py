@@ -26,7 +26,7 @@ def massDelete(table):
     mycursor.execute("DELETE FROM " + table)
     mysqldb.commit()
     # print('Records updated successfully! %s is now empty') % table
-# massDelete("users")
+#massDelete("orders")
 #############################
 # Functions for Users Table #
 #############################
@@ -105,7 +105,7 @@ def updateTempAmount(user_id, group_id, amount):
     print("User amount is updated temporarily!")
 
 
-def checkstatus(user_id,group_id):
+def checktempstate(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
@@ -116,6 +116,27 @@ def checkstatus(user_id,group_id):
     closeConnection(mysqldb, mycursor)
     return (t!=None)
 
+def setinactive(user_id, group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE usergrouprelational SET State = 'inactive' WHERE UserID = %s and GroupID = %s" % (user_id, group_id)
+    # UPDATE `bots`.`usergrouprelational` SET `State` = 'inactive' WHERE (`UserID` = '339096917') and (`GroupID` = '-524344128');
+    mycursor.execute(mysql)
+    # t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    print("set back into inactive")
+setinactive(339096917,-524344128)
+
+def resetTempAmount(user_id,group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE UserGroupRelational SET Temp_Amount = 0 WHERE UserID LIKE %s and GroupID LIKE %s" % (user_id, group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    print("reset temp amount to 0")
 
 def getamount(user_id,group_id):
     mysqldb = pymysql.connect(
