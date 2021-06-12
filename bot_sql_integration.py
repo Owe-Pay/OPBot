@@ -4,7 +4,7 @@ from uuid import uuid1
 import datetime
 import time
 import os
-
+#
 db_host = os.environ['DB_HOST']
 db_username = os.environ['DB_USER']
 db_database = os.environ['DB_DB']
@@ -105,8 +105,7 @@ def updateTempAmount(user_id, group_id, amount):
     print("User amount is updated temporarily!")
 
 
-
-def catchTempState(user_id,group_id):
+def checkstatus(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
@@ -115,10 +114,22 @@ def catchTempState(user_id,group_id):
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
-    print(t)
-    return t
+    return (t!=None)
+
+
+def getamount(user_id,group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    #state ='active'
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'active' " % (user_id, group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    print(t[2])
+    return t[2]
 #updateTempAmount(339096917,20)
-catchTempState(339096917,-524344128)
+#catchTempState(339096917,-524344128)
 ####################################
 # Functions for Transactions Table #
 ####################################
@@ -146,7 +157,7 @@ def addOrder(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    sql = "INSERT into Orders(OrderID, GroupID, order_name) VALUES (%s, %s, %s)"
+    sql = "INSERT into Orders(OrderID, GroupID, order_name, order_amount) VALUES (%s, %s, %s, %s)"
     val = input
     mycursor.execute(sql,val)
     mysqldb.commit()

@@ -11,6 +11,7 @@ pymysql = "*"
 flaky = "*"
 pytest = "*"
 cryptography = "*"
+flask = "*"
 
 [dev-packages]
 

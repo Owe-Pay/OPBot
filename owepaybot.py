@@ -48,7 +48,7 @@ def startGroup(update, context):
         "We aim to make the process of tracking which of your 'friends' still owe you " +
         "and reminding them as impersonal as possible so you won't feel the paiseh!"
         "Along with that, you can now also notify people who you've returned money to" +
-        "with a simple click of a  button.\n\n" +
+        "with a simple click of a button.\n\n" +
         "Simply register your group with us by pressing the button below!",
         reply_markup=reply_markup,
     )
@@ -153,7 +153,8 @@ def get_totalamount(update, context):
     value = int(''.join(filter(str.isdigit, chat_message)))
     total_amount = float(value/100)
     return total_amount
-    
+
+
 #############################
 # when split among us is called this will update register the userid and the
 # amount of money
@@ -167,6 +168,24 @@ def function_when_splitall_called(update, context):
         updateTempState(user_id,GroupID)
         updateTempAmount(user_id,GroupID,total_amount)
         print("updated temp amount and state")
+
+
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=
+            "Hi Please input the name of the order!",
+    )
+
+def catcher(update,context):
+    print("caught request")
+    user_id = update.message.from_user.id
+    GroupID = update.message.chat_id
+    order_name = update.message.text
+    order_amount= getamount(user_id,GroupID)
+    addOrder((user_id,GroupID,order_name,order_amount))
+    print("order added")
+
+
 
 def groupDontRegister(update, context):
     query = update.callback_query
@@ -247,6 +266,8 @@ def groupMemberScanner(update, context):
 
     if viabot_check(update, context):
         function_when_splitall_called(update, context)
+        catcher(update,context)
+
 
 
 def main():
@@ -263,7 +284,7 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(InlineQueryHandler(inline))
-    # dp.add_handler(MessageHandler(Filters.chat_type.groups, viabot_check ))
+    #dp.add_handler(MessageHandler(Filters.chat_type.groups, echo))
     dp.add_handler(MessageHandler(Filters.chat_type.groups, groupMemberScanner))
 
 
