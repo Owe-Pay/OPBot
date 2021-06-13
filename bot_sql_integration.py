@@ -129,11 +129,6 @@ def setinactive(user_id, group_id):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print("set back into inactive")
-<<<<<<< HEAD
-# setinactive(339096917,-524344128)
-=======
-#setinactive(339096917,-524344128)
->>>>>>> 0a1262d8f2e47edad8ce8f4f6c89867805a903d7
 
 def resetTempAmountzero(user_id,group_id):
     mysqldb = pymysql.connect(

@@ -54,7 +54,6 @@ def startGroup(update, context):
 
 def startPrivate(update, context):
     """Send the welcome message when the command /start is issued via PM"""
-    context.bot.send_message(chat_id=update.effective_chat.id,text=str(update))
     keyboard = [
         [
             InlineKeyboardButton("Register", callback_data='userRegister'),
