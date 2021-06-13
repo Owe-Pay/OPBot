@@ -9,14 +9,13 @@ from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageConten
 def inlineQueryHelper(update):
     """Helps to provide the display text for the inline query pop-up"""
     query = update.inline_query.query
-    print(update)
     if query.replace('$','',1).isnumeric():
         query = query.replace('$','',1)
         return [
             InlineQueryResultArticle(
                 id=str(uuid4()),
                 title="Split $" + str(query) + ".00 among everyone",
-                input_message_content=InputTextMessageContent("Split among everyone: $" + query + ".00"),
+                input_message_content=InputTextMessageContent("Split among everyone evenly: $" + query + ".00"),
                 thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
             ),
             InlineQueryResultArticle(
@@ -35,7 +34,7 @@ def inlineQueryHelper(update):
             InlineQueryResultArticle(
                 id=str(uuid4()),
                 title="Split $" + formatted_query + " among everyone",
-                input_message_content=InputTextMessageContent("Split among everyone: $" + formatted_query),
+                input_message_content=InputTextMessageContent("Split among everyone evenly: $" + formatted_query),
                 thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
 
             ),

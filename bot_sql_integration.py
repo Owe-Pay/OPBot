@@ -4,7 +4,7 @@ from uuid import uuid1
 import datetime
 import time
 import os
-#
+
 db_host = os.environ['DB_HOST']
 db_username = os.environ['DB_USER']
 db_database = os.environ['DB_DB']
@@ -86,17 +86,18 @@ def makeNotifiable(user_id):
     closeConnection(mysqldb, mycursor)
     print("User is now notifiable!")
 
-def updateTempState(userId, groupId):
+def updateUserStateSplitAllEvenly(userId, groupId):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    mysql = "UPDATE UserGroupRelational SET State = 'active' WHERE UserID LIKE %s and GroupID LIKE %s" % (userId, groupId)
+    mysql = "UPDATE UserGroupRelational SET State = 'splitallevenly' WHERE UserID LIKE %s and GroupID LIKE %s" % (userId, groupId)
     mycursor.execute(mysql)
+    print('test')
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print("User is now in splitall state temporarily!")
 
-def updateTempAmount(user_id, group_id, amount):
+def updateUserTempAmount(user_id, group_id, amount):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
@@ -107,30 +108,29 @@ def updateTempAmount(user_id, group_id, amount):
     print("User amount is updated temporarily!")
 
 
-def checktempstate(user_id,group_id):
+def userStateSplitAllEvenly(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     #state ='active'
-    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'active' " % (user_id, group_id)
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitallevenly' " % (user_id, group_id)
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
     return (t!=None)
 
-def setinactive(user_id, group_id):
+def setUserStateInactive(user_id, group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     mysql = "UPDATE usergrouprelational SET State = 'inactive' WHERE UserID = %s and GroupID = %s" % (user_id, group_id)
-    # UPDATE `bots`.`usergrouprelational` SET `State` = 'inactive' WHERE (`UserID` = '339096917') and (`GroupID` = '-524344128');
     mycursor.execute(mysql)
     # t = mycursor.fetchone()
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print("set back into inactive")
 
-def resetTempAmountzero(user_id,group_id):
+def resetUserTempAmount(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
@@ -141,23 +141,22 @@ def resetTempAmountzero(user_id,group_id):
     closeConnection(mysqldb, mycursor)
     print("reset temp amount to 0")
 
-def getamount(user_id,group_id):
+def getUserTempAmountSplitAllEvenly(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    #state ='active'
-    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'active' " % (user_id, group_id)
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitallevenly' " % (user_id, group_id)
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
     print(t[2])
     return t[2]
-#updateTempAmount(339096917,20)
-#catchTempState(339096917,-524344128)
+
 ####################################
 # Functions for Transactions Table #
 ####################################
-def Getallusersexceptcreditor(user_id, group_id):
+
+def getAllUsersExceptCreditor(user_id, group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
@@ -171,9 +170,9 @@ def Getallusersexceptcreditor(user_id, group_id):
     print(holder)
     return holder
     #returns a list
-#Getallusersexceptcreditor(339096917,-524344128)
+# getAllUsersExceptCreditor(339096917,-524344128)
 
-def Getnumberofusersexceptcreditor(user_id, group_id):
+def getNumberOfUsersExceptCreditor(user_id, group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
@@ -207,7 +206,7 @@ def addOrder(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    sql = "INSERT into Orders(OrderID, GroupID, order_name, order_amount,UserID) VALUES (%s, %s, %s, %s, %s)"
+    sql = "INSERT into Orders(OrderID, GroupID, order_name, order_amount, UserID) VALUES (%s, %s, %s, %s, %s)"
     val = input
     mycursor.execute(sql,val)
     mysqldb.commit()
@@ -282,7 +281,7 @@ def userInGroup(userId, groupId):
     closeConnection(mysqldb, mycursor)
     return (t!=None)
 
-def retrieveNumberofMembers(groupId):
+def getNumberOfMembers(groupId):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()

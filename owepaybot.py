@@ -136,16 +136,16 @@ def groupRegister(update, context):
             text="Your group is now registered!",
         )
 
-def splitAllevenly(update, context):
+def splitAllEvenly(update, context):
     if "Split among everyone" in update.mesage.text:
         GroupID = update.message.chat_id
-        groupnumber = retrieveNumberofMembers(GroupID)
+        groupnumber = getNumberOfMembers(GroupID)
         chat_message=update.message.text
         value = int(''.join(filter(str.isdigit, chat_message)))
         total_amount = float(value/100)
         return total_amount
 
-def get_totalamount(update, context):
+def getTotalAmountFromMessage(update, context):
     chat_message=update.message.text
     value = int(''.join(filter(str.isdigit, chat_message)))
     total_amount = float(value/100)
@@ -157,13 +157,13 @@ def get_totalamount(update, context):
 # amount of money
 ##############
 
-def function_when_splitall_called(update, context):
-    if "Split among everyone" in update.message.text:
-        total_amount = get_totalamount(update,context)
+def messageContainsSplitAllEvenly(update, context):
+    if "Split among everyone evenly" in update.message.text:
+        total_amount = getTotalAmountFromMessage(update,context)
         user_id = update.message.from_user.id
         GroupID = update.message.chat_id
-        updateTempState(user_id,GroupID)
-        updateTempAmount(user_id,GroupID,total_amount)
+        updateUserStateSplitAllEvenly(user_id, GroupID)
+        updateUserTempAmount(user_id,GroupID, total_amount)
         print("updated temp amount and state")
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -171,13 +171,13 @@ def function_when_splitall_called(update, context):
             "Hi Please input the name of the order!",
     )
 
-def catchingOrderName(update,context):
+def catchOrderFromUpdate(update,context):
     print("caught request")
     order_id = str(uuid1())
     user_id = update.message.from_user.id
     GroupID = update.message.chat_id
     order_name = update.message.text
-    order_amount= getamount(user_id,GroupID)
+    order_amount= getUserTempAmountSplitAllEvenly(user_id,GroupID)
     addOrder((order_id, GroupID, order_name, order_amount, user_id))
     print("order added")
     return (order_id, GroupID, order_name, order_amount, user_id)
@@ -186,11 +186,10 @@ def createTransactionbetweenallusers(order):
     #get all users involved
     user_id= order[4]
     group_id = order[1]
-    users = Getallusersexceptcreditor(user_id, group_id)
-    # order_id, GroupID, order_name, order_amount, user_id
+    users = getAllUsersExceptCreditor(user_id, group_id)
     order_id = order[0]
     order_amount = order[3]
-    total_users = Getnumberofusersexceptcreditor(user_id, group_id) + 1
+    total_users = getNumberOfUsersExceptCreditor(user_id, group_id) + 1
     splitamount = order_amount / total_users
     userid_creditor=order[4]
 
@@ -277,11 +276,13 @@ def groupMemberScanner(update, context):
         increaseGroupMemberCount(group_id)
         addUserToGroup(user_id, group_id)
 
-    if checktempstate(user_id, group_id):
-        order = catchingOrderName(update,context)
+    if userStateSplitAllEvenly(user_id, group_id):
+        print('reached')
+        order = catchOrderFromUpdate(update,context)
+        print('reached2')
         createTransactionbetweenallusers(order)
-        setinactive(user_id,group_id)
-        resetTempAmountzero(user_id, group_id)
+        setUserStateInactive(user_id,group_id)
+        resetUserTempAmount(user_id, group_id)
 
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -289,7 +290,7 @@ def groupMemberScanner(update, context):
             "Your order has been created",
     )
     if viabot_check(update, context):
-        function_when_splitall_called(update, context)
+        messageContainsSplitAllEvenly(update, context)
 
 
 
@@ -318,11 +319,11 @@ def main():
     # log all errors
     dp.add_error_handler(error)
 
-    # updater.start_webhook(listen="0.0.0.0",
-    #                       port=PORT,
-    #                       url_path=TOKEN,
-    #                       webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                          port=PORT,
+                          url_path=TOKEN,
+                          webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
+    # updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
