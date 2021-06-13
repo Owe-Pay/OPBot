@@ -126,7 +126,7 @@ def setinactive(user_id, group_id):
     # t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
     print("set back into inactive")
-setinactive(339096917,-524344128)
+# setinactive(339096917,-524344128)
 
 def resetTempAmount(user_id,group_id):
     mysqldb = pymysql.connect(

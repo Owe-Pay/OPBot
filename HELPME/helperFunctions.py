@@ -9,6 +9,7 @@ from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageConten
 def inlineQueryHelper(update):
     """Helps to provide the display text for the inline query pop-up"""
     query = update.inline_query.query
+    print(update)
     if query.replace('$','',1).isnumeric():
         query = query.replace('$','',1)
         return [
