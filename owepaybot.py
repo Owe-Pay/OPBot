@@ -99,7 +99,6 @@ def inline(update, context):
 def button(update, context):
     """Handles the button presses for Inline Keyboard Callbacks"""
     query = update.callback_query
-
     choice = query.data
 
     if choice == 'groupRegister':
@@ -167,24 +166,40 @@ def function_when_splitall_called(update, context):
         updateTempState(user_id,GroupID)
         updateTempAmount(user_id,GroupID,total_amount)
         print("updated temp amount and state")
-
-
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=
             "Hi Please input the name of the order!",
     )
 
-def catcher(update,context):
+def catchingOrderName(update,context):
     print("caught request")
+    order_id = str(uuid1())
     user_id = update.message.from_user.id
     GroupID = update.message.chat_id
     order_name = update.message.text
     order_amount= getamount(user_id,GroupID)
-    addOrder((user_id,GroupID,order_name,order_amount))
+    addOrder((order_id, GroupID, order_name, order_amount, user_id))
     print("order added")
+    return (order_id, GroupID, order_name, order_amount, user_id)
 
+def createTransactionbetweenallusers(order):
+    #get all users involved
+    user_id= order[4]
+    group_id = order[1]
+    users = Getallusersexceptcreditor(user_id, group_id)
+    # order_id, GroupID, order_name, order_amount, user_id
+    order_id = order[0]
+    order_amount = order[3]
+    total_users = Getnumberofusersexceptcreditor(user_id, group_id) + 1
+    splitamount = order_amount / total_users
+    userid_creditor=order[4]
 
+    for user in users:
+        transaction_id= str(uuid1())
+        addTransaction((transaction_id, order_id, splitamount,userid_creditor,user))
+#order123 = ("b62aa85b-cb98-11eb-baef-d0509938caba",-524344128,'thai food',123.45,339096917)
+#createTransactionbetweenallusers(order123)
 
 def groupDontRegister(update, context):
     query = update.callback_query
@@ -264,10 +279,16 @@ def groupMemberScanner(update, context):
         addUserToGroup(user_id, group_id)
 
     if checktempstate(user_id, group_id):
-        catcher(update,context)
+        order = catchingOrderName(update,context)
+        createTransactionbetweenallusers(order)
         setinactive(user_id,group_id)
-        resetTempAmount(user_id, group_id)
+        resetTempAmountzero(user_id, group_id)
 
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=
+            "Your order has been created",
+    )
     if viabot_check(update, context):
         function_when_splitall_called(update, context)
 

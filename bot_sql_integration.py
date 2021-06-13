@@ -26,7 +26,9 @@ def massDelete(table):
     mycursor.execute("DELETE FROM " + table)
     mysqldb.commit()
     # print('Records updated successfully! %s is now empty') % table
-#massDelete("orders")
+
+# massDelete("orders")
+# massDelete("transactions")
 #############################
 # Functions for Users Table #
 #############################
@@ -124,17 +126,23 @@ def setinactive(user_id, group_id):
     # UPDATE `bots`.`usergrouprelational` SET `State` = 'inactive' WHERE (`UserID` = '339096917') and (`GroupID` = '-524344128');
     mycursor.execute(mysql)
     # t = mycursor.fetchone()
+    mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print("set back into inactive")
+<<<<<<< HEAD
 # setinactive(339096917,-524344128)
+=======
+#setinactive(339096917,-524344128)
+>>>>>>> 0a1262d8f2e47edad8ce8f4f6c89867805a903d7
 
-def resetTempAmount(user_id,group_id):
+def resetTempAmountzero(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     mysql = "UPDATE UserGroupRelational SET Temp_Amount = 0 WHERE UserID LIKE %s and GroupID LIKE %s" % (user_id, group_id)
     mycursor.execute(mysql)
-    t = mycursor.fetchone()
+    mysqldb.commit()
+    # t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
     print("reset temp amount to 0")
 
@@ -154,13 +162,39 @@ def getamount(user_id,group_id):
 ####################################
 # Functions for Transactions Table #
 ####################################
+def Getallusersexceptcreditor(user_id, group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT USERID FROM UserGroupRelational WHERE UserID != %s and GroupID LIKE %s " % (user_id, group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchall()
+    closeConnection(mysqldb, mycursor)
+    holder=[]
+    for user in t:
+        holder.append(user[0])
+    print(holder)
+    return holder
+    #returns a list
+#Getallusersexceptcreditor(339096917,-524344128)
+
+def Getnumberofusersexceptcreditor(user_id, group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID != %s and GroupID LIKE %s " % (user_id, group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchall()
+    closeConnection(mysqldb, mycursor)
+    print(len(t))
+    return len(t)
 
 def addTransaction(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     try:
-        sql = "INSERT into Transactions(transaction_id, OrderID, date, AmountOwed, UserID_Creditor, UserID_Debitor) VALUES (%s, %s, %s, %s, %s, %s)"
+        sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debitor) VALUES (%s, %s, %s, %s, %s)"
         val = input
         mycursor.execute(sql,val)
         mysqldb.commit()
@@ -178,7 +212,7 @@ def addOrder(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    sql = "INSERT into Orders(OrderID, GroupID, order_name, order_amount) VALUES (%s, %s, %s, %s)"
+    sql = "INSERT into Orders(OrderID, GroupID, order_name, order_amount,UserID) VALUES (%s, %s, %s, %s, %s)"
     val = input
     mycursor.execute(sql,val)
     mysqldb.commit()
