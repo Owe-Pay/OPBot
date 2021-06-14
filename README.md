@@ -21,17 +21,17 @@ Going further, We aim to have a fully fledged app that is able to scan menu entr
 
 # User Stories
 
-* As the person who usually helps to pay first for food when ordering in deliveries for my hostel mates, I wish I had a way to easily visualise who is in debt with me.
+* As the person who usually helps to pay first for food when ordering in deliveries for my hostel mates, I wish I had a way to easily visualise who is in debt with me so that I can manage my finances better.
 
-* As the person who mainly orders food for my hostel level mates, I want presets that accomodate for common additional fees such as Goods and Services Charge (GST) and service charge. 
+* As the person who mainly orders food for my hostel level mates, I want presets that accomodate for common additional fees such as Goods and Services Charge (GST) and service charge so that I can add orders without having to manually calculate these common fees for individual items.
 
-* As a student who tags on to food orders, I want to have a system that keeps track of how much I still owe to people and the breakdown of the debt.
+* As a student who tags on to food orders, I want to have a system that keeps track of how much I still owe to people and the breakdown of the debt so that I can pay back what I owe easier.
 
-* As a person who goes out to eat with friends , I want a simple system to create new orders to be repaid and update the status of my debts. 
+* As a person who goes out to eat with friends , I want a simple system to create new orders to be repaid and update the status of my debts so that I can have an easier time managing multiple debts at once.
 
-* As a person who eats out with friends, I want a system that tracks the food items bought without the need for manually inputting the data, which reduces inconvenience for me.
+* As a person who eats out with friends, I want a system that tracks the food items bought without the need for manually inputting the information so that it is more convenient for myself to create new orders.
 
-* As an existing user of Telegram, I would like the debt calculation to be done on Telegram so that it will integrate with my group chats. 
+* As an existing user of Telegram, I would like the debt calculation to be done on Telegram so that it will integrate with my group chats so that I can manage them seamlessly without having to leave Telegram.
 
 # Development Plan
 
@@ -55,6 +55,8 @@ Functional Requirements refer to requirements for our project to work, without w
 
 
 ### Non-Functional Requirements
+
+Non-Functional Requirements refer to requirements that would optimise User experience when using our product.
 
 * Fast response time of bot when issued with commands/messages
 * Integrity of User Data stored
