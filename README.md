@@ -130,6 +130,14 @@ Each order can consist of multiple transactions.
 Each group will consist of the total orders in the group. The group will be the telegram groupid
 
 Our backend will be connected to the frontend using python
+   
+# Guides
+
+We have created various guides for both Users and Developers alike with more information about our project. Please find the links below
+   
+### Markup: [User Guide](https://docs.google.com/document/d/1n1MOoQ7HTdIDqTgsoM7VEKqg6ebAI9tZ-y9crIS0ixQ/edit?usp=sharing)
+
+### Markup: [Developer Guide](https://docs.google.com/document/d/1Zui7Zxd-1HufvyI80Nt83oNwH6zRincBDQME49KKnjI/edit?usp=sharing)
 
 
 
