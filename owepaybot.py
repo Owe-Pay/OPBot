@@ -1,14 +1,16 @@
 import logging
 import os
+
+
 import sys
 import pytest
 
 from HELPME.helperFunctions import *
-from bot_sql_integration import *
+from HELPME.bot_sql_integration import *
 from uuid import uuid4
 from telegram.utils.helpers import escape_markdown
 from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
-from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import Bot, InlineQueryResultArticle, ParseMode, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Update, message, replymarkup
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -116,6 +118,62 @@ def button(update, context):
         userDontRegister(update, context)
         return query
 
+    if choice == 'debtorPaid':
+        debtorPaid(update, context)
+        return query
+
+    if choice == 'debtorUnpaid':
+        debtorUnpaid(update, context)
+        return query
+
+def debtorPaid(update, context):
+    query = update.callback_query
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+    username = query.from_user.username
+    debtorID = query.from_user.id
+    text = query.message.text
+    textAfterRemove = removeUsernameFromDebtMessage(username, text)
+    orderID = getOrderIDFromMessageAndGroupID(message_id, chat_id)
+    creditorID = getCreditorIDFromMessageAndGroupID(message_id, chat_id)
+    bot = Bot(TOKEN)
+
+    if textAfterRemove != text:
+        markTransactionAsSettled(creditorID, debtorID, orderID)
+        bot.editMessageText(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=textAfterRemove,
+            reply_markup=splitAllEvenlyKeyboardMarkup()
+        )
+    
+    return None
+
+def debtorUnpaid(update, context):
+    query = update.callback_query
+    chat_id = query.message.chat_id
+    message_id = query.message.chat_id
+    username = query.from_user.username
+    debtorID = query.from_user.id
+    text = query.message.text
+    textAfterAdd = addUsernameToDebtMessage(username, text)
+    orderID = getOrderIDFromMessageAndGroupID(message_id, chat_id)
+    # print(orderID)
+    # creditorID = getCreditorIDFromMessageAndGroupID(message_id, chat_id)
+    bot = Bot(TOKEN)
+
+    # if textAfterAdd != text:
+        # markTransactionAsUnsettled(creditorID, debtorID, orderID)
+        # bot.editMessageText(
+        #     chat_id=chat_id,
+        #     message_id=message_id,
+        #     text=textAfterAdd,
+        #     reply_markup=splitAllEvenlyKeyboardMarkup()
+        # )
+
+    return None
+    
+
 def groupRegister(update, context):
     query = update.callback_query
     chat_id = query.message.chat_id
@@ -136,14 +194,31 @@ def groupRegister(update, context):
             text="Your group is now registered!",
         )
 
-def splitAllEvenly(update, context):
-    if "Split among everyone" in update.mesage.text:
-        GroupID = update.message.chat_id
-        groupnumber = getNumberOfMembers(GroupID)
-        chat_message=update.message.text
-        value = int(''.join(filter(str.isdigit, chat_message)))
-        total_amount = float(value/100)
-        return total_amount
+def splitAllEvenly(update, context, userID, groupID):
+    order = catchOrderFromUpdate(update,context)
+    transactions = createTransactionBetweenAllUsers(order)
+    userIDList = transactions[0]
+    splitAmount = transactions[1]
+
+    setUserStateInactive(userID, groupID)
+    resetUserTempAmount(userID, groupID)
+        
+    listOfUsernames = getUsernameListFromUserIDList(userIDList)
+    usernameListString = formatListOfUsernames(listOfUsernames)
+    orderName = order[2]
+
+    creditorUsername = '@' + getUsername(userID)
+    text = "Please return %s $%s for %s" % (creditorUsername, splitAmount, orderName)
+    orderMessage = context.bot.send_message(
+        chat_id=update.effective_chat.id,
+            text=text + usernameListString,
+            reply_markup=splitAllEvenlyKeyboardMarkup(),
+    )
+    messageID = orderMessage.message_id
+    orderID = order[0]
+    # print(orderID)
+    # print(orderMessage)
+    addMessageIDToOrder(str(orderID), messageID)
 
 def getTotalAmountFromMessage(update, context):
     chat_message=update.message.text
@@ -182,7 +257,7 @@ def catchOrderFromUpdate(update,context):
     print("order added")
     return (order_id, GroupID, order_name, order_amount, user_id)
 
-def createTransactionbetweenallusers(order):
+def createTransactionBetweenAllUsers(order):
     #get all users involved
     user_id= order[4]
     group_id = order[1]
@@ -196,6 +271,9 @@ def createTransactionbetweenallusers(order):
     for user in users:
         transaction_id= str(uuid1())
         addTransaction((transaction_id, order_id, splitamount,userid_creditor,user))
+
+    return (users, splitamount)
+
 #order123 = ("b62aa85b-cb98-11eb-baef-d0509938caba",-524344128,'thai food',123.45,339096917)
 #createTransactionbetweenallusers(order123)
 
@@ -277,25 +355,13 @@ def groupMemberScanner(update, context):
         addUserToGroup(user_id, group_id)
 
     if userStateSplitAllEvenly(user_id, group_id):
-        print('reached')
-        order = catchOrderFromUpdate(update,context)
-        print('reached2')
-        createTransactionbetweenallusers(order)
-        setUserStateInactive(user_id,group_id)
-        resetUserTempAmount(user_id, group_id)
+        splitAllEvenly(update, context, user_id, group_id)
+        
 
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=
-            "Your order has been created",
-    )
     if viabot_check(update, context):
         messageContainsSplitAllEvenly(update, context)
 
-
-
-
-
+    
 
 def main():
     """Start the bot."""
@@ -319,11 +385,11 @@ def main():
     # log all errors
     dp.add_error_handler(error)
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN,
-                          webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
-    # updater.start_polling()
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=PORT,
+    #                       url_path=TOKEN,
+    #                       webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':

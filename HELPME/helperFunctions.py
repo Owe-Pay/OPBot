@@ -1,10 +1,15 @@
+from email.mime import text
 import logging
 import os
+from tokenize import group
 
+from .bot_sql_integration import *
 from uuid import uuid4
 from telegram.utils.helpers import escape_markdown
 from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
-from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import Chat, Message, Bot, InlineQueryResultArticle, ParseMode, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Update, replymarkup
+
+TOKEN = os.environ['API_TOKEN']
 
 def inlineQueryHelper(update):
     """Helps to provide the display text for the inline query pop-up"""
@@ -57,3 +62,42 @@ def inlineQueryHelper(update):
                 thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962567/icons8-cross-mark-96_zrk1p9.png',
             ),
         ]
+
+def formatListOfUsernames(usernameList):
+    str = ''
+    for username in usernameList:
+        str += '\n@' + username
+    return str
+
+def splitAllEvenlyKeyboardMarkup():
+    keyboard = [
+        [
+            InlineKeyboardButton("I've paid!", callback_data='debtorPaid'),
+            InlineKeyboardButton("I've not paid!", callback_data='debtorUnpaid')
+        ],
+        [
+            InlineKeyboardButton("Mark as settled", callback_data='markAsSettled')
+        ]
+    ]
+    print (keyboard)
+    return InlineKeyboardMarkup(keyboard)
+
+def removeUUIDDashes(uuid):
+    return "".join(str(uuid).split("-"))
+
+def removeUsernameFromDebtMessage(username, text):
+    usernameWithTag = '@' + str(username)
+    text = text
+    if usernameWithTag in text:
+        text = text.replace('\n' + usernameWithTag, '', 1)
+    return text
+
+def addUsernameToDebtMessage(username, text):
+    usernameWithTag = '@' + str(username)
+    text = text
+    print(text)
+    if usernameWithTag not in text:
+        text += '\n' + usernameWithTag
+    return text
+
+# removeUsernameFromSplitAllEvenlyDebtMessage('testuser1', '6a39016c-cd25-11eb-955c-acde48001122')

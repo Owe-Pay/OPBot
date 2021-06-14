@@ -5,6 +5,8 @@ import datetime
 import time
 import os
 
+from telegram import message
+
 db_host = os.environ['DB_HOST']
 db_username = os.environ['DB_USER']
 db_database = os.environ['DB_DB']
@@ -43,10 +45,10 @@ def addUser(input):
     closeConnection(mysqldb, mycursor)
     print('User added successfully!')
 
-#addUser((339096917,"poo_poo_platter",1))
+# addUser((339096917,"poo_poo_platter",1))
 
 
-def display_Users():
+def displayUsers():
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
@@ -152,6 +154,33 @@ def getUserTempAmountSplitAllEvenly(user_id,group_id):
     print(t[2])
     return t[2]
 
+def getUsername(userID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = 'SELECT USERNAME FROM Users WHERE UserID LIKE %s' % userID
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
+
+# print(getUsername(123))
+
+def getUsernameListFromUserIDList(userIDList):
+    holder = []
+    for userID in userIDList:        
+        mysqldb = pymysql.connect(
+            host=db_host, user=db_username, password=db_password, db=db_database)
+        mycursor = mysqldb.cursor()
+        mysql = "SELECT USERNAME FROM Users WHERE UserID LIKE %s" % userID
+        mycursor.execute(mysql)
+        t = mycursor.fetchone()
+        closeConnection(mysqldb, mycursor)
+        holder.append(t[0])
+    return holder
+
+    
+
 ####################################
 # Functions for Transactions Table #
 ####################################
@@ -188,7 +217,7 @@ def addTransaction(input):
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     try:
-        sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debitor) VALUES (%s, %s, %s, %s, %s)"
+        sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debtor) VALUES (%s, %s, %s, %s, %s)"
         val = input
         mycursor.execute(sql,val)
         mysqldb.commit()
@@ -197,6 +226,27 @@ def addTransaction(input):
     except:
         closeConnection(mysqldb, mycursor)
         print("entry already in database")
+
+def markTransactionAsSettled(creditorID, debtorID, orderID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    sql = "UPDATE Transactions SET settled = '1' WHERE UserID_Creditor = '%s' and UserID_Debtor = '%s' and OrderID = '%s'" % (creditorID, debtorID, orderID)
+    mycursor.execute(sql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+
+# markTransactionAsSettled(497722299,339096917,'339c6d02-cd33-11eb-8e86-acde48001122')
+
+def markTransactionAsUnsettled(creditorID, debtorID, orderID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    sql = "UPDATE Transactions SET settled = '0' WHERE UserID_Creditor = '%s' and UserID_Debtor = '%s' and OrderID = '%s'" % (creditorID, debtorID, orderID)
+    mycursor.execute(sql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+
 
 ##############################
 # Functions for Orders Table #
@@ -216,6 +266,56 @@ def addOrder(input):
     # except:
     #     closeConnection(mysqldb, mycursor)
     #     print("entry already in database")
+
+def addMessageIDToOrder(orderID, messageID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE Orders SET MessageID = '%s' WHERE OrderID = '%s'" % (messageID, orderID)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+# addMessageIDToOrder("b4f6a04a-cd13-11eb-a093-acde48001122", str(532))
+
+def getMessageIDFromOrder(orderID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT MessageID FROM Orders WHERE OrderID LIKE '%s'" % orderID
+    mycursor.execute(mysql)
+    closeConnection(mysqldb, mycursor)
+    t = mycursor.fetchone()
+    return t[0]
+
+def getGroupIDFromOrder(orderID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT GroupID FROM Orders WHERE OrderID LIKE '%s'" % orderID
+    mycursor.execute(mysql)
+    closeConnection(mysqldb, mycursor)
+    t = mycursor.fetchone()
+    return t[0]
+
+def getOrderIDFromMessageAndGroupID(messageID, groupID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT OrderID FROM Orders WHERE MessageID LIKE '%s' and GroupID LIKE '%s'" % (messageID, groupID)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    return t[0]
+
+
+def getCreditorIDFromMessageAndGroupID(messageID, groupID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT UserID FROM Orders WHERE MessageID LIKE '%s' and GroupID LIKE '%s'" % (messageID, groupID)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    return t[0]
+
 
 
 ######################################

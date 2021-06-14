@@ -22,7 +22,7 @@ CREATE TABLE `Transactions` (
     `date` DATETIME DEFAULT NULL,
     `AmountOwed` DOUBLE NOT NULL DEFAULT '0',
     `UserID_Creditor` varchar(45) NOT NULL,
-    `UserID_Debitor` varchar(45) NOT NULL,
+    `UserID_Debtor` varchar(45) NOT NULL,
     `settled` BOOLEAN NOT NULL DEFAULT 0,
     
     PRIMARY KEY (`transaction_id`)
@@ -34,6 +34,7 @@ CREATE TABLE `Orders` (
   `GroupID` varchar(45) NOT NULL,
   `Order_name` varchar(45) NOT NULL,
   `Order_amount` double NOT NULL DEFAULT '0',
+  `MessageID` varchar(45),
   PRIMARY KEY (`OrderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
