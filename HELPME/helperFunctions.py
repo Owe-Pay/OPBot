@@ -79,7 +79,6 @@ def splitAllEvenlyKeyboardMarkup():
             InlineKeyboardButton("Mark as settled", callback_data='markAsSettled')
         ]
     ]
-    print (keyboard)
     return InlineKeyboardMarkup(keyboard)
 
 def removeUUIDDashes(uuid):
@@ -95,7 +94,6 @@ def removeUsernameFromDebtMessage(username, text):
 def addUsernameToDebtMessage(username, text):
     usernameWithTag = '@' + str(username)
     text = text
-    print(text)
     if usernameWithTag not in text:
         text += '\n' + usernameWithTag
     return text

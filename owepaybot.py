@@ -101,6 +101,7 @@ def button(update, context):
     """Handles the button presses for Inline Keyboard Callbacks"""
     query = update.callback_query
     choice = query.data
+    query.answer()
 
     if choice == 'groupRegister':
         groupRegister(update, context)
@@ -158,7 +159,6 @@ def debtorUnpaid(update, context):
     text = query.message.text
     textAfterAdd = addUsernameToDebtMessage(username, text)
     orderID = getOrderIDFromMessageAndGroupID(message_id, chat_id)
-    print(orderID)
     creditorID = getCreditorIDFromMessageAndGroupID(message_id, chat_id)
     bot = Bot(TOKEN)
 
