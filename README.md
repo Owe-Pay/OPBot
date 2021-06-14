@@ -32,13 +32,45 @@ Going further, We aim to have a fully fledged app that is able to scan menu entr
 * As a person who eats out with friends, I want a system that tracks the food items bought without the need for manually inputting the data, which reduces inconvenience for me.
 
 * As an existing user of Telegram, I would like the debt calculation to be done on Telegram so that it will integrate with my group chats. 
+
 # Development Plan
 
 We have decided to start by implementing our Telegram Bot and our MySQL database to store user information for us to manage and use for our Telegram Bot.
 
+## Requirement Management
+
+With regards to how we will address the requirements to satisfy our User needs, we have split them into two categories: Functional and Non-Functional Requirements
+
+### Functional Requirements
+
+Functional Requirements refer to requirements for our project to work, without which it would be unable to provide it's core functionality.
+
+* User Registration
+* Group Registration
+* Order Creation with Unique Identification (UID)
+* Transaction Creation with UID
+* User Notification System
+* Historical Data of past Transactions and Orders
+* Help function to provide Users with assistance
+
+
+### Non-Functional Requirements
+
+* Fast response time of bot when issued with commands/messages
+* Integrity of User Data stored
+* Security of Telegram Bot (API Token)
+* 24/7 Availability of Bot
+* Mild impact on the Group Chat the Bot is in (Low spam)
+
+
+
+## Timeline
+
 You will find our proposed timeline below:
 
 ![Timeline](https://res.cloudinary.com/jianoway/image/upload/v1622808447/photo_2021-06-04_20-05-45_dwnjql.jpg)
+
+## Planned Implementation
 
 **Telegram Bot (@OwePay_bot)**
 
@@ -87,7 +119,7 @@ You will find our proposed timeline below:
   1. Replies users with a list of commands that can be used with the bot.
   1. Provides instructions to users on how to split bills.
 
-#MySQL Setup
+## MySQL Setup
    
 ![SQL Flow](https://res.cloudinary.com/jianoway/image/upload/v1622380661/Screenshot_2021-05-30_at_9.17.34_PM_nccz5l.png)
 This is a ER diagram displaying how our data will be stored.
@@ -96,5 +128,6 @@ Each order can consist of multiple transactions.
 Each group will consist of the total orders in the group. The group will be the telegram groupid
 
 Our backend will be connected to the frontend using python
+
 
 
