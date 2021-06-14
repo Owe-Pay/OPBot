@@ -152,24 +152,24 @@ def debtorPaid(update, context):
 def debtorUnpaid(update, context):
     query = update.callback_query
     chat_id = query.message.chat_id
-    message_id = query.message.chat_id
+    message_id = query.message.message_id
     username = query.from_user.username
     debtorID = query.from_user.id
     text = query.message.text
     textAfterAdd = addUsernameToDebtMessage(username, text)
     orderID = getOrderIDFromMessageAndGroupID(message_id, chat_id)
-    # print(orderID)
-    # creditorID = getCreditorIDFromMessageAndGroupID(message_id, chat_id)
+    print(orderID)
+    creditorID = getCreditorIDFromMessageAndGroupID(message_id, chat_id)
     bot = Bot(TOKEN)
 
-    # if textAfterAdd != text:
-        # markTransactionAsUnsettled(creditorID, debtorID, orderID)
-        # bot.editMessageText(
-        #     chat_id=chat_id,
-        #     message_id=message_id,
-        #     text=textAfterAdd,
-        #     reply_markup=splitAllEvenlyKeyboardMarkup()
-        # )
+    if textAfterAdd != text:
+        markTransactionAsUnsettled(creditorID, debtorID, orderID)
+        bot.editMessageText(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=textAfterAdd,
+            reply_markup=splitAllEvenlyKeyboardMarkup()
+        )
 
     return None
     
