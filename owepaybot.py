@@ -1,14 +1,12 @@
+from Users.jianwei.development.personal_git_repo.OP.OPBot.HELPME.helperFunctions import UsersAndSplitAmount
 import logging
 import os
-
-
 import sys
-import pytest
 
-from .. import HELPME
-from ..HELPME.helperFunctions import *
-from ..HELPME.bot_sql_integration import *
-from uuid import uuid4
+from HELPME.bot_sql_integration import *
+from HELPME.helperFunctions import *
+
+from uuid import uuid4, uuid1
 from telegram.utils.helpers import escape_markdown
 from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
 from telegram import Bot, InlineQueryResultArticle, ParseMode, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Update, message, replymarkup
@@ -19,7 +17,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 TOKEN = os.environ["API_TOKEN"]
 PORT = int(os.environ.get('PORT', '8443'))
-
 
 def startGroup(update, context):
     """Send the welcome message when the command /start is issued in a group."""
@@ -65,7 +62,6 @@ def startPrivate(update, context):
             InlineKeyboardButton("Don't Register", callback_data='userDontRegister')
         ],
     ]
-
     # Sets up the InlineKeyboardMarkup as the reply_markup to be used in the message.
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -128,6 +124,42 @@ def button(update, context):
         debtorUnpaid(update, context)
         return query
 
+    if choice == 'splitSomeEvenlyFinalise':
+        splitSomeEvenly(update, context)
+        return query
+
+    if userAlreadyAdded(choice): #split some
+        editMessageForSplitSome(update, context)
+        return query
+
+    
+
+def editMessageForSplitSome(update, context):
+    query = update.callback_query
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+    userID = query.from_user.id
+    text = query.message.text
+
+    if not (userIsCreditorForMessage(message_id, chat_id, userID)):
+        return
+        
+    debtorID = query.data
+    debtorUsername = getUsername(debtorID)
+
+    if debtorUsername in text:
+        text = removeUsernameFromDebtMessage(debtorUsername, text)
+    else:
+        text = addUsernameToDebtMessage(debtorUsername, text)
+    
+    context.bot.editMessageText(
+        chat_id=chat_id,
+        message_id=message_id,
+        text=text,
+        reply_markup=splitSomeEvenlyKeyboardMarkup(chat_id),
+    )
+
+    
 def debtorPaid(update, context):
     query = update.callback_query
     chat_id = query.message.chat_id
@@ -197,30 +229,75 @@ def groupRegister(update, context):
 
 def splitAllEvenly(update, context, userID, groupID):
     order = catchOrderFromUpdate(update)
-    transactions = createTransactionBetweenAllUsers(order)
-    userIDList = transactions[0]
-    splitAmount = transactions[1]
+    usersAndSplit = createTransactionBetweenAllUsers(order)
+    userIDList = usersAndSplit.users
+    splitAmount =  usersAndSplit.splitAmount
 
     setUserStateInactive(userID, groupID)
     resetUserTempAmount(userID, groupID)
         
     listOfUsernames = getUsernameListFromUserIDList(userIDList)
     usernameListString = formatListOfUsernames(listOfUsernames)
-    orderName = order[2]
+    orderName = order.orderName
 
     creditorUsername = '@' + getUsername(userID)
-    text = "Please return %s $%s for %s" % (creditorUsername, splitAmount, orderName)
+    text = "Please return %s $%s each for %s" % (creditorUsername, splitAmount, orderName)
     orderMessage = context.bot.send_message(
         chat_id=update.effective_chat.id,
             text=text + usernameListString,
             reply_markup=splitAllEvenlyKeyboardMarkup(),
     )
     messageID = orderMessage.message_id
-    orderID = order[0]
+    orderID = order.orderID
     # print(orderID)
     # print(orderMessage)
     addMessageIDToOrder(str(orderID), messageID)
 
+def splitSomeEvenly(update, context):
+    query = update.callback_query
+    groupID = query.message.chat_id
+    message_id = query.message.message_id
+    userID = query.from_user.id
+    text = query.message.text
+
+    if not (userIsCreditorForMessage(message_id, groupID, userID)):
+        return
+
+    totalAmount = getUserTempAmount(userID, groupID)
+    listOfUsers = tuple(text.replace("People who have your cash money:\n", "", 1).replace("\n",",",text.count("\n")).split(','))
+    numberOfUsers = len(listOfUsers)
+
+    if numberOfUsers == 0:
+        return
+    
+    splitAmount = totalAmount / numberOfUsers
+    orderID = getOrderIDFromUserIDAndGroupID(userID, groupID)
+    orderName = getOrderNameFromOrderID(orderID)
+    creditorUsername = getUsername(userID)
+    
+    setUserStateInactive(userID, groupID)
+    resetUserTempAmount(userID, groupID)
+    resetUserTempOrderID(userID, groupID)
+
+    listOfUserID = getUserIDListFromUsernameList(listOfUsers)
+    messageText = "Please return @%s $%s each for %s" % (creditorUsername, splitAmount, orderName)
+    for username in listOfUsers:
+        messageText = messageText + '\n' + username
+
+    if "\n@" + creditorUsername in messageText:
+        messageText =  messageText.replace("\n@" + creditorUsername, "", 1)
+
+    orderMessage = context.bot.editMessageText(
+        chat_id=update.effective_chat.id,
+        message_id=message_id,
+        text=messageText,
+        reply_markup=splitAllEvenlyKeyboardMarkup(),
+    )
+    order = Order(orderID, groupID, orderName, splitAmount, userID)
+    messageID = orderMessage.message_id
+    addMessageIDToOrder(str(orderID), messageID)
+    createTransactionBetweenSomeUsers(order, listOfUserID)
+    
 def getTotalAmountFromMessage(update, context):
     chat_message=update.message.text
     value = int(''.join(filter(str.isdigit, chat_message)))
@@ -244,7 +321,7 @@ def messageContainsSplitAllEvenly(update, context):
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=
-            "Hi Please input the name of the order!",
+            "Hi Please send the name of the order!",
     )
 
 def messageContainsSplitSomeEvenly(update, context):
@@ -258,36 +335,74 @@ def messageContainsSplitSomeEvenly(update, context):
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=
-            "Hi Please input the name of the order!",
+            "Hi Please send the name of the order!",
     )
 
 def catchOrderFromUpdate(update):
     print("caught request")
     order_id = str(uuid1())
     user_id = update.message.from_user.id
-    GroupID = update.message.chat_id
+    group_id = update.message.chat_id
     order_name = update.message.text
-    order_amount= getUserTempAmountSplitAllEvenly(user_id,GroupID)
-    addOrder((order_id, GroupID, order_name, order_amount, user_id))
+    order_amount= getUserTempAmount(user_id,group_id)
+    addOrder((order_id, group_id, order_name, order_amount, user_id))
     print("order added")
-    return (order_id, GroupID, order_name, order_amount, user_id)
+    return Order(order_id, group_id, order_name, order_amount, user_id)
+
+
+def waitingForSomeNames(update, context, user_id, group_id):
+    order = catchOrderFromUpdate(update)
+    orderID = order.orderID
+
+    updateUserStateWaitingForSomeNames(user_id, group_id)
+    updateOrderIDToUserGroupRelational(user_id, group_id, orderID)
+    # context.bot.send_message(
+    #     chat_id=update.effective_chat.id,
+    #     text=
+    #         'Please send the name of the people in the following format:\n\n@user1\n@user2\netc'
+    message = context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text='People who have your cash money:',
+        reply_markup=splitSomeEvenlyKeyboardMarkup(update.effective_chat.id)
+    )
+    messageID = message.message_id
+    addMessageIDToOrder(orderID, messageID)
+        
 
 def createTransactionBetweenAllUsers(order):
     #get all users involved
-    user_id= order[4]
-    group_id = order[1]
-    users = getAllUsersExceptCreditor(user_id, group_id)
-    order_id = order[0]
-    order_amount = order[3]
-    total_users = getNumberOfUsersExceptCreditor(user_id, group_id) + 1
-    splitamount = order_amount / total_users
-    userid_creditor=order[4]
+    creditorID= order.creditorID
+    groupID = order.groupID
+    users = getAllUsersExceptCreditor(creditorID, groupID)
+    orderID = order.orderID
+    order_amount = order.orderAmount
+    total_users = getNumberOfUsersExceptCreditor(creditorID, groupID) + 1
+    splitAmount = order_amount / total_users
 
-    for user in users:
+    for userID in users:
         transaction_id= str(uuid1())
-        addTransaction((transaction_id, order_id, splitamount,userid_creditor,user))
+        transaction = Transaction(transaction_id, orderID, splitAmount, creditorID, userID)
+        addTransaction(transaction)
 
-    return (users, splitamount)
+    return UsersAndSplitAmount(users, splitAmount)
+
+def createTransactionBetweenSomeUsers(order, userIDList):
+    creditorID = order.creditorID
+    orderID = order.orderID
+    users = userIDList
+    splitAmount = order.orderAmount
+
+    for userID in users:
+        if str(userID) == str(creditorID):
+            None
+        else:
+            transaction_id = str(uuid1())
+            transaction = Transaction(transaction_id, orderID, splitAmount, creditorID, userID)
+            addTransaction(transaction)
+
+    return UsersAndSplitAmount(users, splitAmount)
+
+
 
 #order123 = ("b62aa85b-cb98-11eb-baef-d0509938caba",-524344128,'thai food',123.45,339096917)
 #createTransactionbetweenallusers(order123)
@@ -308,7 +423,8 @@ def userRegister(update, context):
     chat_id = query.message.chat_id
     username = query.message.chat.username
     message_id = query.message.message_id
-    user = (chat_id, username, 1)
+    firstname = query.message.chat.first_name
+    user = (chat_id, username, 1, firstname)
     if (userAlreadyAdded(chat_id)):
         if not(isNotifiable(chat_id)):
             makeNotifiable(chat_id)
@@ -357,12 +473,13 @@ def groupMemberScanner(update, context):
     group_id = update.message.chat_id
     user_id = update.message.from_user.id
     username = update.message.from_user.username
+    firstname = update.message.from_user.first_name
 
     if not(groupAlreadyAdded(group_id)):
         return
 
     if not(userAlreadyAdded(user_id)):
-        user = (user_id, username, 0)
+        user = (user_id, username, 0, firstname)
         addUser(user)
 
     if not(userInGroup(user_id, group_id)):
@@ -373,12 +490,11 @@ def groupMemberScanner(update, context):
         splitAllEvenly(update, context, user_id, group_id)
         
     if userStateSplitSomeEvenly(user_id, group_id):
-        order = catchOrderFromUpdate(update)
+        waitingForSomeNames(update, context, user_id, group_id)
 
     if viabot_check(update, context):
         messageContainsSplitAllEvenly(update, context)
-
-    
+        messageContainsSplitSomeEvenly(update, context)
 
 def main():
     """Start the bot."""
@@ -396,8 +512,6 @@ def main():
     dp.add_handler(InlineQueryHandler(inline))
     #dp.add_handler(MessageHandler(Filters.chat_type.groups, echo))
     dp.add_handler(MessageHandler(Filters.chat_type.groups, groupMemberScanner))
-
-
 
     # log all errors
     dp.add_error_handler(error)

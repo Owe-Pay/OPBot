@@ -3,7 +3,7 @@ import logging
 import os
 from tokenize import group
 
-# from .bot_sql_integration import *
+from .bot_sql_integration import *
 from uuid import uuid4
 from telegram.utils.helpers import escape_markdown
 from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
@@ -75,11 +75,27 @@ def splitAllEvenlyKeyboardMarkup():
             InlineKeyboardButton("I've paid!", callback_data='debtorPaid'),
             InlineKeyboardButton("I've not paid!", callback_data='debtorUnpaid')
         ],
-        [
-            InlineKeyboardButton("Mark as settled", callback_data='markAsSettled')
-        ]
+        # [
+        #     InlineKeyboardButton("Mark as settled", callback_data='markAsSettled')
+        # ]
     ]
     return InlineKeyboardMarkup(keyboard)
+
+def splitSomeEvenlyKeyboardMarkup(groupID):
+    keyboardHolder = []
+    users = getAllUsersFromGroup(groupID)
+
+    for user in users:
+        firstname = getFirstName(user)
+        username = getUsername(user)
+        firstNameWithUsername = firstname + " (@" + username + ")"
+        keyboardHolder.append([InlineKeyboardButton(firstNameWithUsername, callback_data='%s' % user)])
+
+    buttonToFinalise = InlineKeyboardButton("Create Order", callback_data='splitSomeEvenlyFinalise')
+    keyboardHolder.append([buttonToFinalise])
+
+    return InlineKeyboardMarkup(keyboardHolder)
+        
 
 def removeUUIDDashes(uuid):
     return "".join(str(uuid).split("-"))
@@ -98,6 +114,7 @@ def addUsernameToDebtMessage(username, text):
         text += '\n' + usernameWithTag
     return text
 
+
 # removeUsernameFromSplitAllEvenlyDebtMessage('testuser1', '6a39016c-cd25-11eb-955c-acde48001122')
 class Order:
     def __init__(self, orderID, groupID, orderName, orderAmount, creditorID):
@@ -111,3 +128,11 @@ class UsersAndSplitAmount:
     def __init__(self, users, splitAmount):
         self.users = users
         self.splitAmount = splitAmount
+        
+class Transaction:
+    def __init__(self, transaction_id, orderID, splitAmount, creditorID, userID):
+        self.transaction_id = transaction_id
+        self.orderID = orderID,
+        self.splitAmount = splitAmount
+        self.creditorID = creditorID
+        self.userID = userID

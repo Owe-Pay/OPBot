@@ -1,1 +1,1 @@
-web: python3 src/owepaybot.py
+web: python3 owepaybot.py

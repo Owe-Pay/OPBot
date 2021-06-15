@@ -5,6 +5,7 @@
 CREATE TABLE `Users` (
   `UserID` varchar(45) NOT NULL ,
   `UserName` varchar(45) NOT NULL,
+  `FirstName` varchar(45) NOT NULL,
   `notifiable` BOOLEAN ,
   `date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`UserID`)

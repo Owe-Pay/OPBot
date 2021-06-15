@@ -1,3 +1,4 @@
+from tokenize import group
 import pymysql
 from tabulate import tabulate
 from uuid import uuid1
@@ -39,7 +40,7 @@ def addUser(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    sql = "INSERT into Users (UserID, UserName, notifiable) VALUES (%s, %s, %s)"
+    sql = "INSERT into Users (UserID, UserName, notifiable, FirstName) VALUES (%s, %s, %s, %s)"
     mycursor.execute(sql, input)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
@@ -123,12 +124,31 @@ def userStateSplitAllEvenly(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    #state ='active'
     mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitallevenly' " % (user_id, group_id)
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
     return (t!=None)
+
+def userStateSplitSomeEvenly(user_id,group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitsomeevenly' " % (user_id, group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return (t!=None)
+
+def updateUserStateWaitingForSomeNames(user_id, group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE usergrouprelational SET State = 'waitingforsomenames' WHERE UserID = %s and GroupID = %s" % (user_id, group_id)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+    print("set back into inactive")
 
 def setUserStateInactive(user_id, group_id):
     mysqldb = pymysql.connect(
@@ -136,7 +156,6 @@ def setUserStateInactive(user_id, group_id):
     mycursor = mysqldb.cursor()
     mysql = "UPDATE usergrouprelational SET State = 'inactive' WHERE UserID = %s and GroupID = %s" % (user_id, group_id)
     mycursor.execute(mysql)
-    # t = mycursor.fetchone()
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print("set back into inactive")
@@ -152,11 +171,22 @@ def resetUserTempAmount(user_id,group_id):
     closeConnection(mysqldb, mycursor)
     print("reset temp amount to 0")
 
-def getUserTempAmountSplitAllEvenly(user_id,group_id):
+def resetUserTempOrderID(user_id, group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitallevenly' " % (user_id, group_id)
+    mysql = "UPDATE UserGroupRelational SET Temp_OrderID = NULL WHERE UserID LIKE %s and GroupID LIKE %s" % (user_id, group_id)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    # t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    print("reset temp amount to 0")
+
+def getUserTempAmount(user_id,group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s" % (user_id, group_id)
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
@@ -168,6 +198,16 @@ def getUsername(userID):
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     mysql = 'SELECT USERNAME FROM Users WHERE UserID LIKE %s' % userID
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
+
+def getFirstName(userID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = 'SELECT FirstName FROM Users WHERE UserID LIKE %s' % userID
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
@@ -188,6 +228,23 @@ def getUsernameListFromUserIDList(userIDList):
         holder.append(t[0])
     return holder
 
+def getUserIDListFromUsernameList(usernameList):
+    holder = []
+    for username in usernameList:    
+        tempUsername = username
+        if "@" in username:
+            tempUsername = tempUsername.replace("@", "", 1)
+        print(tempUsername)
+        mysqldb = pymysql.connect(
+            host=db_host, user=db_username, password=db_password, db=db_database)
+        mycursor = mysqldb.cursor()
+        mysql = "SELECT UserID FROM Users WHERE UserName LIKE '%s'" % tempUsername
+        mycursor.execute(mysql)
+        t = mycursor.fetchone()
+        closeConnection(mysqldb, mycursor)
+        holder.append(t[0])
+    return holder
+
 def updateOrderIDToUserGroupRelational(userID, groupID, orderID):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
@@ -196,6 +253,20 @@ def updateOrderIDToUserGroupRelational(userID, groupID, orderID):
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
+
+def getOrderIDFromUserIDAndGroupID(userID, groupID):
+    mysqldb = pymysql.connect(
+    host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT Temp_OrderID FROM UserGroupRelational WHERE UserID LIKE '%s' and GroupID LIKE '%s'" % (userID, groupID)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    if t == None:
+        return None
+    else:
+        return t[0]
+
 
 
     
@@ -215,10 +286,22 @@ def getAllUsersExceptCreditor(user_id, group_id):
     holder=[]
     for user in t:
         holder.append(user[0])
-    print(holder)
     return holder
     #returns a list
 # getAllUsersExceptCreditor(339096917,-524344128)
+
+def getAllUsersFromGroup(group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT USERID FROM UserGroupRelational WHERE GroupID LIKE %s " % (group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchall()
+    closeConnection(mysqldb, mycursor)
+    holder=[]
+    for user in t:
+        holder.append(user[0])
+    return holder
 
 def getNumberOfUsersExceptCreditor(user_id, group_id):
     mysqldb = pymysql.connect(
@@ -228,7 +311,6 @@ def getNumberOfUsersExceptCreditor(user_id, group_id):
     mycursor.execute(mysql)
     t = mycursor.fetchall()
     closeConnection(mysqldb, mycursor)
-    print(len(t))
     return len(t)
 
 def addTransaction(input):
@@ -237,7 +319,7 @@ def addTransaction(input):
     mycursor = mysqldb.cursor()
     try:
         sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debtor) VALUES (%s, %s, %s, %s, %s)"
-        val = input
+        val = (input.transactionID, input.orderID, input.splitAmount, input.creditorID, input.userID)
         mycursor.execute(sql,val)
         mysqldb.commit()
         closeConnection(mysqldb, mycursor)
@@ -316,12 +398,23 @@ def getGroupIDFromOrder(orderID):
     t = mycursor.fetchone()
     return t[0]
 
+def getOrderNameFromOrderID(orderID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT Order_name FROM Orders WHERE OrderID LIKE '%s'" % orderID
+    mycursor.execute(mysql)
+    closeConnection(mysqldb, mycursor)
+    t = mycursor.fetchone()
+    return t[0]
+
 def getOrderIDFromMessageAndGroupID(messageID, groupID):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     mysql = "SELECT OrderID FROM Orders WHERE MessageID LIKE '%s' and GroupID LIKE '%s'" % (messageID, groupID)
     mycursor.execute(mysql)
+    closeConnection(mysqldb, mycursor)
     t = mycursor.fetchone()
     return t[0]
 
@@ -411,3 +504,11 @@ def getNumberOfMembers(groupId):
     print("retrieved group number!")
     return t[0]
 #retrieveNumber(-583617452)
+
+def userIsCreditorForMessage(messageID, groupID, userID):
+    orderIDFromOrders = getOrderIDFromMessageAndGroupID(messageID, groupID)
+    orderIDFromGroupRelationalTable = getOrderIDFromUserIDAndGroupID(userID, groupID)
+    return orderIDFromGroupRelationalTable == orderIDFromOrders
+
+
+
