@@ -1,4 +1,3 @@
-from Users.jianwei.development.personal_git_repo.OP.OPBot.HELPME.helperFunctions import UsersAndSplitAmount
 import logging
 import os
 import sys
