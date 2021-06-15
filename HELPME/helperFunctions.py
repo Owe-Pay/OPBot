@@ -3,7 +3,7 @@ import logging
 import os
 from tokenize import group
 
-from .bot_sql_integration import *
+# from .bot_sql_integration import *
 from uuid import uuid4
 from telegram.utils.helpers import escape_markdown
 from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
@@ -99,3 +99,15 @@ def addUsernameToDebtMessage(username, text):
     return text
 
 # removeUsernameFromSplitAllEvenlyDebtMessage('testuser1', '6a39016c-cd25-11eb-955c-acde48001122')
+class Order:
+    def __init__(self, orderID, groupID, orderName, orderAmount, creditorID):
+        self.orderID = orderID
+        self.groupID = groupID
+        self.orderName = orderName
+        self.orderAmount = orderAmount
+        self.creditorID = creditorID
+
+class UsersAndSplitAmount:
+    def __init__(self, users, splitAmount):
+        self.users = users
+        self.splitAmount = splitAmount

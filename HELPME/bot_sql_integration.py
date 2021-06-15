@@ -94,10 +94,19 @@ def updateUserStateSplitAllEvenly(userId, groupId):
     mycursor = mysqldb.cursor()
     mysql = "UPDATE UserGroupRelational SET State = 'splitallevenly' WHERE UserID LIKE %s and GroupID LIKE %s" % (userId, groupId)
     mycursor.execute(mysql)
-    print('test')
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print("User is now in splitall state temporarily!")
+
+def updateUserStateSplitSomeEvenly(userId, groupId):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE UserGroupRelational SET State = 'splitsomeevenly' WHERE UserID LIKE %s and GroupID LIKE %s" % (userId, groupId)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+    print("User is now in splitsome state temporarily!")
 
 def updateUserTempAmount(user_id, group_id, amount):
     mysqldb = pymysql.connect(
@@ -178,6 +187,16 @@ def getUsernameListFromUserIDList(userIDList):
         closeConnection(mysqldb, mycursor)
         holder.append(t[0])
     return holder
+
+def updateOrderIDToUserGroupRelational(userID, groupID, orderID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE UserGroupRelational SET Temp_OrderID = '%s' WHERE UserID LIKE '%s' and GroupID LIKE '%s'" % (orderID, userID, groupID)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+
 
     
 

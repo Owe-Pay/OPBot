@@ -3,8 +3,8 @@ import os
 
 from flaky import flaky
 from telegram import CallbackQuery, User, Message, Chat, Update, user
-from ..owepaybot import button, groupDontRegister
-from ..bot_sql_integration import *
+from ..src.owepaybot import button, groupDontRegister
+from ..HELPME.bot_sql_integration import *
 
 @pytest.fixture(scope='function', params=['message', 'inline'])
 def user_register_callback_query(bot):

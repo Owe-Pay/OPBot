@@ -5,8 +5,9 @@ import os
 import sys
 import pytest
 
-from HELPME.helperFunctions import *
-from HELPME.bot_sql_integration import *
+from .. import HELPME
+from ..HELPME.helperFunctions import *
+from ..HELPME.bot_sql_integration import *
 from uuid import uuid4
 from telegram.utils.helpers import escape_markdown
 from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
@@ -195,7 +196,7 @@ def groupRegister(update, context):
         )
 
 def splitAllEvenly(update, context, userID, groupID):
-    order = catchOrderFromUpdate(update,context)
+    order = catchOrderFromUpdate(update)
     transactions = createTransactionBetweenAllUsers(order)
     userIDList = transactions[0]
     splitAmount = transactions[1]
@@ -246,7 +247,21 @@ def messageContainsSplitAllEvenly(update, context):
             "Hi Please input the name of the order!",
     )
 
-def catchOrderFromUpdate(update,context):
+def messageContainsSplitSomeEvenly(update, context):
+    if "Split among some only" in update.message.text:
+        total_amount = getTotalAmountFromMessage(update,context)
+        user_id = update.message.from_user.id
+        GroupID = update.message.chat_id
+        updateUserStateSplitSomeEvenly(user_id, GroupID)
+        updateUserTempAmount(user_id,GroupID, total_amount)
+        print("updated temp amount and state")
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=
+            "Hi Please input the name of the order!",
+    )
+
+def catchOrderFromUpdate(update):
     print("caught request")
     order_id = str(uuid1())
     user_id = update.message.from_user.id
@@ -357,6 +372,8 @@ def groupMemberScanner(update, context):
     if userStateSplitAllEvenly(user_id, group_id):
         splitAllEvenly(update, context, user_id, group_id)
         
+    if userStateSplitSomeEvenly(user_id, group_id):
+        order = catchOrderFromUpdate(update)
 
     if viabot_check(update, context):
         messageContainsSplitAllEvenly(update, context)

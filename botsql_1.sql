@@ -32,7 +32,7 @@ CREATE TABLE `Orders` (
   `OrderID` varchar(45) NOT NULL,
   `UserID` varchar(45) NOT NULL,
   `GroupID` varchar(45) NOT NULL,
-  `Order_name` varchar(45) NOT NULL,
+  `Order_name` varchar(150) NOT NULL,
   `Order_amount` double NOT NULL DEFAULT '0',
   `MessageID` varchar(45),
   PRIMARY KEY (`OrderID`)
@@ -61,9 +61,10 @@ CREATE TABLE `Payment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `UserGroupRelational` (
-	`UserID` varchar(45) NOT NULL,
+	  `UserID` varchar(45) NOT NULL,
     `GroupID` varchar(45) NOT NULL,
     `Temp_Amount` double NOT NULL DEFAULT '0',
-	`State` varchar(45) NOT NULL DEFAULT 'inactive',
+	  `State` varchar(45) NOT NULL DEFAULT 'inactive',
+    `Temp_OrderID` varchar(45),
     PRIMARY KEY (`UserID`, `GroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
