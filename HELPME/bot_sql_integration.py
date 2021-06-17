@@ -1,4 +1,5 @@
 from tokenize import group
+from datetime import datetime, timedelta
 import pymysql
 from tabulate import tabulate
 from uuid import uuid1
@@ -242,7 +243,8 @@ def getUserIDListFromUsernameList(usernameList):
         mycursor.execute(mysql)
         t = mycursor.fetchone()
         closeConnection(mysqldb, mycursor)
-        holder.append(t[0])
+        if t!=None:
+            holder.append(t[0])
     return holder
 
 def updateOrderIDToUserGroupRelational(userID, groupID, orderID):
@@ -318,8 +320,8 @@ def addTransaction(input):
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     try:
-        sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debtor) VALUES (%s, %s, %s, %s, %s)"
-        val = (input[0], input[1], input[2], input[3], input[4])
+        sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debtor, date) VALUES (%s, %s, %s, %s, %s, %s)"
+        val = (input[0], input[1], input[2], input[3], input[4], input[5])
         mycursor.execute(sql,val)
         mysqldb.commit()
         closeConnection(mysqldb, mycursor)
@@ -337,11 +339,8 @@ def markTransactionAsSettled(creditorID, debtorID, orderID):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
 
-# def getUnsettledTransactionsForCreditor(creditorID):
-#     mysqldb = pymysql.connect(
-#         host=db_host, user=db_username, password=db_password, db=db_database)
-#     mycursor = mysqldb.cursor()
-#     mysql = "SELECT "
+
+
 
 # markTransactionAsSettled(497722299,339096917,'339c6d02-cd33-11eb-8e86-acde48001122')
 
@@ -363,7 +362,7 @@ def addOrder(input):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    sql = "INSERT into Orders(OrderID, GroupID, order_name, order_amount, UserID) VALUES (%s, %s, %s, %s, %s)"
+    sql = "INSERT into Orders(OrderID, GroupID, order_name, order_amount, UserID, date) VALUES (%s, %s, %s, %s, %s, %s)"
     val = input
     mycursor.execute(sql,val)
     mysqldb.commit()
@@ -516,5 +515,29 @@ def userIsCreditorForMessage(messageID, groupID, userID):
     orderIDFromGroupRelationalTable = getOrderIDFromUserIDAndGroupID(userID, groupID)
     return orderIDFromGroupRelationalTable == orderIDFromOrders
 
+def takeSecond(element):
+    return element[1]
 
+def getUnsettledTransactionsForCreditor(creditorID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM transactions WHERE UserID_Creditor LIKE '%s' and settled = '0'" % creditorID
+    mycursor.execute(mysql)
+    t = mycursor.fetchall()
+    closeConnection(mysqldb, mycursor)
+    holder=[]
+    for transaction in t:
+        transactionID = transaction[0]
+        orderID = transaction[1]
+        amountowed = transaction[3]
+        debtorID = transaction[5]
 
+        orderName = getOrderNameFromOrderID(orderID)
+        debtorUsername = getUsername(debtorID)
+        holder.append((transactionID, orderID, debtorID, amountowed))
+
+    holder.sort(key=takeSecond)
+    return holder
+
+# print(getUnsettledTransactionsForCreditor(497722299))

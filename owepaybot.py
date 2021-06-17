@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timedelta
 import os
 import sys
 
@@ -82,6 +83,11 @@ def getDebtors(update, context):
             text=
             "Please register with us first by using /start!"
         )
+    
+    unsettledTransactions = getUnsettledTransactionsForCreditor(userID)
+
+    
+    # user already added
     
 
 
@@ -272,6 +278,7 @@ def splitSomeEvenly(update, context):
     message_id = query.message.message_id
     userID = query.from_user.id
     text = query.message.text
+    date = query.message.date + timedelta(hours=8)
 
     if not (userIsCreditorForMessage(message_id, groupID, userID)):
         return
@@ -288,11 +295,17 @@ def splitSomeEvenly(update, context):
     orderName = getOrderNameFromOrderID(orderID)
     creditorUsername = getUsername(userID)
     
+    listOfUserID = getUserIDListFromUsernameList(listOfUsers)
+
+    if len(listOfUserID) < 1:
+        return
+    
     setUserStateInactive(userID, groupID)
     resetUserTempAmount(userID, groupID)
     resetUserTempOrderID(userID, groupID)
 
-    listOfUserID = getUserIDListFromUsernameList(listOfUsers)
+    
+
     messageText = "Please return @%s $%s each for %s" % (creditorUsername, splitAmount, orderName)
     for username in listOfUsers:
         messageText = messageText + '\n' + username
@@ -306,7 +319,7 @@ def splitSomeEvenly(update, context):
         text=messageText,
         reply_markup=splitAllEvenlyKeyboardMarkup(),
     )
-    order = Order(orderID, groupID, orderName, splitAmount, userID)
+    order = Order(orderID, groupID, orderName, splitAmount, userID, date)
     messageID = orderMessage.message_id
     addMessageIDToOrder(str(orderID), messageID)
     createTransactionBetweenSomeUsers(order, listOfUserID)
@@ -358,9 +371,10 @@ def catchOrderFromUpdate(update):
     group_id = update.message.chat_id
     order_name = update.message.text
     order_amount= getUserTempAmount(user_id,group_id)
-    addOrder((order_id, group_id, order_name, order_amount, user_id))
+    date = update.message.date + timedelta(hours=8)
+    addOrder((order_id, group_id, order_name, order_amount, user_id, date))
     print("order added")
-    return Order(order_id, group_id, order_name, order_amount, user_id)
+    return Order(order_id, group_id, order_name, order_amount, user_id, date)
 
 
 def waitingForSomeNames(update, context, user_id, group_id):
@@ -388,13 +402,14 @@ def createTransactionBetweenAllUsers(order):
     groupID = order.groupID
     users = getAllUsersExceptCreditor(creditorID, groupID)
     orderID = order.orderID
+    date = order.date
     order_amount = order.orderAmount
     total_users = getNumberOfUsersExceptCreditor(creditorID, groupID) + 1
     splitAmount = order_amount / total_users
 
     for userID in users:
         transaction_id= str(uuid1())
-        addTransaction((transaction_id, orderID, splitAmount, creditorID, userID))
+        addTransaction((transaction_id, orderID, splitAmount, creditorID, userID, date))
 
     return UsersAndSplitAmount(users, splitAmount)
 
@@ -403,13 +418,14 @@ def createTransactionBetweenSomeUsers(order, userIDList):
     orderID = order.orderID
     users = userIDList
     splitAmount = order.orderAmount
+    date = order.date
 
     for userID in users:
         if str(userID) == str(creditorID):
             None
         else:
             transaction_id = str(uuid1())
-            addTransaction((transaction_id, orderID, splitAmount, creditorID, userID))
+            addTransaction((transaction_id, orderID, splitAmount, creditorID, userID, date))
 
     return UsersAndSplitAmount(users, splitAmount)
 

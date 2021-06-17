@@ -7,7 +7,6 @@ CREATE TABLE `Users` (
   `UserName` varchar(45) NOT NULL,
   `FirstName` varchar(45) NOT NULL,
   `notifiable` BOOLEAN ,
-  `date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -25,7 +24,6 @@ CREATE TABLE `Transactions` (
     `UserID_Creditor` varchar(45) NOT NULL,
     `UserID_Debtor` varchar(45) NOT NULL,
     `settled` BOOLEAN NOT NULL DEFAULT 0,
-    
     PRIMARY KEY (`transaction_id`)
 )  ENGINE=INNODB AUTO_INCREMENT=797 DEFAULT CHARSET=UTF8MB4 COLLATE = utf8mb4_general_ci;
 
@@ -36,6 +34,7 @@ CREATE TABLE `Orders` (
   `Order_name` varchar(150) NOT NULL,
   `Order_amount` double NOT NULL DEFAULT '0',
   `MessageID` varchar(45),
+  `date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`OrderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

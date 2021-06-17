@@ -1,4 +1,5 @@
 from email.mime import text
+from datetime import datetime, timedelta
 import logging
 import os
 from tokenize import group
@@ -85,11 +86,8 @@ def splitAllEvenlyKeyboardMarkup():
 
 def splitSomeEvenlyKeyboardMarkup(groupID):
     keyboardHolder = []
-    print(groupID)
-    print(keyboardHolder)
 
     users = getAllUsersFromGroup(groupID)
-    print(users)
 
     for user in users:
         firstname = getFirstName(user)
@@ -120,15 +118,19 @@ def addUsernameToDebtMessage(username, text):
         text += '\n' + usernameWithTag
     return text
 
+def takeSecond(element):
+    return element[1]
+
 
 # removeUsernameFromSplitAllEvenlyDebtMessage('testuser1', '6a39016c-cd25-11eb-955c-acde48001122')
 class Order:
-    def __init__(self, orderID, groupID, orderName, orderAmount, creditorID):
+    def __init__(self, orderID, groupID, orderName, orderAmount, creditorID, date):
         self.orderID = orderID
         self.groupID = groupID
         self.orderName = orderName
         self.orderAmount = orderAmount
         self.creditorID = creditorID
+        self.date = date
 
 class UsersAndSplitAmount:
     def __init__(self, users, splitAmount):
