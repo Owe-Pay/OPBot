@@ -72,6 +72,20 @@ def startPrivate(update, context):
         reply_markup=reply_markup,
     )
 
+def getDebtors(update, context):
+    
+    userID = update.effective_chat.id
+    
+    if not userAlreadyAdded(userID):
+        context.bot.send_message(
+            chat_id=userID,
+            text=
+            "Please register with us first by using /start!"
+        )
+    
+
+
+
 def help(update, context):
     return context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -380,8 +394,7 @@ def createTransactionBetweenAllUsers(order):
 
     for userID in users:
         transaction_id= str(uuid1())
-        transaction = Transaction(transaction_id, orderID, splitAmount, creditorID, userID)
-        addTransaction(transaction)
+        addTransaction((transaction_id, orderID, splitAmount, creditorID, userID))
 
     return UsersAndSplitAmount(users, splitAmount)
 
@@ -396,8 +409,7 @@ def createTransactionBetweenSomeUsers(order, userIDList):
             None
         else:
             transaction_id = str(uuid1())
-            transaction = Transaction(transaction_id, orderID, splitAmount, creditorID, userID)
-            addTransaction(transaction)
+            addTransaction((transaction_id, orderID, splitAmount, creditorID, userID))
 
     return UsersAndSplitAmount(users, splitAmount)
 
@@ -506,6 +518,7 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", startGroup, Filters.chat_type.groups))
     dp.add_handler(CommandHandler("start", startPrivate, Filters.chat_type.private))
+    # dp.add_handler(CommandHandler("whoowesme", getDebtors, Filters.chat_type.private))
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(InlineQueryHandler(inline))

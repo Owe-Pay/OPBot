@@ -302,7 +302,7 @@ def getAllUsersFromGroup(group_id):
     for user in t:
         holder.append(user[0])
     return holder
-
+# 
 def getNumberOfUsersExceptCreditor(user_id, group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
@@ -319,7 +319,7 @@ def addTransaction(input):
     mycursor = mysqldb.cursor()
     try:
         sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debtor) VALUES (%s, %s, %s, %s, %s)"
-        val = (input.transactionID, input.orderID, input.splitAmount, input.creditorID, input.userID)
+        val = (input[0], input[1], input[2], input[3], input[4])
         mycursor.execute(sql,val)
         mysqldb.commit()
         closeConnection(mysqldb, mycursor)
@@ -336,6 +336,12 @@ def markTransactionAsSettled(creditorID, debtorID, orderID):
     mycursor.execute(sql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
+
+# def getUnsettledTransactionsForCreditor(creditorID):
+#     mysqldb = pymysql.connect(
+#         host=db_host, user=db_username, password=db_password, db=db_database)
+#     mycursor = mysqldb.cursor()
+#     mysql = "SELECT "
 
 # markTransactionAsSettled(497722299,339096917,'339c6d02-cd33-11eb-8e86-acde48001122')
 

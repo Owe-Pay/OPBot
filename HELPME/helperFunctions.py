@@ -3,11 +3,13 @@ import logging
 import os
 from tokenize import group
 
-from .bot_sql_integration import *
 from uuid import uuid4
 from telegram.utils.helpers import escape_markdown
 from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
 from telegram import Chat, Message, Bot, InlineQueryResultArticle, ParseMode, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Update, replymarkup
+
+from .bot_sql_integration import *
+
 
 TOKEN = os.environ['API_TOKEN']
 
@@ -83,7 +85,11 @@ def splitAllEvenlyKeyboardMarkup():
 
 def splitSomeEvenlyKeyboardMarkup(groupID):
     keyboardHolder = []
+    print(groupID)
+    print(keyboardHolder)
+
     users = getAllUsersFromGroup(groupID)
+    print(users)
 
     for user in users:
         firstname = getFirstName(user)
