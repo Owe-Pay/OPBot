@@ -151,40 +151,54 @@ Our bot then tracks this order and takes note of who has yet to pay and sends a 
 
 Due to the nature of the Telegram Bot API, in order for our bot to send a private message to users, we will require them to have started a private conversation with the bot first. This can be done through the User Setup found below.
    
-User Setup
+#### User Setup
 	
    1.Start a private conversation with our bot (@OwePay_bot)
+   
    2.Send the /start command
+   
    3.Click on ‘Register’ to get registered in our database
 
    
 
-Group Setup
+#### Group Setup
 	
    1.Add the bot (@OwePay_bot) to the group
+   
    2.Send the /start@OwePay_bot command
+   
    3.Click on ‘Register’ to get your group registered in our database
+   
    4.Start splitting!
 
-Splitting bills among 
+#### Splitting bills among 
 	
    1.Begin your message with the following: @OwePay_bot and an inline message asking you to key in the amount to be split should appear
-   2.Key in the amount to be split (currently, only $ is supported) and two popups will appear above the textbox asking you to choose whether you wish to split the bill            evenly among everyone or among some people
+   
+   2.Key in the amount to be split (currently, only $ is supported) and two popups will appear above the textbox asking you to choose whether you wish to split the bill evenly among everyone or among some people
+   
    3.Selecting the ‘split among everyone’ option will cause a message to be sent in the group by you detailing the amount to be split and that everyone is partaking
+   
    4.The bot will now prompt you to send in a name for the bill
+   
    5.The next message you send will be registered as the bill’s name
-   6.The bot will finally send a message to the group with the total amount, amount to be paid by each person, and a list of people who have yet to pay and below this message     will be a clickable button ‘I paid!’
+   
+   6.The bot will finally send a message to the group with the total amount, amount to be paid by each person, and a list of people who have yet to pay and below this message will be a clickable button ‘I paid!’
+   
    7.Other users can click the ‘I paid!’ button in step 6 in order to remove their name from the list.
 	
-Getting help in a Group
+#### Getting help in a Group
 	
    1.Send the /help@OwePay_bot command
+   
    2.The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot
 
-Getting Help via Private message
+#### Getting Help via Private message
 	
    1.Send the /help command
-   2.The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot   
+   
+   2.The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot 
+   
    3.To document your work, please start creating a user guide and a developer guide.
 
 # Developer Guide
@@ -203,8 +217,7 @@ The codebase for the Telegram Bot is written in mainly Python and we will requir
 
 #### 1. Install Python
    
-	As of time of writing, we’re currently using Python 3.9.5 for development. You can download Python from their official website here. In the event that you are   experiencing difficulties, try to follow this guide here.
-
+As of time of writing, we’re currently using Python 3.9.5 for development. You can download Python from their official website here. In the event that you are   experiencing difficulties, try to follow this guide here.
 
 ![Terminal Window](https://res.cloudinary.com/jianoway/image/upload/v1623863631/elegantTerminal.png)
 	
@@ -229,6 +242,7 @@ Our codebase uses several plugins and we will go over how to install them.
    1. Pipenv
    
     Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If you wish to run the code via you local machine please continue with the installation of other plugins.
+    
 ```
 pip install pipenv
 ```
