@@ -229,79 +229,72 @@ Our codebase uses several plugins and we will go over how to install them.
    1. Pipenv
    
     Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If you wish to run the code via you local machine please continue with the installation of other plugins.
-    ```
-    pip install pipenv
-    ```
-	
+```
+pip install pipenv
+```
    In the event that the above code does not work for you (especially if you are on Windows, try running any variation of the following code and continue to replace pip with the one that works for you.
-	
-    ```
-    python -m pip install pipenv
-    py -m pip install pipenv
-    ```
-	
+```
+python -m pip install pipenv
+py -m pip install pipenv
+```
    If you are still struggling with installing via pip feel free to contact us via GitHub and we’ll try our best to help you out! :)
 	
    2. Python-Telegram-Bot
    
    Python-Telegram-Bot is a wrapper tool that helps us to control and interact with our bot and is the backbone of our bot. Please try to familiarize yourself with it’s API and wrappers as a fundamental understanding of their classes is crucial for developing the codebase for O$P$.
-	
-    ```
-    pip install python-telegram-bot
-    ```
+```
+pip install python-telegram-bot
+```
 	
    3. Logging
    
    Nothing much to say here. Just to create error logs for us to view later on.
-	
-    ```
-	pip install logging
-	```
+```
+pip install logging
+```
 	
    4.Cryptography
 	
-   This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-bot.
-	
-   ```
-	pip install cryptography
-	```
+   This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-    bot.
+```
+pip install cryptography
+```
 
    5.Pytest
 	
    A very useful package that forms the backbone of our testing environment
 	
-   ```
-	pip install pytest
-	```
+```
+pip install pytest
+```
 	
    6.Flaky
 	
    This package helps to rerun Pytest tests for some of the more gimmicky tests that might not pass on the first try.
 	
-   ```
-	pip install flaky
-	```
+```
+pip install flaky
+```
    7.Tabulate
    
-   This package helps to make printing of tables prettier. Mostly for aesthetic purposes only.
-	
-   ```
-	pip install tabulate
-	```
+   This package helps to make printing of tables prettier. Mostly for aesthetic purposes only.	
+```
+pip install tabulate
+```
    8.Pymysql
 	
    This package allows us to create MySQL queries with our Python functions in order to access our backend MySQL database.
 	
-   ```
-	pip install pymsysql
-	```
+```
+pip install pymsysql
+```
    9.os-sys
 	
    If for some odd reason you don’t have os-sys installed you can do so as follows. It is crucial for accessing environment variables which I will explain how to set up later.
 	
-   ```
-	pip install os-sys
-	```
+```
+pip install os-sys
+```
 	
 #### 4. MySql
  
@@ -333,12 +326,12 @@ First create the .env file. You can use any Integrated Development Environment (
 	
 ```
    code .env
-   ```
+```
 
 Next, you will need to set up the path to the parent of the Git Repository you’re working in. To do this,  in .env include the following in the first line.	
 ```
    CONFIG_PATH=${HOME}<PATH TO THE PARENT OF THE OPBOT REPOSITORY>
-   ```
+```
 	
 Now we will be declaring the following variables. Do so by including them in the lines after the first.
 
@@ -396,12 +389,10 @@ tempContext: A Context object to simulate the functionality of an actual Context
 
 | Test Name      | Description           | Expected   | Actual   |
 | ------------- |:-------------:| -----:| -----:|
-| test_help_group | To test if when given the correct Group Update and Context objects as parameters, it will return the correct Message object  | Message.chat_id == 4123123 <br /> Message.text == self.text | ---
- |
+| test_help_group | To test if when given the correct Group Update and Context objects as parameters, it will return the correct Message object  | Message.chat_id == 4123123 <br /> Message.text == self.text | ---|
 | test_help_private    | To test if when given the correct User Update and Context objects as parameters, it will return the correct Message object       |   Message.chat_id == 4123123 <br /> Message.text == self.text|  Message.chat_id == 4123123 <br /> Message.text == self.text |
 | test_help_wrong_group_id    | To test if an error is raised when an Group Update is sent from an Invalid chat_id (bot not added to this group, chat_id does not exist)|   BadRequest: Chat not found error caught|  BadRequest: Chat not found error caught |
-| 
-test_help_wrong_private_id    | To test if an error is raised when an Group Update is sent from an Invalid chat_id (bot has not conversed with user before, user does not exist)|   BadRequest: Chat not found error caught|  BadRequest: Chat not found error caught |
+| test_help_wrong_private_id    | To test if an error is raised when an Group Update is sent from an Invalid chat_id (bot has not conversed with user before, user does not exist)|   BadRequest: Chat not found error caught|  BadRequest: Chat not found error caught |
 
 
 ##### Testing the *button* function of *owepaybot.py*
@@ -423,8 +414,7 @@ tempContext: A Context object to simulate the functionality of an actual Context
 | test_user_register_callback_query | To test if the correct callback_query is caught when when the User presses the Register button via private message<br />The test for userAlreadyAdded is actually an integration test. | query.data == ‘userRegister’<br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.private_message <br /> query.inline_message_id == ‘userRegisterInlineMessageID’<br /> userAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.private_message <br /> callback_query.inline_message_id == ‘userRegisterInlineMessageID’| query.data == ‘userRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.private_message <br /> query.inline_message_id == ‘userRegisterInlineMessageID’ <br /> userAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.private_message <br /> callback_query.inline_message_id == ‘userRegisterInlineMessageID’|
 | test_user_dont_register_callback_query    | To test if the correct callback_query is caught when when the User presses the Don’t Register button via private message <br /> The test for userAlreadyAdded is actually an integration test.|   query.data == ‘userDontRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == sel.private_message query.inline_message_id <br /> == ‘userDontRegisterInlineMessageID’ query.data <br /> == ‘userDontRegister’ NOT userAlreadyAdded(chat_id) <br />  <br />  <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.private_message <br /> callback_query.inline_message_id == ‘userDontRegisterInlineMessageID’| query.data == ‘userDontRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.private_message <br /> query.inline_message_id == ‘userDontRegisterInlineMessageID’ <br /> NOT userAlreadyAdded(chat_id)  <br />  <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.private_message <br /> callback_query.inline_message_id == ‘userDontRegisterInlineMessageID’
 | test_group_register_callback_query | To test if the correct callback_query is caught when when the User presses the Register button in a group. <br /> The test for groupAlreadyAdded is actually an integration test.|query.data == ‘groupRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’| query.data == ‘groupRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’ |query.data == ‘groupRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’
-| 
-test_group_dont_register_callback_query    | To test if the correct callback_query is caught when when the User presses the Don’t Register button in a group<br /> The test for groupAlreadyAdded is actually an integration test.|   query.data == ‘groupDontRegister’<br /> query.from_user == self.from_user<br /> query.chat_instance == self.chat_instance<br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|  query.data == ‘groupDontRegister’<br /> query.from_user == self.from_user<br /> query.chat_instance == self.chat_instance<br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|	
+| test_group_dont_register_callback_query    | To test if the correct callback_query is caught when when the User presses the Don’t Register button in a group<br /> The test for groupAlreadyAdded is actually an integration test.|   query.data == ‘groupDontRegister’<br /> query.from_user == self.from_user<br /> query.chat_instance == self.chat_instance<br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|  query.data == ‘groupDontRegister’<br /> query.from_user == self.from_user<br /> query.chat_instance == self.chat_instance<br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|	
 
 
 
