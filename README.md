@@ -135,9 +135,134 @@ Our backend will be connected to the frontend using python
 
 We have created various guides for both Users and Developers alike with more information about our project. Please find the links below
    
-### [User Guide](https://docs.google.com/document/d/1n1MOoQ7HTdIDqTgsoM7VEKqg6ebAI9tZ-y9crIS0ixQ/edit?usp=sharing)
+# [User Guide]
+   
+## Introduction
+We at Owe$Pay$ hope to make the tracking payments for ordering of food simple and integrable into Telegram group chats.
+In the future, we also hope to create a system to simplify the process of tracking orders and payments in a cohesive app.
+We aim to solve two main problems with O$P$. Firstly, we aim to make tracking your debts easy, clean and hassle-free. Secondly, we aim to make the process of chasing after your debtors much more impersonal so you won’t feel as ‘paiseh’ to ask them to return you what is rightfully yours!
 
-### [Developer Guide](https://docs.google.com/document/d/1Zui7Zxd-1HufvyI80Nt83oNwH6zRincBDQME49KKnjI/edit?usp=sharing)
+## O$P$ Telegram Bot (@OwePay_bot)
+One of the main ways we intend to execute our project is through our Telegram Bot. Telegram is one of the most used Instant Messaging Platforms amongst both university students and the world at large today. Hence, we decided that it would be an excellent platform to execute our idea since most friend groups who would typically have a Telegram Group to chat in.
+
+Currently, we have implemented our bot with the ability to create a debt collection order from a user between all other users in the group by going dutch (everyone pays the same amount) as well as the ability for the bot to privately message registered users debt collection orders from their creditors.
+
+Our bot then tracks this order and takes note of who has yet to pay and sends a message to the group with a ‘I Paid!’ button where users can have the option of letting the bot as well as others know that 
+
+Due to the nature of the Telegram Bot API, in order for our bot to send a private message to users, we will require them to have started a private conversation with the bot first. This can be done through the User Setup found below.
+   
+* **User Setup**
+   1.Start a private conversation with our bot (@OwePay_bot)
+   1.Send the /start command
+   1.Click on ‘Register’ to get registered in our database
+
+   
+
+* **Group Setup**
+   1.Add the bot (@OwePay_bot) to the group
+   1.Send the /start@OwePay_bot command
+   1.Click on ‘Register’ to get your group registered in our database
+   1.Start splitting!
+
+* **Splitting bills among **
+   1.Begin your message with the following: @OwePay_bot and an inline message asking you to key in the amount to be split should appear
+   1.Key in the amount to be split (currently, only $ is supported) and two popups will appear above the textbox asking you to choose whether you wish to split the bill            evenly among everyone or among some people
+   1.Selecting the ‘split among everyone’ option will cause a message to be sent in the group by you detailing the amount to be split and that everyone is partaking
+   1.The bot will now prompt you to send in a name for the bill
+   1.The next message you send will be registered as the bill’s name
+   1.The bot will finally send a message to the group with the total amount, amount to be paid by each person, and a list of people who have yet to pay and below this message     will be a clickable button ‘I paid!’
+   1.Other users can click the ‘I paid!’ button in step 6 in order to remove their name from the list.
+* **Getting Help in a Group**
+   1.Send the /help@OwePay_bot command
+   1.The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot
+* **Getting Help via Private message**
+   1.Send the /help command
+   1.The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot   
+   1.To document your work, please start creating a user guide and a developer guide.
+
+# Developer Guide
+
+##Introduction
+   
+Our project hopes to be extensible and easy for others to collaborate on either by contributing directly to the codebase or providing suggestions by means of comments. In the write-up below, we have detailed how others can develop using the code we’ve already written.
+
+## Setup
+   
+All of our code can be found on our GitHub. Feel free to leave comments if you feel like there is anything we should work on! In the event that you have yet to install Git on your machine, please look to this guide here for instructions on how to do so.
+   
+### Telegram Bot
+	
+The codebase for the Telegram Bot is written in mainly Python and we will require multiple plugins in order to run our bot for development.
+
+1. Install Python
+   
+As of time of writing, we’re currently using Python 3.9.5 for development. You can download Python from their official website here. In the event that you are experiencing difficulties, try to follow this guide here.
 
 
+![Terminal Window](https://res.cloudinary.com/jianoway/image/upload/v1623863631/elegantTerminal.png)
+*Figure 1: The elegant Terminal Window*
+   
+Once you have installed Python, we will be running most of our commands via the Command Line Interface (CLI) to install plugins as well as test our software. For Windows Users, this would be your Command Prompt and for MacOS users this would be your Terminal.
 
+If you are using an older version of Python, please update to Python 3.9.5 as the following instructions are specific to this version. To avoid constant repetition, all text in the courier new font is to be executed via the CLI unless stated otherwise.
+
+1.Cloning of Git Repository
+
+Open a new CLI window and navigate to the parent directory you intend to work in before cloning the Git Repository.
+```
+git clone https://github.com/Owe-Pay/OPBot.git
+```
+Navigate to the newly created OPBot directory. You will notice that this folder would already be initialised with the Git commands as it is registered as a Git repository.
+
+1. Install Necessary Plugins
+Our codebase uses several plugins and we will go over how to install them. 
+   1.Pipenv
+   Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If    you wish to run the code via you local machine please continue with the installation of other plugins.
+   ``` pip install pipenv```
+   In the event that the above code does not work for you (especially if you are on Windows, try running any variation of the following code and continue to replace pip with    the one that works for you.
+   ```python -m pip install pipenv```
+   ```py -m pip install pipenv```
+   If you are still struggling with installing via pip feel free to contact us via GitHub and we’ll try our best to help you out! :)
+   1. Python-Telegram-Bot
+   Python-Telegram-Bot is a wrapper tool that helps us to control and interact with our bot and is the backbone of our bot. Please try to familiarize yourself with it’s API      and wrappers as a fundamental understanding of their classes is crucial for developing the codebase for O$P$.
+   ```pip install python-telegram-bot
+   ```
+   1. Logging
+   Nothing much to say here. Just to create error logs for us to view later on.
+   ``` pip install logging```
+   1.Cryptography
+   This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-    bot.
+   1.Pytest
+   A very useful package that forms the backbone of our testing environment
+   ``` pip install pytest```
+   1.Flaky
+   This package helps to rerun Pytest tests for some of the more gimmicky tests that might not pass on the first try.
+   ``` pip install flaky```
+   1.Tabulate
+   This package helps to make printing of tables prettier. Mostly for aesthetic purposes only.	
+   ``` pip install tabulate```
+   1.Pymysql
+   This package allows us to create MySQL queries with our Python functions in order to access our backend MySQL database.
+   ```pip install pymsysql```
+   1.os-sys
+   If for some odd reason you don’t have os-sys installed you can do so as follows. It is crucial for accessing environment variables which I will explain how to set up          later.
+   ```pip install os-sys```
+ 1. MySql
+ 
+To set up MySQL, first go to their official website and download the MySQL installer [here](https://dev.mysql.com/downloads/installer/). As of time of writing, we are using MySQL version 8.0.25. Run the installer and go through the necessary steps. If you encounter any difficulties, please refer to the guide [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/).
+	
+To initialise a local MySQL database on Windows, please follow this guide [here](https://www.microfocus.com/documentation/idol/IDOL_12_0/MediaServer/Guides/html/English/Content/Getting_Started/Configure/_TRN_Set_up_MySQL.html).
+
+To initialise a local MySQL database on MacOS, please follow this guide [here](https://dev.mysql.com/doc/refman/8.0/en/macos-installation-launchd.html).
+	
+In order to access the MySQL database, install MySQL Workbench from the link here and run the installation setup. After you have successfully set up MySQL Workbench you will be able to access your local MySQL database which would be called localhost if you have already initialised and would be visible in the home page of MySQL Workbench.
+
+Our bot’s backend relies on a Heroku hosted ClearDB MySQL implementation. To access our database you will require a specific API token. Please submit a request to us via GitHub if you would like to have access to our database.
+
+Because of the way ClearDB works, it does not allow us to create new databases to work with and instead we work with the database that is created by default. To optimally set up the MySQL database on your computer, we will be doing it on a new database so as to ensure your default sys database does not get overcrowded.
+
+The video tutorial on how to set up the database can be found [here](https://www.youtube.com/watch?v=tl1O0NVMB2U). Please have MySQL Workbench up and running first though! For clarity’s sake, the command that is run can be found below:
+```  CREATE DATABASE `owepay`;
+```
+Please note that the botsql_1.sql file used in the video might be outdated by the time you watch it.   
+   
