@@ -232,16 +232,20 @@ Our codebase uses several plugins and we will go over how to install them.
     ```
     pip install pipenv
     ```
+	
    In the event that the above code does not work for you (especially if you are on Windows, try running any variation of the following code and continue to replace pip with the one that works for you.
+	
     ```
     python -m pip install pipenv
     py -m pip install pipenv
     ```
+	
    If you are still struggling with installing via pip feel free to contact us via GitHub and we’ll try our best to help you out! :)
 	
    2. Python-Telegram-Bot
    
    Python-Telegram-Bot is a wrapper tool that helps us to control and interact with our bot and is the backbone of our bot. Please try to familiarize yourself with it’s API and wrappers as a fundamental understanding of their classes is crucial for developing the codebase for O$P$.
+	
     ```
     pip install python-telegram-bot
     ```
@@ -249,13 +253,15 @@ Our codebase uses several plugins and we will go over how to install them.
    3. Logging
    
    Nothing much to say here. Just to create error logs for us to view later on.
+	
     ```
 	pip install logging
 	```
 	
    4.Cryptography
 	
-   This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-    bot.
+   This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-bot.
+	
    ```
 	pip install cryptography
 	```
@@ -277,7 +283,8 @@ Our codebase uses several plugins and we will go over how to install them.
 	```
    7.Tabulate
    
-   This package helps to make printing of tables prettier. Mostly for aesthetic purposes only.	
+   This package helps to make printing of tables prettier. Mostly for aesthetic purposes only.
+	
    ```
 	pip install tabulate
 	```
