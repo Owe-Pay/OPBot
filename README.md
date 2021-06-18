@@ -201,7 +201,7 @@ All of our code can be found on our GitHub. Feel free to leave comments if you f
 	
 The codebase for the Telegram Bot is written in mainly Python and we will require multiple plugins in order to run our bot for development.
 
-1. Install Python
+####1. Install Python
    
 	As of time of writing, we’re currently using Python 3.9.5 for development. You can download Python from their official website here. In the event that you are   experiencing difficulties, try to follow this guide here.
 
@@ -214,7 +214,7 @@ Once you have installed Python, we will be running most of our commands via the 
 
 If you are using an older version of Python, please update to Python 3.9.5 as the following instructions are specific to this version. To avoid constant repetition, all text in the courier new font is to be executed via the CLI unless stated otherwise.
 
-2.Cloning of Git Repository
+####2. Cloning of Git Repository
 
 Open a new CLI window and navigate to the parent directory you intend to work in before cloning the Git Repository.
 ```
@@ -222,10 +222,11 @@ git clone https://github.com/Owe-Pay/OPBot.git
 ```
 Navigate to the newly created OPBot directory. You will notice that this folder would already be initialised with the Git commands as it is registered as a Git repository.
 
-3. Install Necessary Plugins
+####3. Install Necessary Plugins
+	
 Our codebase uses several plugins and we will go over how to install them. 
    1.Pipenv
-   Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If    you wish to run the code via you local machine please continue with the installation of other plugins.
+   Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If you wish to run the code via you local machine please continue with the installation of other plugins.
    ``` 
    pip install pipenv
    	```
@@ -238,25 +239,26 @@ Our codebase uses several plugins and we will go over how to install them.
 	```
    If you are still struggling with installing via pip feel free to contact us via GitHub and we’ll try our best to help you out! :)
 	
-   1. Python-Telegram-Bot
+   2. Python-Telegram-Bot
    Python-Telegram-Bot is a wrapper tool that helps us to control and interact with our bot and is the backbone of our bot. Please try to familiarize yourself with it’s API      and wrappers as a fundamental understanding of their classes is crucial for developing the codebase for O$P$.
+	
    ```pip install python-telegram-bot
    ```
 	
-   2. Logging
+   3. Logging
    Nothing much to say here. Just to create error logs for us to view later on.
    ```
 	pip install logging
 	```
 	
-   3.Cryptography
+   4.Cryptography
 	
    This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-    bot.
    ```
 	pip install cryptography
 	```
 
-   4.Pytest
+   5.Pytest
 	
    A very useful package that forms the backbone of our testing environment
 	
@@ -264,34 +266,34 @@ Our codebase uses several plugins and we will go over how to install them.
 	pip install pytest
 	```
 	
-   5.Flaky
+   6.Flaky
 	
    This package helps to rerun Pytest tests for some of the more gimmicky tests that might not pass on the first try.
 	
    ```
 	pip install flaky
 	```
-   6.Tabulate
+   7.Tabulate
    
    This package helps to make printing of tables prettier. Mostly for aesthetic purposes only.	
    ```
 	pip install tabulate
 	```
-   7.Pymysql
+   8.Pymysql
 	
    This package allows us to create MySQL queries with our Python functions in order to access our backend MySQL database.
 	
    ```
 	pip install pymsysql
 	```
-   8.os-sys
+   9.os-sys
 	
    If for some odd reason you don’t have os-sys installed you can do so as follows. It is crucial for accessing environment variables which I will explain how to set up later.
 	
    ```
 	pip install os-sys
 	```
-4. MySql
+####4. MySql
  
 To set up MySQL, first go to their official website and download the MySQL installer [here](https://dev.mysql.com/downloads/installer/). As of time of writing, we are using MySQL version 8.0.25. Run the installer and go through the necessary steps. If you encounter any difficulties, please refer to the guide [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/).
 	
@@ -307,8 +309,90 @@ Because of the way ClearDB works, it does not allow us to create new databases t
 
 The video tutorial on how to set up the database can be found [here](https://www.youtube.com/watch?v=tl1O0NVMB2U). Please have MySQL Workbench up and running first though! For clarity’s sake, the command that is run can be found below:
 	
-```  CREATE DATABASE `owepay`
-```
+``` 
+	CREATE DATABASE `owepay`
+	```
 	
 Please note that the botsql_1.sql file used in the video might be outdated by the time you watch it.   
    
+####5. .env
+
+After reading some of the code you will realise that there is a reference to os.environ[‘’]. This is because we are accessing environment variables. We have set up the variables to be retrieved on Heroku but for your local machine which should not have access to the Heroku server at all times, you should set up a .env file for your own testing purposes.
+
+First create the .env file. You can use any Integrated Development Environment (IDE) but for the sake of demonstration we will be using Visual Studio Code (VSC).
+	
+```
+   code .env
+   ```
+
+Next, you will need to set up the path to the parent of the Git Repository you’re working in. To do this,  in .env include the following in the first line.	
+```
+   CONFIG_PATH=${HOME}<PATH TO THE PARENT OF THE OPBOT REPOSITORY>
+   ```
+	
+Now we will be declaring the following variables. Do so by including them in the lines after the first.
+
+```
+   API_TOKEN=’SOME TOKEN’
+   DB_HOST='localhost'
+   DB_USER=root
+   DB_PASSWORD=<YOUR LOCALHOST PASSWORD>
+   DB_DB='owepay'
+	```
+	
+The field API_TOKEN is the token that we will be using to connect to the bot. For testing purposes, we have a bot dedicated to it. Please submit a request to us via GitHub if you wish to obtain a copy of the token as it is sensitive. You can also choose to use your own test bot. Instructions on how to make your own Telegram Bot can be found [here](https://core.telegram.org/bots).
+
+The .env file has been added to our .gitignore and will not be tracked by Git so you can rest assured that your personal data will not be uploaded every time you commit a change.
+	
+### Testing
+
+#### Testing Methodology 
+	
+We will be using the pytest framework to design our tests since most of our code is in Python. It is a very flexible testing framework and allows us to design test cases that are specific to our requirements. In pytest, the Stubs used in testing can be called fixtures and are defined before the execution of the test.
+
+We are currently in the process of designing tests for the rest of our functions.
+	
+#### Design of Tests
+
+The tests designed are hopefully sufficient to catch out all bugs and leave no cases unaccounted for. We will be designing them with the mindset of the trying to capture all possible inputs and how will our functions and system react when given these inputs either directly fed from the User or passed in as a result of another function,
+	
+#### Unit Testing
+
+Unit Tests would involve testing the functionality of individual functions used in our code so as to ensure that our code is safe and relatively bug-free.
+
+#### Integration Testing
+
+Integration Tests would involve testing whether different parts of our software work together. In our case, we will be testing the interaction between our Telegram Bot and our backend MySQL database.
+
+#### System Testing
+
+System Tests would involve testing whether the system would function properly on day to day usage. In our case, we will be testing whether any bugs arise when the system is subjected to heavy user load among other tests.
+
+##### Testing the *help* function of *owepaybot.py*
+	
+**Stubs used**
+	
+test_bot: A bot to simulate the functionality of a Telegram bot without actually running one
+
+userHelpUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via private message
+
+groupHelpUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via group
+
+wrongHelpCommandPrivateUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via private message but the chat_id is invalid
+
+wrongHelpCommandGroupUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via group but the chat_id is invalid
+
+tempContext: A Context object to simulate the functionality of an actual Context object
+
+| Test Name      | Description           | Expected  | Actual  |
+| ------------- |:-------------:| -----:|
+| test_help_group      | To test if when 
+	given the correct Group Update and Context objects as parameters,
+	it will return the correct Message object  | Message.chat_id == 4123123
+Message.text == self.text
+ | Message.chat_id == 4123123
+Message.text == self.text
+ |
+	
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
