@@ -201,7 +201,7 @@ All of our code can be found on our GitHub. Feel free to leave comments if you f
 	
 The codebase for the Telegram Bot is written in mainly Python and we will require multiple plugins in order to run our bot for development.
 
-####1. Install Python
+#### 1. Install Python
    
 	As of time of writing, we’re currently using Python 3.9.5 for development. You can download Python from their official website here. In the event that you are   experiencing difficulties, try to follow this guide here.
 
@@ -214,7 +214,7 @@ Once you have installed Python, we will be running most of our commands via the 
 
 If you are using an older version of Python, please update to Python 3.9.5 as the following instructions are specific to this version. To avoid constant repetition, all text in the courier new font is to be executed via the CLI unless stated otherwise.
 
-####2. Cloning of Git Repository
+#### 2. Cloning of Git Repository
 
 Open a new CLI window and navigate to the parent directory you intend to work in before cloning the Git Repository.
 ```
@@ -222,32 +222,34 @@ git clone https://github.com/Owe-Pay/OPBot.git
 ```
 Navigate to the newly created OPBot directory. You will notice that this folder would already be initialised with the Git commands as it is registered as a Git repository.
 
-####3. Install Necessary Plugins
+#### 3. Install Necessary Plugins
 	
 Our codebase uses several plugins and we will go over how to install them. 
-   1.Pipenv
-   Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If you wish to run the code via you local machine please continue with the installation of other plugins.
-   ``` 
-   pip install pipenv
-   	```
-   In the event that the above code does not work for you (especially if you are on Windows, try running any variation of the following code and continue to replace pip with    the one that works for you.
-   ```
-	python -m pip install pipenv
-	```
-   ```
-	py -m pip install pipenv
-	```
+
+   1. Pipenv
+   
+    Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If you wish to run the code via you local machine please continue with the installation of other plugins.
+    ```
+    pip install pipenv
+    ```
+   In the event that the above code does not work for you (especially if you are on Windows, try running any variation of the following code and continue to replace pip with the one that works for you.
+    ```
+    python -m pip install pipenv
+    py -m pip install pipenv
+    ```
    If you are still struggling with installing via pip feel free to contact us via GitHub and we’ll try our best to help you out! :)
 	
    2. Python-Telegram-Bot
-   Python-Telegram-Bot is a wrapper tool that helps us to control and interact with our bot and is the backbone of our bot. Please try to familiarize yourself with it’s API      and wrappers as a fundamental understanding of their classes is crucial for developing the codebase for O$P$.
-	
-   ```pip install python-telegram-bot
-   ```
+   
+   Python-Telegram-Bot is a wrapper tool that helps us to control and interact with our bot and is the backbone of our bot. Please try to familiarize yourself with it’s API and wrappers as a fundamental understanding of their classes is crucial for developing the codebase for O$P$.
+    ```
+    pip install python-telegram-bot
+    ```
 	
    3. Logging
+   
    Nothing much to say here. Just to create error logs for us to view later on.
-   ```
+    ```
 	pip install logging
 	```
 	
@@ -293,7 +295,8 @@ Our codebase uses several plugins and we will go over how to install them.
    ```
 	pip install os-sys
 	```
-####4. MySql
+	
+#### 4. MySql
  
 To set up MySQL, first go to their official website and download the MySQL installer [here](https://dev.mysql.com/downloads/installer/). As of time of writing, we are using MySQL version 8.0.25. Run the installer and go through the necessary steps. If you encounter any difficulties, please refer to the guide [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/).
 	
@@ -310,12 +313,12 @@ Because of the way ClearDB works, it does not allow us to create new databases t
 The video tutorial on how to set up the database can be found [here](https://www.youtube.com/watch?v=tl1O0NVMB2U). Please have MySQL Workbench up and running first though! For clarity’s sake, the command that is run can be found below:
 	
 ``` 
-	CREATE DATABASE `owepay`
-	```
+CREATE DATABASE `owepay`
+```
 	
 Please note that the botsql_1.sql file used in the video might be outdated by the time you watch it.   
    
-####5. .env
+#### 5. .env
 
 After reading some of the code you will realise that there is a reference to os.environ[‘’]. This is because we are accessing environment variables. We have set up the variables to be retrieved on Heroku but for your local machine which should not have access to the Heroku server at all times, you should set up a .env file for your own testing purposes.
 
@@ -338,13 +341,13 @@ Now we will be declaring the following variables. Do so by including them in the
    DB_USER=root
    DB_PASSWORD=<YOUR LOCALHOST PASSWORD>
    DB_DB='owepay'
-	```
+```
 	
 The field API_TOKEN is the token that we will be using to connect to the bot. For testing purposes, we have a bot dedicated to it. Please submit a request to us via GitHub if you wish to obtain a copy of the token as it is sensitive. You can also choose to use your own test bot. Instructions on how to make your own Telegram Bot can be found [here](https://core.telegram.org/bots).
 
 The .env file has been added to our .gitignore and will not be tracked by Git so you can rest assured that your personal data will not be uploaded every time you commit a change.
-	
-### Testing
+
+## Testing
 
 #### Testing Methodology 
 	
@@ -384,15 +387,57 @@ wrongHelpCommandGroupUpdate: An Update object to simulate the Update that is rec
 
 tempContext: A Context object to simulate the functionality of an actual Context object
 
-| Test Name      | Description           | Expected  | Actual  |
-| ------------- |:-------------:| -----:|
-| test_help_group      | To test if when 
-	given the correct Group Update and Context objects as parameters,
-	it will return the correct Message object  | Message.chat_id == 4123123
-Message.text == self.text
- | Message.chat_id == 4123123
-Message.text == self.text
+| Test Name      | Description           | Expected   | Actual   |
+| ------------- |:-------------:| -----:| -----:|
+| test_help_group | To test if when given the correct Group Update and Context objects as parameters, it will return the correct Message object  | Message.chat_id == 4123123 <br /> Message.text == self.text | ---
  |
+| test_help_private    | To test if when given the correct User Update and Context objects as parameters, it will return the correct Message object       |   Message.chat_id == 4123123 <br /> Message.text == self.text|  Message.chat_id == 4123123 <br /> Message.text == self.text |
+| test_help_wrong_group_id    | To test if an error is raised when an Group Update is sent from an Invalid chat_id (bot not added to this group, chat_id does not exist)|   BadRequest: Chat not found error caught|  BadRequest: Chat not found error caught |
+| 
+test_help_wrong_private_id    | To test if an error is raised when an Group Update is sent from an Invalid chat_id (bot has not conversed with user before, user does not exist)|   BadRequest: Chat not found error caught|  BadRequest: Chat not found error caught |
+
+
+##### Testing the *button* function of *owepaybot.py*
 	
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+**Stubs used**
+
+user_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via private message
+
+user_dont_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via private message
+
+group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via group
+
+group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via group
+
+tempContext: A Context object to simulate the functionality of an actual Context object
+
+| Test Name      | Description           | Expected   | Actual   |
+| ------------- |:-------------:| -----:| -----:|
+| test_user_register_callback_query | To test if the correct callback_query is caught when when the User presses the Register button via private message<br />The test for userAlreadyAdded is actually an integration test. | query.data == ‘userRegister’<br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.private_message <br /> query.inline_message_id == ‘userRegisterInlineMessageID’<br /> userAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.private_message <br /> callback_query.inline_message_id == ‘userRegisterInlineMessageID’| query.data == ‘userRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.private_message <br /> query.inline_message_id == ‘userRegisterInlineMessageID’ <br /> userAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.private_message <br /> callback_query.inline_message_id == ‘userRegisterInlineMessageID’|
+| test_user_dont_register_callback_query    | To test if the correct callback_query is caught when when the User presses the Don’t Register button via private message <br /> The test for userAlreadyAdded is actually an integration test.|   query.data == ‘userDontRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == sel.private_message query.inline_message_id <br /> == ‘userDontRegisterInlineMessageID’ query.data <br /> == ‘userDontRegister’ NOT userAlreadyAdded(chat_id) <br />  <br />  <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.private_message <br /> callback_query.inline_message_id == ‘userDontRegisterInlineMessageID’| query.data == ‘userDontRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.private_message <br /> query.inline_message_id == ‘userDontRegisterInlineMessageID’ <br /> NOT userAlreadyAdded(chat_id)  <br />  <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.private_message <br /> callback_query.inline_message_id == ‘userDontRegisterInlineMessageID’
+| test_group_register_callback_query | To test if the correct callback_query is caught when when the User presses the Register button in a group. <br /> The test for groupAlreadyAdded is actually an integration test.|query.data == ‘groupRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’| query.data == ‘groupRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’ |query.data == ‘groupRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’
+| 
+test_group_dont_register_callback_query    | To test if the correct callback_query is caught when when the User presses the Don’t Register button in a group<br /> The test for groupAlreadyAdded is actually an integration test.|   query.data == ‘groupDontRegister’<br /> query.from_user == self.from_user<br /> query.chat_instance == self.chat_instance<br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|  query.data == ‘groupDontRegister’<br /> query.from_user == self.from_user<br /> query.chat_instance == self.chat_instance<br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|	
+
+
+
+
+
+## Prototyping
+### O$P$ Mobile Application
+
+We plan to launch a mobile application with similar functionality to our Telegram Bot with certain extensions. You can find a demonstration of what we hope to see from it below.
+
+![sample Login Page](https://res.cloudinary.com/jianoway/image/upload/v1623863754/homepageGif_wtx6xh.gif)
+![Sample Home Page](https://res.cloudinary.com/jianoway/image/upload/v1623863761/uiGif_sb9kka.gif)
+
+### Telegram Bot (@OwePay_bot)
+
+Currently, we are hosting our Telegram Bot via Heroku so it should be up 24/7. You can test out it’s features by messaging it directly on Telegram. (@OwePay_bot)
+
+
+## Software Engineering Principles
+
+As with many other projects, ours utilises Object-Oriented Programming (OOP) to structure and design our code. 
+
+Below you can find some UML diagrams for your reference.
