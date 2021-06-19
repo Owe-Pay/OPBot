@@ -204,6 +204,13 @@ def notifyUserFromPrivateMessage(update, context):
     groupID = getGroupIDFromOrder(orderID)
     groupName = getGroupNameFromGroupID(groupID)
     
+    if not isNotifiable(debtorID):
+        context.bot.send_message(
+            chat_id=creditorID,
+            text = '%s (@%s) is not notifiable.' % (debtorName, debtorUsername)
+        )
+        return
+        
     if currentTime.replace(tzinfo=None) < thresholdTime.replace(tzinfo=None):
         timediff = currentTime.replace(tzinfo=None) - lastNotifiedTime.replace(tzinfo=None)
         timeTillNextSend = 60 - int(timediff.total_seconds()/60)
@@ -213,12 +220,7 @@ def notifyUserFromPrivateMessage(update, context):
         )  
         return
     
-    if not isNotifiable(debtorID):
-        context.bot.send_message(
-            chat_id=creditorID,
-            text = '%s (@%s) is not notifiable.' % (debtorName, debtorUsername)
-        )
-        return
+    
     
     updateLastNotifiedTimeWithTransactionID(transactionID, currentTime)
 

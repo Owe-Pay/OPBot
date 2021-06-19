@@ -325,7 +325,7 @@ def addTransaction(input):
     mycursor = mysqldb.cursor()
     try:
         sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debtor, date, last_notified) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        val = (input[0], input[1], input[2], input[3], input[4], input[5], input[5])
+        val = (input[0], input[1], input[2], input[3], input[4], input[5], datetime(2010, 1, 1))
         mycursor.execute(sql,val)
         mysqldb.commit()
         closeConnection(mysqldb, mycursor)
