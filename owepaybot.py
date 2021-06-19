@@ -210,7 +210,7 @@ def notifyUserFromPrivateMessage(update, context):
             text = '%s (@%s) is not notifiable.' % (debtorName, debtorUsername)
         )
         return
-        
+
     if currentTime.replace(tzinfo=None) < thresholdTime.replace(tzinfo=None):
         timediff = currentTime.replace(tzinfo=None) - lastNotifiedTime.replace(tzinfo=None)
         timeTillNextSend = 60 - int(timediff.total_seconds()/60)
@@ -218,21 +218,21 @@ def notifyUserFromPrivateMessage(update, context):
             chat_id=creditorID,
             text = 'You have notified %s (@%s) too recently for %s on %s in %s. Please try again in %s minutes!' % (debtorName, debtorUsername, orderName, formattedDate, groupName, timeTillNextSend)
         )  
-        return
-    
-    
-    
+        return 
     updateLastNotifiedTimeWithTransactionID(transactionID, currentTime)
-
 
     creditorName = getFirstName(creditorID)
     creditorUsername = getUsername(creditorID)
     amountOwed = getAmountOwedFromTransactionID(transactionID)
 
-    # context.bot.send_message(
-    #     chat_id=debtorID,
-    #     text='Hi %s! Your friend %s (@%s) from the group %s is asking you to return them their $%s for %s %s' % (debtorName, creditorName, creditorUsername,groupName, amountOwed, orderName, formattedDate)
-    # )
+    context.bot.send_message(
+        chat_id=debtorID,
+        text='Hi %s! Your friend %s (@%s) from the group %s is asking you to return them their $%s for %s %s' % (debtorName, creditorName, creditorUsername,groupName, amountOwed, orderName, formattedDate)
+    )
+    context.bot.send_message(
+        chat_id=creditorID,
+        text='%s (@%s) has been notified to return $%s for %s in %s' % (debtorName, debtorUsername, amountOwed, orderName, groupName)
+    )
 
 def settleDebt(update, context):
     query = update.callback_query
