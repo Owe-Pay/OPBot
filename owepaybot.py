@@ -1,3 +1,4 @@
+from Users.jianwei.development.personal_git_repo.OP.OPBot.HELPME.bot_sql_integration import userAlreadyAdded
 import logging
 # from datetime import *
 from datetime import datetime, timedelta
@@ -64,7 +65,9 @@ def startPrivate(update, context):
     username = update.message.chat.username
     firstname = update.message.chat.first_name
     user = (chat_id, username, 1, firstname)
-    addUser(user)
+    if not userAlreadyAdded(chat_id):
+        addUser(user)
+        
     keyboard = [
         [
             InlineKeyboardButton("Register", callback_data='userRegister'),
