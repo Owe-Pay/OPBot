@@ -135,12 +135,8 @@ Our backend will be connected to the frontend using python
 
 We have created various guides for both Users and Developers alike with more information about our project. Please find the links below
    
-# [User Guide]
-   
-## Introduction
-We at Owe$Pay$ hope to make the tracking payments for ordering of food simple and integrable into Telegram group chats.
-In the future, we also hope to create a system to simplify the process of tracking orders and payments in a cohesive app.
-We aim to solve two main problems with O$P$. Firstly, we aim to make tracking your debts easy, clean and hassle-free. Secondly, we aim to make the process of chasing after your debtors much more impersonal so you won’t feel as ‘paiseh’ to ask them to return you what is rightfully yours!
+# User Guide
+
 
 ## O$P$ Telegram Bot (@OwePay_bot)
 One of the main ways we intend to execute our project is through our Telegram Bot. Telegram is one of the most used Instant Messaging Platforms amongst both university students and the world at large today. Hence, we decided that it would be an excellent platform to execute our idea since most friend groups who would typically have a Telegram Group to chat in.
@@ -203,9 +199,6 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
 
 # Developer Guide
 
-## Introduction
-   
-Our project hopes to be extensible and easy for others to collaborate on either by contributing directly to the codebase or providing suggestions by means of comments. In the write-up below, we have detailed how others can develop using the code we’ve already written.
 
 ## Setup
    
@@ -215,7 +208,7 @@ All of our code can be found on our GitHub. Feel free to leave comments if you f
 	
 The codebase for the Telegram Bot is written in mainly Python and we will require multiple plugins in order to run our bot for development.
 
-#### 1. Install Python
+### 1. Install Python
    
 As of time of writing, we’re currently using Python 3.9.5 for development. You can download Python from their official website here. In the event that you are   experiencing difficulties, try to follow this guide here.
 
@@ -227,7 +220,7 @@ Once you have installed Python, we will be running most of our commands via the 
 
 If you are using an older version of Python, please update to Python 3.9.5 as the following instructions are specific to this version. To avoid constant repetition, all text in the courier new font is to be executed via the CLI unless stated otherwise.
 
-#### 2. Cloning of Git Repository
+### 2. Cloning of Git Repository
 
 Open a new CLI window and navigate to the parent directory you intend to work in before cloning the Git Repository.
 ```
@@ -239,7 +232,7 @@ Navigate to the newly created OPBot directory. You will notice that this folder 
 	
 Our codebase uses several plugins and we will go over how to install them. 
 
-   1. Pipenv
+   3.1 Pipenv
    
     Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If you wish to run the code via you local machine please continue with the installation of other plugins.
     
@@ -253,28 +246,28 @@ py -m pip install pipenv
 ```
    If you are still struggling with installing via pip feel free to contact us via GitHub and we’ll try our best to help you out! :)
 	
-   2. Python-Telegram-Bot
+   3.2 Python-Telegram-Bot
    
    Python-Telegram-Bot is a wrapper tool that helps us to control and interact with our bot and is the backbone of our bot. Please try to familiarize yourself with it’s API and wrappers as a fundamental understanding of their classes is crucial for developing the codebase for O$P$.
 ```
 pip install python-telegram-bot
 ```
 	
-   3. Logging
+   3.3 Logging
    
    Nothing much to say here. Just to create error logs for us to view later on.
 ```
 pip install logging
 ```
 	
-   4.Cryptography
+   3.4 Cryptography
 	
    This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-    bot.
 ```
 pip install cryptography
 ```
 
-   5.Pytest
+   3.5 Pytest
 	
    A very useful package that forms the backbone of our testing environment
 	
@@ -282,27 +275,27 @@ pip install cryptography
 pip install pytest
 ```
 	
-   6.Flaky
+   3.6 Flaky
 	
    This package helps to rerun Pytest tests for some of the more gimmicky tests that might not pass on the first try.
 	
 ```
 pip install flaky
 ```
-   7.Tabulate
+   3.7 Tabulate
    
    This package helps to make printing of tables prettier. Mostly for aesthetic purposes only.	
 ```
 pip install tabulate
 ```
-   8.Pymysql
+   3.8 Pymysql
 	
    This package allows us to create MySQL queries with our Python functions in order to access our backend MySQL database.
 	
 ```
 pip install pymsysql
 ```
-   9.os-sys
+   3.9 os-sys
 	
    If for some odd reason you don’t have os-sys installed you can do so as follows. It is crucial for accessing environment variables which I will explain how to set up later.
 	
@@ -310,7 +303,7 @@ pip install pymsysql
 pip install os-sys
 ```
 	
-#### 4. MySql
+### 4. MySql
  
 To set up MySQL, first go to their official website and download the MySQL installer [here](https://dev.mysql.com/downloads/installer/). As of time of writing, we are using MySQL version 8.0.25. Run the installer and go through the necessary steps. If you encounter any difficulties, please refer to the guide [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/).
 	
@@ -413,15 +406,15 @@ tempContext: A Context object to simulate the functionality of an actual Context
 	
 **Stubs used**
 
-user_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via private message
+*user_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via private message
 
-user_dont_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via private message
+*user_dont_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via private message
 
-group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via group
+*group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via group
 
-group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via group
+*group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via group
 
-tempContext: A Context object to simulate the functionality of an actual Context object
+*tempContext: A Context object to simulate the functionality of an actual Context object
 
 | Test Name      | Description           | Expected   | Actual   |
 | ------------- |:-------------:| -----:| -----:|
