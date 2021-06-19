@@ -1,5 +1,6 @@
 from email.mime import text
-from datetime import datetime, timedelta
+from datetime import *
+import pytz
 import logging
 import os
 from tokenize import group
@@ -13,6 +14,9 @@ from .bot_sql_integration import *
 
 
 TOKEN = os.environ['API_TOKEN']
+
+tz = pytz.timezone('Asia/Singapore')
+now = datetime.now(tz) # the current time in your local timezone
 
 def inlineQueryHelper(update):
     """Helps to provide the display text for the inline query pop-up"""
@@ -93,7 +97,8 @@ def splitSomeEvenlyKeyboardMarkup(groupID):
         firstname = getFirstName(user)
         username = getUsername(user)
         firstNameWithUsername = firstname + " (@" + username + ")"
-        keyboardHolder.append([InlineKeyboardButton(firstNameWithUsername, callback_data='%s' % user)])
+        callback_data = 'splitsomeevenlycallbackdata' + '%s' % user
+        keyboardHolder.append([InlineKeyboardButton(firstNameWithUsername, callback_data=callback_data)])
 
     buttonToFinalise = InlineKeyboardButton("Create Order", callback_data='splitSomeEvenlyFinalise')
     keyboardHolder.append([buttonToFinalise])
@@ -120,6 +125,49 @@ def addUsernameToDebtMessage(username, text):
 
 def takeSecond(element):
     return element[1]
+
+def formatTransactionsKeyboardMarkup(transactions):
+    if len(transactions) < 1:
+        return
+    
+    firstTransaction = transactions[0]
+    currentOrderID = firstTransaction[1]
+    date = getOrderDateFromOrderID(currentOrderID)
+    formattedDate = date.strftime("%d %B %Y")
+    currentOrderName = getOrderNameFromOrderID(currentOrderID)
+    currentGroupID = getGroupIDFromOrder(currentOrderID)
+    currentGroupName = getGroupNameFromGroupID(currentGroupID)
+    keyboardHolder = []
+    keyboardHolder.append([InlineKeyboardButton('Order: %s %s (%s)' % (currentOrderName, formattedDate, currentGroupName), callback_data='null')])
+
+    for transaction in transactions:
+        transactionID = transaction[0]
+        transactionOrderID = transaction[1]
+        if transactionOrderID != currentOrderID:
+            currentOrderID = transactionOrderID
+            currentGroupID = getGroupIDFromOrder(currentOrderID)
+            currentGroupName = getGroupNameFromGroupID(currentGroupID)
+            date = getOrderDateFromOrderID(currentOrderID)
+            formattedDate = date.strftime("%d %B %Y")
+            currentOrderName = getOrderNameFromOrderID(currentOrderID)
+            keyboardHolder.append([InlineKeyboardButton('Order: %s %s (%s)' % (currentOrderName, formattedDate, currentGroupName), callback_data='null')])
+        
+        debtorID = transaction[2]
+        amountOwed = transaction[3]
+        debtorUsername = getUsername(debtorID)
+        debtorName = getFirstName(debtorID)
+        tempKeyboard = [
+            InlineKeyboardButton('%s' % debtorName, callback_data='null'),
+            InlineKeyboardButton('@%s' % debtorUsername, callback_data='null'),
+            InlineKeyboardButton('$%s' % amountOwed, callback_data='null'),
+            InlineKeyboardButton('Notify', callback_data="notifydebtorcallbackdata%s" % transactionID),
+            InlineKeyboardButton('Settle', callback_data="settledebtcallbackdata%s" % transactionID)
+        ]
+        keyboardHolder.append(tempKeyboard)
+    
+    return InlineKeyboardMarkup(keyboardHolder)
+        
+
 
 
 # removeUsernameFromSplitAllEvenlyDebtMessage('testuser1', '6a39016c-cd25-11eb-955c-acde48001122')

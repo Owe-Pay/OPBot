@@ -1,7 +1,10 @@
 import logging
+# from datetime import *
 from datetime import datetime, timedelta
+import time
 import os
 import sys
+import pytz
 
 from HELPME.bot_sql_integration import *
 from HELPME.helperFunctions import *
@@ -13,6 +16,9 @@ from telegram import Bot, InlineQueryResultArticle, ParseMode, InputTextMessageC
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+
+tz = pytz.timezone('Asia/Singapore')
+now = datetime.now(tz) # the current time in your local timezone
 
 logger = logging.getLogger(__name__)
 TOKEN = os.environ["API_TOKEN"]
@@ -54,6 +60,11 @@ def startGroup(update, context):
 
 def startPrivate(update, context):
     """Send the welcome message when the command /start is issued via PM"""
+    chat_id = update.message.chat_id
+    username = update.message.chat.username
+    firstname = update.message.chat.first_name
+    user = (chat_id, username, 1, firstname)
+    addUser(user)
     keyboard = [
         [
             InlineKeyboardButton("Register", callback_data='userRegister'),
@@ -74,9 +85,7 @@ def startPrivate(update, context):
     )
 
 def getDebtors(update, context):
-    
     userID = update.effective_chat.id
-    
     if not userAlreadyAdded(userID):
         context.bot.send_message(
             chat_id=userID,
@@ -85,11 +94,24 @@ def getDebtors(update, context):
         )
     
     unsettledTransactions = getUnsettledTransactionsForCreditor(userID)
+    keyboardMarkup = formatTransactionsKeyboardMarkup(unsettledTransactions)
+
+    if len(unsettledTransactions) < 1:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text='No one owes you money! What great friends you have!!!'
+        )
+        return
+
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text='The baddies who have your cash money! >:(',
+        reply_markup=keyboardMarkup
+    )
 
     
     # user already added
     
-
 
 
 def help(update, context):
@@ -147,11 +169,93 @@ def button(update, context):
         splitSomeEvenly(update, context)
         return query
 
-    if userAlreadyAdded(choice): #split some
-        editMessageForSplitSome(update, context)
-        return query
+    if 'splitsomeevenlycallbackdata' in choice:
+        user = choice.replace('splitsomeevenlycallbackdata', '', 1)
+        if userAlreadyAdded(user): #split some
+            editMessageForSplitSome(update, context)
+            return query
+    
+    if 'settledebtcallbackdata' in choice:
+        settleDebt(update, context)
+    
+    if 'notifydebtorcallbackdata' in choice:
+        notifyUserFromPrivateMessage(update, context)
 
     
+def notifyUserFromPrivateMessage(update, context):
+    query = update.callback_query
+    transactionID = query.data.replace('notifydebtorcallbackdata', '', 1)
+
+    lastNotifiedTime = getLastNotifiedTimeFromTransactionID(transactionID)
+    currentTime = datetime.now(tz)
+    to_add = timedelta(minutes=60)
+    thresholdTime = lastNotifiedTime + to_add    
+
+    debtorID = getDebtorIDFromTransactionID(transactionID)
+    creditorID = getCreditorIDFromTransactionID(transactionID)
+    debtorName = getFirstName(debtorID)
+    debtorUsername = getUsername(debtorID)
+    orderID = getOrderIDFromTransactionID(transactionID)
+    orderName = getOrderNameFromOrderID(orderID)
+    orderDate = getOrderDateFromOrderID(orderID)
+    formattedDate = orderDate.strftime("%d %B %Y")
+    groupID = getGroupIDFromOrder(orderID)
+    groupName = getGroupNameFromGroupID(groupID)
+    
+    if currentTime.replace(tzinfo=None) < thresholdTime.replace(tzinfo=None):
+        timediff = currentTime.replace(tzinfo=None) - lastNotifiedTime.replace(tzinfo=None)
+        timeTillNextSend = 60 - int(timediff.total_seconds()/60)
+        context.bot.send_message(
+            chat_id=creditorID,
+            text = 'You have notified %s (@%s) too recently for %s on %s in %s. Please try again in %s minutes!' % (debtorName, debtorUsername, orderName, formattedDate, groupName, timeTillNextSend)
+        )  
+        return
+    
+    if not isNotifiable(debtorID):
+        context.bot.send_message(
+            chat_id=creditorID,
+            text = '%s (@%s) is not notifiable.' % (debtorName, debtorUsername)
+        )
+        return
+    
+    updateLastNotifiedTimeWithTransactionID(transactionID, currentTime)
+
+
+    creditorName = getFirstName(creditorID)
+    creditorUsername = getUsername(creditorID)
+    amountOwed = getAmountOwedFromTransactionID(transactionID)
+
+    # context.bot.send_message(
+    #     chat_id=debtorID,
+    #     text='Hi %s! Your friend %s (@%s) from the group %s is asking you to return them their $%s for %s %s' % (debtorName, creditorName, creditorUsername,groupName, amountOwed, orderName, formattedDate)
+    # )
+
+def settleDebt(update, context):
+    query = update.callback_query
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+    userID = query.from_user.id
+    text = query.message.text
+
+    transactionID = query.data.replace('settledebtcallbackdata', '', 1)
+    updateTransactionAsSettledWithTransactionID(transactionID)
+
+    unsettledTransactions = getUnsettledTransactionsForCreditor(userID)
+    keyboardMarkup = formatTransactionsKeyboardMarkup(unsettledTransactions)
+    if (keyboardMarkup!=None):
+        context.bot.editMessageText(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=text,
+            reply_markup = keyboardMarkup
+        )
+    else:
+        context.bot.editMessageText(
+            chat_id=chat_id,
+            message_id=message_id,
+            text='All debts settled! You have such responsible friends... Unlike me ):'
+        )
+
 
 def editMessageForSplitSome(update, context):
     query = update.callback_query
@@ -163,7 +267,7 @@ def editMessageForSplitSome(update, context):
     if not (userIsCreditorForMessage(message_id, chat_id, userID)):
         return
         
-    debtorID = query.data
+    debtorID = query.data.replace('splitsomeevenlycallbackdata', '', 1)
     debtorUsername = getUsername(debtorID)
 
     if debtorUsername in text:
@@ -278,7 +382,7 @@ def splitSomeEvenly(update, context):
     message_id = query.message.message_id
     userID = query.from_user.id
     text = query.message.text
-    date = query.message.date + timedelta(hours=8)
+    date = datetime.now(tz)
 
     if not (userIsCreditorForMessage(message_id, groupID, userID)):
         return
@@ -371,7 +475,7 @@ def catchOrderFromUpdate(update):
     group_id = update.message.chat_id
     order_name = update.message.text
     order_amount= getUserTempAmount(user_id,group_id)
-    date = update.message.date + timedelta(hours=8)
+    date = datetime.now(tz)
     addOrder((order_id, group_id, order_name, order_amount, user_id, date))
     print("order added")
     return Order(order_id, group_id, order_name, order_amount, user_id, date)
@@ -534,7 +638,7 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", startGroup, Filters.chat_type.groups))
     dp.add_handler(CommandHandler("start", startPrivate, Filters.chat_type.private))
-    # dp.add_handler(CommandHandler("whoowesme", getDebtors, Filters.chat_type.private))
+    dp.add_handler(CommandHandler("whoowesme", getDebtors, Filters.chat_type.private))
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(InlineQueryHandler(inline))

@@ -1,11 +1,13 @@
 from tokenize import group
-from datetime import datetime, timedelta
+import pytz
 import pymysql
 from tabulate import tabulate
 from uuid import uuid1
 import datetime
+from datetime import timedelta
 import time
 import os
+from datetime import *
 
 from telegram import message
 
@@ -14,6 +16,8 @@ db_username = os.environ['DB_USER']
 db_database = os.environ['DB_DB']
 db_password = os.environ['DB_PASSWORD']
 
+tz = pytz.timezone('Asia/Singapore') 
+now = datetime.now(tz) # the current time in your local timezone
 
 #############################
 # Functions for General Use #
@@ -320,8 +324,8 @@ def addTransaction(input):
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     try:
-        sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debtor, date) VALUES (%s, %s, %s, %s, %s, %s)"
-        val = (input[0], input[1], input[2], input[3], input[4], input[5])
+        sql = "INSERT into Transactions(transaction_id, OrderID, AmountOwed, UserID_Creditor, UserID_Debtor, date, last_notified) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        val = (input[0], input[1], input[2], input[3], input[4], input[5], input[5])
         mycursor.execute(sql,val)
         mysqldb.commit()
         closeConnection(mysqldb, mycursor)
@@ -339,6 +343,24 @@ def markTransactionAsSettled(creditorID, debtorID, orderID):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
 
+def updateTransactionAsSettledWithTransactionID(transactionID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    sql = "UPDATE Transactions SET settled = '1' WHERE Transaction_ID = '%s'" % transactionID
+    mycursor.execute(sql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+
+def getLastNotifiedTimeFromTransactionID(transactionID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT last_notified FROM Transactions WHERE Transaction_ID LIKE '%s'" % transactionID
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
 
 
 
@@ -413,6 +435,16 @@ def getOrderNameFromOrderID(orderID):
     t = mycursor.fetchone()
     return t[0]
 
+def getOrderDateFromOrderID(orderID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT date FROM Orders WHERE OrderID LIKE '%s'" % orderID
+    mycursor.execute(mysql)
+    closeConnection(mysqldb, mycursor)
+    t = mycursor.fetchone()
+    return t[0]
+
 def getOrderIDFromMessageAndGroupID(messageID, groupID):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
@@ -432,6 +464,16 @@ def getCreditorIDFromMessageAndGroupID(messageID, groupID):
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     return t[0]
+
+def updateLastNotifiedTimeWithTransactionID(transactionID, newTime):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    sql = "UPDATE Transactions SET last_notified = '%s' WHERE Transaction_ID = '%s'" % (newTime, transactionID)
+    print(sql)
+    mycursor.execute(sql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
 
 
 
@@ -510,6 +552,16 @@ def getNumberOfMembers(groupId):
     return t[0]
 #retrieveNumber(-583617452)
 
+def getGroupNameFromGroupID(groupID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT GroupName FROM  TelegramGroups WHERE GroupID LIKE %s" % (groupID)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
+
 def userIsCreditorForMessage(messageID, groupID, userID):
     orderIDFromOrders = getOrderIDFromMessageAndGroupID(messageID, groupID)
     orderIDFromGroupRelationalTable = getOrderIDFromUserIDAndGroupID(userID, groupID)
@@ -532,12 +584,51 @@ def getUnsettledTransactionsForCreditor(creditorID):
         orderID = transaction[1]
         amountowed = transaction[3]
         debtorID = transaction[5]
-
         orderName = getOrderNameFromOrderID(orderID)
         debtorUsername = getUsername(debtorID)
         holder.append((transactionID, orderID, debtorID, amountowed))
 
     holder.sort(key=takeSecond)
     return holder
+
+def getCreditorIDFromTransactionID(transactionID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT UserID_Creditor FROM Transactions WHERE Transaction_ID LIKE '%s'" % transactionID
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
+
+def getDebtorIDFromTransactionID(transactionID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT UserID_Debtor FROM Transactions WHERE Transaction_ID LIKE '%s'" % transactionID
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
+
+def getOrderIDFromTransactionID(transactionID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT OrderID FROM Transactions WHERE Transaction_ID LIKE '%s'" % transactionID
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
+
+def getAmountOwedFromTransactionID(transactionID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT AmountOwed FROM Transactions WHERE Transaction_ID LIKE '%s'" % transactionID
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
 
 # print(getUnsettledTransactionsForCreditor(497722299))

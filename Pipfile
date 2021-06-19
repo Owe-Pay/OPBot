@@ -12,6 +12,7 @@ flaky = "*"
 pytest = "*"
 cryptography = "*"
 flask = "*"
+pytz = "*"
 
 [dev-packages]
 
