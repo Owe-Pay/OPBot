@@ -382,17 +382,17 @@ System Tests would involve testing whether the system would function properly on
 	
 **Stubs used**
 	
-test_bot: A bot to simulate the functionality of a Telegram bot without actually running one
+* test_bot: A bot to simulate the functionality of a Telegram bot without actually running one
 
-userHelpUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via private message
+* userHelpUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via private message
 
-groupHelpUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via group
+* groupHelpUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via group
 
-wrongHelpCommandPrivateUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via private message but the chat_id is invalid
+* wrongHelpCommandPrivateUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via private message but the chat_id is invalid
 
-wrongHelpCommandGroupUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via group but the chat_id is invalid
+* wrongHelpCommandGroupUpdate: An Update object to simulate the Update that is received when the help command is issued by a user via group but the chat_id is invalid
 
-tempContext: A Context object to simulate the functionality of an actual Context object
+* tempContext: A Context object to simulate the functionality of an actual Context object
 
 | Test Name      | Description           | Expected   | Actual   |
 | ------------- |:-------------:| -----:| -----:|
@@ -406,15 +406,15 @@ tempContext: A Context object to simulate the functionality of an actual Context
 	
 **Stubs used**
 
-*user_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via private message
+* user_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via private message
 
-*user_dont_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via private message
+* user_dont_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via private message
 
-*group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via group
+* group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via group
 
-*group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via group
+* group_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Don’t Register button is pressed by a User via group
 
-*tempContext: A Context object to simulate the functionality of an actual Context object
+* tempContext: A Context object to simulate the functionality of an actual Context object
 
 | Test Name      | Description           | Expected   | Actual   |
 | ------------- |:-------------:| -----:| -----:|
@@ -445,3 +445,5 @@ Currently, we are hosting our Telegram Bot via Heroku so it should be up 24/7. Y
 As with many other projects, ours utilises Object-Oriented Programming (OOP) to structure and design our code. 
 
 Below you can find some UML diagrams for your reference.
+![UML 1](https://res.cloudinary.com/jianoway/image/upload/v1624114145/startPrivateUMI_h25isz.png)
+![UML 1](https://res.cloudinary.com/jianoway/image/upload/v1624114139/startGroup_UML_ncnqol.png)
