@@ -24,7 +24,7 @@ CREATE TABLE `Transactions` (
     `UserID_Creditor` varchar(45) NOT NULL,
     `UserID_Debtor` varchar(45) NOT NULL,
     `settled` BOOLEAN NOT NULL DEFAULT 0,
-    `last_notified` DATETIME,
+    `last_notified` DATETIME DEFAULT NULL,
     PRIMARY KEY (`transaction_id`)
 )  ENGINE=INNODB AUTO_INCREMENT=797 DEFAULT CHARSET=UTF8MB4 COLLATE = utf8mb4_general_ci;
 
