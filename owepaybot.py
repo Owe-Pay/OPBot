@@ -5,6 +5,7 @@ import time
 import os
 import sys
 import pytz
+import re
 
 from HELPME.bot_sql_integration import *
 from HELPME.helperFunctions import *
@@ -114,7 +115,16 @@ def getDebtors(update, context):
     
     # user already added
     
-
+def cancel(update, context):
+    groupID = update.effective_chat.id
+    userID = update.message.from_user.id
+    messageID = update.message.message_id
+    setUserStateInactive(userID, groupID)
+    context.bot.send_message(
+        chat_id=groupID,
+        reply_to_message_id=messageID,
+        text="I've been cancelled!"
+    )
 
 def help(update, context):
     return context.bot.send_message(
@@ -182,8 +192,432 @@ def button(update, context):
     
     if 'notifydebtorcallbackdata' in choice:
         notifyUserFromPrivateMessage(update, context)
+     
+    if 'splitdifferentamountcallbackdata' in choice:
+        editSplitDifferentAmountMessageIndividual(update, context)
+
+    if choice == 'splitdifferentamountaddeveryone':
+        editSplitDifferentAmountMessageEveryone(update, context)
+
+    if choice == 'splitdifferentamountnextitem':
+        splitDifferentAmountNextItem(update, context)
+    
+    if choice == 'goodservicetax':
+        splitGST(update, context)
+    
+    if choice == 'servicechargecallbackdata':
+        splitSVC(update, context)
+    
+    if choice == 'splitdifferentamountfinalise':
+        splitDifferentAmountsFinalise(update, context)
+    
+    if choice == 'debtorDifferentAmountsPaid':
+        debtorDifferentAmountsPaid(update, context)
+
+    if choice == 'debtorDifferentAmountsUnpaid':
+        debtorDifferentAmountsUnpaid(update, context)
+        
+def debtorDifferentAmountsPaid(update, context):
+    query = update.callback_query
+    groupID = query.message.chat_id
+    message_id = query.message.message_id
+    debtorID = query.from_user.id
+    debtorUsername = getUsername(debtorID)
+    text = query.message.text
+    orderID = getOrderIDFromMessageAndGroupID(message_id, groupID)
+    creditorID = getCreditorIDFromMessageAndGroupID(message_id, groupID)
+
+    if str(creditorID) == str(debtorID):
+        return
+
+    transactionID = getTransactionIDFromOrderIDCreditorIDDebtorID(orderID, creditorID, debtorID)
+    amountOwed = getAmountOwedFromTransactionID(transactionID)
+
+    textList = text.split('\n')
+    edited = False
+    newTextList = []
+    for item in textList:
+        if not '(@' + debtorUsername + ')' in item:
+            newTextList.append(item + '\n')
+        else:
+            edited = True
+            markTransactionAsSettled(creditorID, debtorID, orderID)
+    newText = ''.join(newTextList)
+    if edited:
+        context.bot.editMessageText(
+            chat_id=groupID,
+            message_id=message_id,
+            text=newText,
+            reply_markup=splitDifferentAmountFinalisedKeyboardMarkup()
+        )
+
+def debtorDifferentAmountsUnpaid(update, context):
+    query = update.callback_query
+    groupID = query.message.chat_id
+    message_id = query.message.message_id
+    debtorID = query.from_user.id
+    debtorUsername = getUsername(debtorID)
+    text = query.message.text
+    orderID = getOrderIDFromMessageAndGroupID(message_id, groupID)
+    creditorID = getCreditorIDFromMessageAndGroupID(message_id, groupID)
+
+    if str(creditorID) == str(debtorID):
+        return
+
+    transactionID = getTransactionIDFromOrderIDCreditorIDDebtorID(orderID, creditorID, debtorID)
+    amountOwed = getAmountOwedFromTransactionID(transactionID)
+
+    textList = text.split('\n')
+    alreadyInside = False
+    newTextList = []
+    for item in textList:
+        if '(@' + debtorUsername + ')' in item:
+            newTextList.append(item + '\n')
+            alreadyInside = True
+        else:
+            newTextList.append(item + '\n')
+
+    if not alreadyInside:
+        debtorName = getFirstName(debtorID)
+        stringToAdd = '%s (@%s) - $%s\n' %(debtorName, debtorUsername, amountOwed)
+        newTextList.append(stringToAdd)
+        newText = ''.join(newTextList)
+        context.bot.editMessageText(
+            chat_id=groupID,
+            message_id=message_id,
+            text=newText,
+            reply_markup=splitDifferentAmountFinalisedKeyboardMarkup()
+        )
+    
+
+def splitDifferentAmountsFinalise(update, context):
+    query = update.callback_query
+    groupID = query.message.chat_id
+    message_id = query.message.message_id
+    userID = query.from_user.id
+    text = query.message.text
+    date = datetime.now(tz)
+
+    if not (userIsCreditorForMessage(message_id, groupID, userID)):
+        return
+    orderID = getOrderIDFromUserIDAndGroupID(userID, groupID)
+    creditorUsername = getUsername(userID)
+    textList = text.split('\n')
+    userList = []
+    debtList = []
+    for item in textList:
+        if '-' in item:
+            if '(@' + creditorUsername + ')' in item: 
+                continue
+            debtList.append(item)
+            noBrackets = item.replace('(', '`')
+            noBracketsList = noBrackets.split('`')
+            for noBrack in noBracketsList:
+                user = ''
+                if '@' in noBrack:
+                    user = noBrack
+                    
+                if user != '':
+                    user = user.split(') - $')
+                    userList.append(user)
+
+    for user in userList:
+        username = user[0]
+        debtorID = getUserIDFromUsername(username.replace('@', '', 1))
+        if username.replace('@', '', 1) == creditorUsername:
+            continue
+        amountOwed = user[1]
+        transactionID = str(uuid1())
+        addTransaction((transactionID, orderID, amountOwed, userID, debtorID, date))
+    
+    newDebtorList = []
+    for debtor in debtList:
+        newDebtorList.append(debtor + '\n')
+    debtorString = ''.join(newDebtorList)
+    orderName = getOrderNameFromOrderID(orderID)
+    messageText = "Please return %s their cash money for %s!\n\n%s" % ('@' + creditorUsername, orderName, debtorString)
+    orderMessage = context.bot.editMessageText(
+        chat_id=groupID,
+        message_id=message_id,
+        text=messageText,
+        reply_markup=splitDifferentAmountFinalisedKeyboardMarkup()
+    )
+
 
     
+    
+
+        
+def splitGST(update, context):
+    query = update.callback_query
+    userID = query.from_user.id
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+    text = query.message.text
+    textList = text.split('\n')
+    newTextList = []
+    if 'w/ GST' in text:
+        for itemWithoutPara in textList:
+            newItem = itemWithoutPara
+            if 'People paying for ' in itemWithoutPara:
+                if 'w/ SVC' in itemWithoutPara:
+                    newItem = itemWithoutPara.replace('w/ GST and ', 'w/ ', 1)
+                else:
+                    newItem = itemWithoutPara.replace(' w/ GST:', ':', 1)
+            tempSplitList = itemWithoutPara.split('-')
+            tempSplitItem = tempSplitList[len(tempSplitList) - 1]
+            if len(tempSplitList) > 0 and tempSplitList[0] != '':
+                currentAmount = re.sub("[^\d.]+", "", str(tempSplitItem))
+                if (isValidAmount(currentAmount)):
+                    newAmount = getFormattedAmountFromString(float(currentAmount) / 1.07)
+                    newItem = newItem.replace('$%s' % str(currentAmount), '$%s' % newAmount, 1)
+            newTextList.append(newItem + '\n')
+    else:
+        for itemWithoutPara in textList:
+            newItem = itemWithoutPara
+            if 'People paying for ' in itemWithoutPara:
+                if 'w/ SVC' in itemWithoutPara:
+                    newItem = itemWithoutPara.replace('w/ ', 'w/ GST and ', 1)
+                else:
+                    newItem = itemWithoutPara.replace(':', ' w/ GST:')
+            tempSplitList = itemWithoutPara.split('-')
+            tempSplitItem = tempSplitList[len(tempSplitList) - 1]
+            if len(tempSplitList) > 0 and tempSplitList[0] != '':
+                currentAmount = re.sub("[^\d.]+", "", str(tempSplitItem))
+                if (isValidAmount(currentAmount)):
+                    newAmount = getFormattedAmountFromString(float(currentAmount) * 1.07)
+                    newItem = newItem.replace('$%s' % str(currentAmount), '$%s' % newAmount, 1)
+            newTextList.append(newItem + '\n')
+    
+    newMessage = ''.join(newTextList)
+
+    context.bot.editMessageText(
+        chat_id=chat_id,
+        message_id=message_id,
+        text=newMessage,
+        reply_markup=query.message.reply_markup
+    )
+        
+            
+def splitSVC(update, context):
+    query = update.callback_query
+    userID = query.from_user.id
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+    text = query.message.text
+    textList = text.split('\n')
+    newTextList = []
+    if ' SVC:' in text:
+        for itemWithoutPara in textList:
+            newItem = itemWithoutPara
+            if 'People paying for ' in itemWithoutPara:
+                if 'w/ GST' in itemWithoutPara:
+                    newItem = itemWithoutPara.replace(' and SVC:', ':', 1)
+                else:
+                    newItem = itemWithoutPara.replace(' w/ SVC', ':', 1)
+            tempSplitList = itemWithoutPara.split('-')
+            tempSplitItem = tempSplitList[len(tempSplitList) - 1]
+            if len(tempSplitList) > 0 and tempSplitList[0] != '':
+                currentAmount = re.sub("[^\d.]+", "", str(tempSplitItem))
+                if (isValidAmount(currentAmount)):
+                    newAmount = getFormattedAmountFromString(float(currentAmount) / 1.1)
+                    newItem = newItem.replace('$%s' % str(currentAmount), '$%s' % newAmount, 1)
+            newTextList.append(newItem + '\n')
+    else:
+        for itemWithoutPara in textList:
+            newItem = itemWithoutPara
+            if 'People paying for ' in itemWithoutPara:
+                if 'w/ GST:' in itemWithoutPara:
+                    newItem = itemWithoutPara.replace(':', ' and SVC:', 1)
+                else:
+                    newItem = itemWithoutPara.replace(':', ' w/ SVC:')
+            tempSplitList = itemWithoutPara.split('-')
+            tempSplitItem = tempSplitList[len(tempSplitList) - 1]
+            if len(tempSplitList) > 0 and tempSplitList[0] != '':
+                currentAmount = re.sub("[^\d.]+", "", str(tempSplitItem))
+                if (isValidAmount(currentAmount)):
+                    newAmount = getFormattedAmountFromString(float(currentAmount) * 1.1)
+                    newItem = newItem.replace('$%s' % str(currentAmount), '$%s' % newAmount, 1)
+            newTextList.append(newItem + '\n')
+        
+    newMessage = ''.join(newTextList)
+
+    context.bot.editMessageText(
+        chat_id=chat_id,
+        message_id=message_id,
+        text=newMessage,
+        reply_markup=query.message.reply_markup
+    )
+            
+
+def splitDifferentAmountNextItem(update, context):
+    query = update.callback_query
+    userID = query.from_user.id
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+    if not (userIsCreditorForMessage(message_id, chat_id, userID)):
+        return
+    orderID = getOrderIDFromUserIDAndGroupID(userID, chat_id)
+    orderName = getOrderNameFromOrderID(orderID)
+    text = query.message.text
+    textList = text.split('\n')
+    itemToRemove = ''
+    for item in textList:
+        if 'People paying for ' in item:
+            itemToRemove = item
+    
+    itemToRemovePosition = textList.index(itemToRemove)
+    itemsLeftToSplitTitlePosition = textList.index('Items left to split:')
+    count = -1
+    userListToAdd = []
+    for item in textList:
+        count += 1
+        if count <= itemToRemovePosition:
+            continue
+        else:
+            userListToAdd.append(item)
+
+    numOfUsersToAdd = len(userListToAdd)
+    if numOfUsersToAdd < 1:
+        return
+    
+    currentSplitList = []
+
+    amountBeforeSplit = float(re.sub("[^\d.]+", "", itemToRemove))
+    amountAfterSplit = amountBeforeSplit / numOfUsersToAdd
+
+    count = -1
+    for item in textList:
+        count += 1
+        if count < itemsLeftToSplitTitlePosition and count != 0 and item != '':
+            currentSplitList.append(item)
+        else:
+            continue
+    for userToAdd in userListToAdd:
+        inside = False
+        for splitUser in currentSplitList:
+            if userToAdd in splitUser:
+                splitUserPosition = currentSplitList.index(splitUser)
+                inside = True
+                splitUserList = splitUser.split('-')
+                tempSplitUser = splitUserList[len(splitUserList) - 1]
+                currentAmount = float(re.sub("[^\d.]+", "", tempSplitUser))
+
+                newAmount = getFormattedAmountFromString(currentAmount + amountAfterSplit)
+                print(newAmount)
+                currentSplitList[splitUserPosition] = userToAdd + ' - $' + newAmount
+        if not inside:
+            currentSplitList.append(userToAdd + ' - $' + getFormattedAmountFromString(amountAfterSplit))
+    itemList = []
+    count = -1
+    for item in textList:
+        count += 1
+        if count > itemsLeftToSplitTitlePosition and count < itemToRemovePosition and item != '':
+            itemList.append(item)
+    numOfItemsLeft = len(itemList)
+    last = numOfItemsLeft < 1
+    
+    
+    if not last:
+        nextItem = itemList.pop(numOfItemsLeft - 1)
+        newItemList = []
+        for item in itemList:
+            newItemList.append(item + '\n')
+        itemListString = ''.join(newItemList)
+        newSplitUserList = []
+        for splitUser in currentSplitList:
+            newSplitUserList.append(splitUser + '\n')
+        splitUserString = ''.join(newSplitUserList)
+        messageText = 'Current split for %s:\n%s\nItems left to split:\n%s\nPeople paying for %s:' % (orderName, splitUserString, itemListString, nextItem)
+        context.bot.editMessageText(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=messageText,
+            reply_markup=splitDifferentAmountKeyboardMarkup(chat_id, last)
+        )
+    else:
+        newSplitUserList = []
+        totalAmount = float(0)
+        for splitUser in currentSplitList:
+            newSplitUserList.append(splitUser + '\n')
+            tempSplitUserList = splitUser.split('-')
+            tempSplitUser = tempSplitUserList[len(tempSplitUserList) - 1]
+            currentAmount = float(re.sub("[^\d.]+", "", tempSplitUser))
+            totalAmount += currentAmount
+        formattedTotal = getFormattedAmountFromString(totalAmount)
+        splitUserString = ''.join(newSplitUserList)
+        messageText = 'People paying for %s:\n%s\nTotal: $%s' % (orderName, splitUserString, formattedTotal)
+        context.bot.editMessageText(
+            chat_id=chat_id,
+            text=messageText,
+            message_id=message_id,
+            reply_markup=splitDifferentAmountKeyboardMarkup(chat_id, last),
+        )
+
+
+def editSplitDifferentAmountMessageIndividual(update, context):
+    query = update.callback_query
+    debtorID = query.data.replace('splitdifferentamountcallbackdata', '', 1)
+    userID = query.from_user.id
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+ 
+    if not (userIsCreditorForMessage(message_id, chat_id, userID)):
+        return
+    
+    text = query.message.text
+    textList = text.split('\n')
+    debtorName = getFirstName(debtorID)
+    debtorUsername = getUsername(debtorID)
+    debtorToAdd = debtorName + ' (@' + debtorUsername + ')'
+    if debtorToAdd in textList:
+        textList.remove(debtorToAdd)
+    else:
+        textList.append(debtorToAdd)
+    newTextList = []
+    for text in textList:
+        newTextList.append(text + '\n')
+
+    newText = ''.join(newTextList)
+
+    context.bot.editMessageText(
+        chat_id=chat_id,
+        message_id=message_id,
+        text=newText,
+        reply_markup=query.message.reply_markup
+    )
+
+def editSplitDifferentAmountMessageEveryone(update, context):
+    query = update.callback_query
+    userID = query.from_user.id
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+    text = query.message.text
+    if not (userIsCreditorForMessage(message_id, chat_id, userID)):
+        return
+    
+    userList = getAllUsersFromGroup(chat_id)
+    listOfUsersWithNameAndUsername = []
+    
+    for user in userList:
+        username = getUsername(user)
+        firstName = getFirstName(user)
+        entry = '\n' + firstName + ' (@' + username + ')'
+        listOfUsersWithNameAndUsername.append(entry)
+    
+    text = text + ''.join(listOfUsersWithNameAndUsername)
+    context.bot.editMessageText(
+        chat_id=chat_id,
+        message_id=message_id,
+        text=text,
+        reply_markup=query.message.reply_markup
+    )
+
+
+    # text = query.message.text
+
+
+
 def notifyUserFromPrivateMessage(update, context):
     query = update.callback_query
     transactionID = query.data.replace('notifydebtorcallbackdata', '', 1)
@@ -412,8 +846,6 @@ def splitSomeEvenly(update, context):
     resetUserTempAmount(userID, groupID)
     resetUserTempOrderID(userID, groupID)
 
-    
-
     messageText = "Please return @%s $%s each for %s" % (creditorUsername, splitAmount, orderName)
     for username in listOfUsers:
         messageText = messageText + '\n' + username
@@ -431,6 +863,66 @@ def splitSomeEvenly(update, context):
     messageID = orderMessage.message_id
     addMessageIDToOrder(str(orderID), messageID)
     createTransactionBetweenSomeUsers(order, listOfUserID)
+
+def splitDifferentAmountsCommandHandler(update, context):
+    groupID = update.effective_chat.id
+    userID = update.message.from_user.id
+    messageID = update.message.message_id
+    if not groupAlreadyAdded(groupID):
+        context.bot.send_message(
+            chat_id=groupID,
+            reply_to_message_id=messageID,
+            text='Please register with us first using /start!'
+        )
+    else:
+        updateUserStateSplitDifferentAmountsWaitingForName(userID, groupID)
+        context.bot.send_message(
+            chat_id=groupID,
+            reply_to_message_id=messageID,
+            text='Hi Please send the name of the order!',
+        )
+
+def splitDifferentAmounts(update, context, userID, groupID):
+    textString = update.message.text
+    textStringWithoutParagraphs = textString.split('\n')
+    textListSeparated = []
+    messageID = update.message.message_id
+    itemList = []
+    orderID = getOrderIDFromUserIDAndGroupID(userID, groupID)
+    orderName = getOrderNameFromOrderID(orderID)
+    for text in textStringWithoutParagraphs:
+        tempText = text.split ('-')
+        tempList = []
+        for t in tempText:
+            tempList.append(removeCrustFromString(t))
+        textListSeparated.append(tempList)
+    
+    for item in textListSeparated:
+        tempList = []
+        if len(item) != 2 or not isValidAmount(item[1]):
+            context.bot.send_message(
+                chat_id=groupID,
+                reply_to_message_id=messageID,
+                text='Please send your order in a valid format!'
+            )
+            return
+        tempList.append(item[0])
+        tempList.append(getFormattedAmountFromString(item[1]))
+        itemList.append(tempList)
+
+    firstItem = itemList.pop(0)
+    firstItemString = firstItem[0] + ' ($' + firstItem[1] + ')'
+    itemListString = itemListToString(itemList)
+    last = len(itemList) < 1
+    messageText = 'Current split for %s:\n\nItems left to split:%s\n\nPeople paying for %s:' % (orderName, itemListString, firstItemString)
+    orderMessage = context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=messageText,
+        reply_markup=splitDifferentAmountKeyboardMarkup(groupID, False)
+    )
+    messageID = orderMessage.message_id
+    addMessageIDToOrder(orderID, messageID)
+    setUserStateInactive(userID, groupID)
     
 def getTotalAmountFromMessage(update, context):
     chat_message=update.message.text
@@ -603,6 +1095,23 @@ def echo(update, context):
     """Echo the update for debugging purposes."""
     print(update)
 
+def splitDifferentAmountsOrderNameCatcher(update, context, userID, groupID):
+    order = catchOrderFromUpdate(update)
+    orderID = order.orderID
+    messageID = update.message.message_id
+
+    updateOrderIDToUserGroupRelational(userID, groupID, orderID)
+    setOrderDifferentAmountsFromOrderID(orderID)
+
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        reply_to_message_id=messageID,
+        text='Please send in the items in the following format:\n<Item Name> - <Price>\n\nFor example:\nChicken Rice - 5\nCurry Chicken - 5.50\nNasi Lemak - 4'
+    )
+    updateUserStateSplitDifferentAmounts(userID, groupID)
+
+
+
 def groupMemberScanner(update, context):
     """"Constantly monitors group chat to check if members are counted in the group or not"""
     group_id = update.message.chat_id
@@ -627,6 +1136,13 @@ def groupMemberScanner(update, context):
     if userStateSplitSomeEvenly(user_id, group_id):
         waitingForSomeNames(update, context, user_id, group_id)
 
+
+    if userStateSplitDifferentAmounts(user_id, group_id):
+        splitDifferentAmounts(update, context, user_id, group_id)
+
+    if userStateSplitDifferentAmountsWaitingForName(user_id, group_id):
+        splitDifferentAmountsOrderNameCatcher(update, context, user_id, group_id)
+
     if viabot_check(update, context):
         messageContainsSplitAllEvenly(update, context)
         messageContainsSplitSomeEvenly(update, context)
@@ -643,7 +1159,9 @@ def main():
     dp.add_handler(CommandHandler("start", startGroup, Filters.chat_type.groups))
     dp.add_handler(CommandHandler("start", startPrivate, Filters.chat_type.private))
     dp.add_handler(CommandHandler("whoowesme", getDebtors, Filters.chat_type.private))
+    dp.add_handler(CommandHandler("splitdifferentamounts", splitDifferentAmountsCommandHandler, Filters.chat_type.groups))
     dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(CommandHandler("cancel", cancel, Filters.chat_type.groups))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(InlineQueryHandler(inline))
     #dp.add_handler(MessageHandler(Filters.chat_type.groups, echo))

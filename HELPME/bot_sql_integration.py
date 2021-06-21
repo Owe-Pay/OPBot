@@ -145,6 +145,47 @@ def userStateSplitSomeEvenly(user_id,group_id):
     closeConnection(mysqldb, mycursor)
     return (t!=None)
 
+def updateUserStateSplitDifferentAmountsWaitingForName(userID, groupID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE UserGroupRelational SET State = 'splitdifferentamountswaitingname' WHERE UserID LIKE %s and GroupID LIKE %s" % (userID, groupID)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+
+def userStateSplitDifferentAmountsWaitingForName(user_id,group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    #state ='active'
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitdifferentamountswaitingname' " % (user_id, group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return (t!=None)
+
+def updateUserStateSplitDifferentAmounts(userID, groupID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE UserGroupRelational SET State = 'splitdifferentamounts' WHERE UserID LIKE %s and GroupID LIKE %s" % (userID, groupID)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+
+def userStateSplitDifferentAmounts(user_id,group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    #state ='active'
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitdifferentamounts' " % (user_id, group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return (t!=None)
+
+
 def updateUserStateWaitingForSomeNames(user_id, group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
@@ -186,6 +227,16 @@ def resetUserTempOrderID(user_id, group_id):
     # t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
     print("reset temp amount to 0")
+
+def updateUserTempItemList(userID, groupID, itemList):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE UserGroupRelational SET Temp_OrderID = %s WHERE UserID LIKE %s and GroupID LIKE %s" % (itemList, userID, groupID)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    # t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
 
 def getUserTempAmount(user_id,group_id):
     mysqldb = pymysql.connect(
@@ -239,7 +290,6 @@ def getUserIDListFromUsernameList(usernameList):
         tempUsername = username
         if "@" in username:
             tempUsername = tempUsername.replace("@", "", 1)
-        print(tempUsername)
         mysqldb = pymysql.connect(
             host=db_host, user=db_username, password=db_password, db=db_database)
         mycursor = mysqldb.cursor()
@@ -250,6 +300,16 @@ def getUserIDListFromUsernameList(usernameList):
         if t!=None:
             holder.append(t[0])
     return holder
+
+def getUserIDFromUsername(username):
+    mysqldb = pymysql.connect(
+            host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT UserID FROM Users WHERE UserName LIKE '%s'" % username
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
 
 def updateOrderIDToUserGroupRelational(userID, groupID, orderID):
     mysqldb = pymysql.connect(
@@ -404,6 +464,15 @@ def addMessageIDToOrder(orderID, messageID):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
 # addMessageIDToOrder("b4f6a04a-cd13-11eb-a093-acde48001122", str(532))
+
+def setOrderDifferentAmountsFromOrderID(orderID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE Orders SET differentAmounts = '1' WHERE OrderID = '%s'" % (orderID)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
 
 def getMessageIDFromOrder(orderID):
     mysqldb = pymysql.connect(
@@ -626,6 +695,16 @@ def getAmountOwedFromTransactionID(transactionID):
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     mysql = "SELECT AmountOwed FROM Transactions WHERE Transaction_ID LIKE '%s'" % transactionID
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return t[0]
+
+def getTransactionIDFromOrderIDCreditorIDDebtorID(orderID, creditorID, debtorID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT Transaction_ID FROM Transactions WHERE OrderID LIKE '%s' and UserID_Creditor LIKE '%s' and UserID_Debtor LIKE '%s'" % (orderID, creditorID, debtorID)
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)

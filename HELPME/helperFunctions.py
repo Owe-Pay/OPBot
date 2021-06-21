@@ -88,6 +88,44 @@ def splitAllEvenlyKeyboardMarkup():
     ]
     return InlineKeyboardMarkup(keyboard)
 
+def splitDifferentAmountFinalisedKeyboardMarkup():
+    keyboard = [
+        [
+            InlineKeyboardButton("I've paid!", callback_data='debtorDifferentAmountsPaid'),
+            InlineKeyboardButton("I've not paid!", callback_data='debtorDifferentAmountsUnpaid')
+        ],
+        # [
+        #     InlineKeyboardButton("Mark as settled", callback_data='markAsSettled')
+        # ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+def splitDifferentAmountKeyboardMarkup(groupID, last):
+    keyboardHolder = []
+    buttonToFinalise = None
+
+    if last:
+        serviceChargeButton = InlineKeyboardButton("Service Charge?", callback_data="servicechargecallbackdata")
+        GSTButton = InlineKeyboardButton("GST?", callback_data="goodservicetax")
+        keyboardHolder.append([serviceChargeButton, GSTButton])
+        buttonToFinalise = InlineKeyboardButton("Create Order", callback_data='splitdifferentamountfinalise')
+    else:
+        users = getAllUsersFromGroup(groupID)
+        for user in users:
+            firstname = getFirstName(user)
+            username = getUsername(user)
+            firstNameWithUsername = firstname + " (@" + username + ")"
+            callback_data = 'splitdifferentamountcallbackdata' + '%s' % user 
+            keyboardHolder.append([InlineKeyboardButton(firstNameWithUsername, callback_data=callback_data)])
+        addEveryone = InlineKeyboardButton("Add Everyone!", callback_data='splitdifferentamountaddeveryone')
+        
+        keyboardHolder.append([addEveryone])
+        buttonToFinalise = InlineKeyboardButton("Next Item", callback_data='splitdifferentamountnextitem')
+    
+    keyboardHolder.append([buttonToFinalise])
+    return InlineKeyboardMarkup(keyboardHolder)
+
+
 def splitSomeEvenlyKeyboardMarkup(groupID):
     keyboardHolder = []
 
@@ -101,6 +139,7 @@ def splitSomeEvenlyKeyboardMarkup(groupID):
         keyboardHolder.append([InlineKeyboardButton(firstNameWithUsername, callback_data=callback_data)])
 
     buttonToFinalise = InlineKeyboardButton("Create Order", callback_data='splitSomeEvenlyFinalise')
+    
     keyboardHolder.append([buttonToFinalise])
 
     return InlineKeyboardMarkup(keyboardHolder)
@@ -166,9 +205,52 @@ def formatTransactionsKeyboardMarkup(transactions):
         keyboardHolder.append(tempKeyboard)
     
     return InlineKeyboardMarkup(keyboardHolder)
-        
 
+def removeCrustFromString(str):
+    return str.rstrip().lstrip()
 
+def isValidAmount(amt):
+    temp = amt.replace('.', '', 1)
+    return temp.isdigit()
+
+def getFormattedAmountFromString(amt):
+    strAmt = str(amt)
+    decimalPosition = strAmt.find('.')
+    temp = list(strAmt)
+    strToReturn = ''
+    if float(strAmt) == 0:
+        return '0.00'
+    if decimalPosition == -1:
+        for digit in temp:
+            if digit == '0' and strToReturn == '':
+                continue
+            else:
+                strToReturn = strToReturn + digit
+        strToReturn = strToReturn + '.00'
+    else:
+        counter = -1
+        for digit in temp:
+            counter += 1
+            if counter > decimalPosition + 2:
+                return strToReturn
+            if digit == '0' and strToReturn == '' and counter != decimalPosition - 1:
+                continue
+            else:
+                strToReturn = strToReturn + digit
+        if counter == decimalPosition + 1:
+            strToReturn = strToReturn + '0'
+        if strToReturn.endswith('.'):
+            strToReturn = strToReturn + '00'
+
+    return strToReturn
+
+def itemListToString(itemList):
+    listStr = ''
+    for item in itemList:
+        print(item)
+        listStr += '\n' + item[0] + ' ('
+        listStr += '$' + item[1] + ')'
+    return listStr    
 
 # removeUsernameFromSplitAllEvenlyDebtMessage('testuser1', '6a39016c-cd25-11eb-955c-acde48001122')
 class Order:
@@ -192,3 +274,4 @@ class Transaction:
         self.splitAmount = splitAmount
         self.creditorID = creditorID
         self.userID = userID
+

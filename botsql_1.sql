@@ -36,6 +36,7 @@ CREATE TABLE `Orders` (
   `Order_amount` double NOT NULL DEFAULT '0',
   `MessageID` varchar(45),
   `date` DATETIME DEFAULT NULL,
+  `differentAmounts` BOOLEAN DEFAULT '0',
   PRIMARY KEY (`OrderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
