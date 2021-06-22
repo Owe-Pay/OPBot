@@ -1,4 +1,3 @@
-from Users.jianwei.development.personal_git_repo.OP.OPBot.HELPME.bot_sql_integration import userIsCreditorForMessage
 import logging
 # from datetime import *
 from datetime import datetime, timedelta
