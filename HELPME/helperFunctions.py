@@ -173,7 +173,7 @@ def formatTransactionsKeyboardMarkup(transactions):
             keyboardHolder.append([InlineKeyboardButton('Order: %s %s (%s)' % (currentOrderName, formattedDate, currentGroupName), callback_data='null')])
         
         debtorID = transaction[2]
-        amountOwed = transaction[3]
+        amountOwed = getFormattedAmountFromString(transaction[3])
         debtorUsername = getUsername(debtorID)
         debtorName = getFirstName(debtorID)
         tempKeyboard = [
