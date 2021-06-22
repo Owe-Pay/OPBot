@@ -195,7 +195,7 @@ def isValidAmount(amt):
     return temp.isdigit()
 
 def getFormattedAmountFromString(amt):
-    tempAmt = float(amt + 0.005)
+    tempAmt = float(float(amt) + float(0.005))
     strAmt = str(tempAmt)
     decimalPosition = strAmt.find('.')
     temp = list(strAmt)
