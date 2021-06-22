@@ -21,7 +21,6 @@ now = datetime.now(tz) # the current time in your local timezone
 def inlineQueryHelper(update):
     """Helps to provide the display text for the inline query pop-up"""
     query = update.inline_query.query
-    print(query)
     if isValidAmount(query.replace('$', '', 1)):
         query = query.replace('$','',1)
         return [
@@ -196,7 +195,8 @@ def isValidAmount(amt):
     return temp.isdigit()
 
 def getFormattedAmountFromString(amt):
-    strAmt = str(amt)
+    tempAmt = float(amt + 0.005)
+    strAmt = str(tempAmt)
     decimalPosition = strAmt.find('.')
     temp = list(strAmt)
     strToReturn = ''
@@ -223,7 +223,6 @@ def getFormattedAmountFromString(amt):
             strToReturn = strToReturn + '0'
         if strToReturn.endswith('.'):
             strToReturn = strToReturn + '00'
-    print(strToReturn)
     return strToReturn
 
 def itemListToString(itemList):
