@@ -104,11 +104,11 @@ def updateUserStateSplitAllEvenly(userId, groupId):
     closeConnection(mysqldb, mycursor)
     print("User is now in splitall state temporarily!")
 
-def updateUserStateSplitSomeEvenly(userId, groupId):
+def updateUserStateSplitEvenly(userId, groupId):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    mysql = "UPDATE UserGroupRelational SET State = 'splitsomeevenly' WHERE UserID LIKE %s and GroupID LIKE %s" % (userId, groupId)
+    mysql = "UPDATE UserGroupRelational SET State = 'splitevenly' WHERE UserID LIKE %s and GroupID LIKE %s" % (userId, groupId)
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
@@ -135,51 +135,51 @@ def userStateSplitAllEvenly(user_id,group_id):
     closeConnection(mysqldb, mycursor)
     return (t!=None)
 
-def userStateSplitSomeEvenly(user_id,group_id):
+def userStateSplitEvenly(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitsomeevenly' " % (user_id, group_id)
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitevenly' " % (user_id, group_id)
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
     return (t!=None)
 
-def updateUserStateSplitDifferentAmountsWaitingForName(userID, groupID):
+def updateUserStateSplitUnevenlyWaitingForName(userID, groupID):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    mysql = "UPDATE UserGroupRelational SET State = 'splitdifferentamountswaitingname' WHERE UserID LIKE %s and GroupID LIKE %s" % (userID, groupID)
+    mysql = "UPDATE UserGroupRelational SET State = 'splitunevenlywaitingname' WHERE UserID LIKE %s and GroupID LIKE %s" % (userID, groupID)
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
 
-def userStateSplitDifferentAmountsWaitingForName(user_id,group_id):
+def userStateSplitUnevenlyWaitingForName(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     #state ='active'
-    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitdifferentamountswaitingname' " % (user_id, group_id)
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitunevenlywaitingname' " % (user_id, group_id)
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)
     return (t!=None)
 
-def updateUserStateSplitDifferentAmounts(userID, groupID):
+def updateUserStateSplitUnevenly(userID, groupID):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
-    mysql = "UPDATE UserGroupRelational SET State = 'splitdifferentamounts' WHERE UserID LIKE %s and GroupID LIKE %s" % (userID, groupID)
+    mysql = "UPDATE UserGroupRelational SET State = 'splitunevenly' WHERE UserID LIKE %s and GroupID LIKE %s" % (userID, groupID)
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
 
-def userStateSplitDifferentAmounts(user_id,group_id):
+def userStateSplitUnevenly(user_id,group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
     mycursor = mysqldb.cursor()
     #state ='active'
-    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitdifferentamounts' " % (user_id, group_id)
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'splitunevenly' " % (user_id, group_id)
     mycursor.execute(mysql)
     t = mycursor.fetchone()
     closeConnection(mysqldb, mycursor)

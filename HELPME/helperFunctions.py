@@ -21,40 +21,21 @@ now = datetime.now(tz) # the current time in your local timezone
 def inlineQueryHelper(update):
     """Helps to provide the display text for the inline query pop-up"""
     query = update.inline_query.query
-    if query.replace('$','',1).isnumeric():
+    print(query)
+    if isValidAmount(query.replace('$', '', 1)):
         query = query.replace('$','',1)
         return [
             InlineQueryResultArticle(
                 id=str(uuid4()),
-                title="Split $" + str(query) + ".00 among everyone",
-                input_message_content=InputTextMessageContent("Split among everyone evenly: $" + query + ".00"),
+                title="Split evenly: $%s" % getFormattedAmountFromString(query),
+                input_message_content=InputTextMessageContent("Split evenly: $" + getFormattedAmountFromString(query)),
                 thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
             ),
             InlineQueryResultArticle(
                 id=str(uuid4()),
-                title="Split $" + str(query) + ".00 among some only",
-                input_message_content=InputTextMessageContent("Split among some only: $" + query + ".00"),
-                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962386/icons8-user-groups-64_d9uktr.png'
-            ),
-        ]
-    
-    if query.replace('.', '', 1).replace('$','',1).isnumeric():
-        query = query.replace('$', '', 1) + "00"
-        queryfloat = float(query)
-        formatted_query = "{:.2f}".format(queryfloat)
-        return [
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title="Split $" + formatted_query + " among everyone",
-                input_message_content=InputTextMessageContent("Split among everyone evenly: $" + formatted_query),
+                title="Split unevenly: $%s" % getFormattedAmountFromString(query),
+                input_message_content=InputTextMessageContent("Split unevenly: $" + getFormattedAmountFromString(query)),
                 thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
-
-            ),
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title="Split $" + formatted_query + " among some only",
-                input_message_content=InputTextMessageContent("Split among some only: $" + formatted_query),
-                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962386/icons8-user-groups-64_d9uktr.png'
             ),
         ]
     
@@ -76,11 +57,11 @@ def formatListOfUsernames(usernameList):
         str += '\n@' + username
     return str
 
-def splitAllEvenlyKeyboardMarkup():
+def splitEvenlyFinalisedKeyboardMarkup():
     keyboard = [
         [
-            InlineKeyboardButton("I've paid!", callback_data='debtorPaid'),
-            InlineKeyboardButton("I've not paid!", callback_data='debtorUnpaid')
+            InlineKeyboardButton("I've paid!", callback_data='debtorEvenlyPaid'),
+            InlineKeyboardButton("I've not paid!", callback_data='debtorEvenlyUnpaid')
         ],
         # [
         #     InlineKeyboardButton("Mark as settled", callback_data='markAsSettled')
@@ -88,11 +69,11 @@ def splitAllEvenlyKeyboardMarkup():
     ]
     return InlineKeyboardMarkup(keyboard)
 
-def splitDifferentAmountFinalisedKeyboardMarkup():
+def splitUnevenlyFinalisedKeyboardMarkup():
     keyboard = [
         [
-            InlineKeyboardButton("I've paid!", callback_data='debtorDifferentAmountsPaid'),
-            InlineKeyboardButton("I've not paid!", callback_data='debtorDifferentAmountsUnpaid')
+            InlineKeyboardButton("I've paid!", callback_data='debtorUnevenlyPaid'),
+            InlineKeyboardButton("I've not paid!", callback_data='debtorUnevenlyUnpaid')
         ],
         # [
         #     InlineKeyboardButton("Mark as settled", callback_data='markAsSettled')
@@ -100,7 +81,7 @@ def splitDifferentAmountFinalisedKeyboardMarkup():
     ]
     return InlineKeyboardMarkup(keyboard)
 
-def splitDifferentAmountKeyboardMarkup(groupID, last):
+def splitUnevenlyKeyboardMarkup(groupID, last):
     keyboardHolder = []
     buttonToFinalise = None
 
@@ -108,25 +89,25 @@ def splitDifferentAmountKeyboardMarkup(groupID, last):
         serviceChargeButton = InlineKeyboardButton("Service Charge?", callback_data="servicechargecallbackdata")
         GSTButton = InlineKeyboardButton("GST?", callback_data="goodservicetax")
         keyboardHolder.append([serviceChargeButton, GSTButton])
-        buttonToFinalise = InlineKeyboardButton("Create Order", callback_data='splitdifferentamountfinalise')
+        buttonToFinalise = InlineKeyboardButton("Create Order", callback_data='splitunevenlyfinalise')
     else:
         users = getAllUsersFromGroup(groupID)
         for user in users:
             firstname = getFirstName(user)
             username = getUsername(user)
             firstNameWithUsername = firstname + " (@" + username + ")"
-            callback_data = 'splitdifferentamountcallbackdata' + '%s' % user 
+            callback_data = 'splitunevenlycallbackdata' + '%s' % user 
             keyboardHolder.append([InlineKeyboardButton(firstNameWithUsername, callback_data=callback_data)])
-        addEveryone = InlineKeyboardButton("Add Everyone!", callback_data='splitdifferentamountaddeveryone')
+        addEveryone = InlineKeyboardButton("Add Everyone!", callback_data='splitunevenlyaddeveryonecallbackdata')
         
         keyboardHolder.append([addEveryone])
-        buttonToFinalise = InlineKeyboardButton("Next Item", callback_data='splitdifferentamountnextitem')
+        buttonToFinalise = InlineKeyboardButton("Next Item", callback_data='splitunevenlynextitem')
     
     keyboardHolder.append([buttonToFinalise])
     return InlineKeyboardMarkup(keyboardHolder)
 
 
-def splitSomeEvenlyKeyboardMarkup(groupID):
+def splitEvenlyKeyboardMarkup(groupID):
     keyboardHolder = []
 
     users = getAllUsersFromGroup(groupID)
@@ -135,11 +116,12 @@ def splitSomeEvenlyKeyboardMarkup(groupID):
         firstname = getFirstName(user)
         username = getUsername(user)
         firstNameWithUsername = firstname + " (@" + username + ")"
-        callback_data = 'splitsomeevenlycallbackdata' + '%s' % user
+        callback_data = 'splitevenlycallbackdata' + '%s' % user
         keyboardHolder.append([InlineKeyboardButton(firstNameWithUsername, callback_data=callback_data)])
 
-    buttonToFinalise = InlineKeyboardButton("Create Order", callback_data='splitSomeEvenlyFinalise')
-    
+    addEveryone = InlineKeyboardButton("Add Everyone!", callback_data='splitevenlyaddeveryonecallbackdata')
+    buttonToFinalise = InlineKeyboardButton("Create Order", callback_data='SplitEvenlyFinalise')
+    keyboardHolder.append([addEveryone])
     keyboardHolder.append([buttonToFinalise])
 
     return InlineKeyboardMarkup(keyboardHolder)
@@ -241,7 +223,7 @@ def getFormattedAmountFromString(amt):
             strToReturn = strToReturn + '0'
         if strToReturn.endswith('.'):
             strToReturn = strToReturn + '00'
-
+    print(strToReturn)
     return strToReturn
 
 def itemListToString(itemList):
