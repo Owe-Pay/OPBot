@@ -583,7 +583,7 @@ def editUnevenlyMessageIndividual(update, context):
     debtorUsername = getUsername(debtorID)
     debtorToAdd = debtorName + ' (@' + debtorUsername + ')'
     if debtorToAdd in textList:
-        textList.remove(debtorToAdd) ''.join('1\n', '2\n') -> '1\n2\n'
+        textList.remove(debtorToAdd)
     else:
         textList.append(debtorToAdd)
     newTextList = []
