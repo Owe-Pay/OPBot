@@ -474,6 +474,16 @@ def setOrderDifferentAmountsFromOrderID(orderID):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
 
+def orderIsEvenlySplit(orderID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM Orders WHERE OrderID LIKE '%s' and differentAmounts = '0'" % orderID
+    mycursor.execute(mysql)
+    closeConnection(mysqldb, mycursor)
+    t = mycursor.fetchone()
+    return t!=None
+
 def getMessageIDFromOrder(orderID):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
@@ -653,9 +663,36 @@ def getUnsettledTransactionsForCreditor(creditorID):
         orderID = transaction[1]
         amountowed = transaction[3]
         debtorID = transaction[5]
-        orderName = getOrderNameFromOrderID(orderID)
-        debtorUsername = getUsername(debtorID)
         holder.append((transactionID, orderID, debtorID, amountowed))
+
+    holder.sort(key=takeSecond)
+    return holder
+
+def transactionAlreadySettled(transactionID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM Transactions WHERE settled = '1' and Transaction_ID LIKE '%s'" % transactionID
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return (t!=None)
+
+def getUnsettledTransactionsForDebtor(debtorID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM transactions WHERE UserID_Debtor LIKE '%s' and settled = '0'" % debtorID
+    mycursor.execute(mysql)
+    t = mycursor.fetchall()
+    closeConnection(mysqldb, mycursor)
+    holder=[]
+    for transaction in t:
+        transactionID = transaction[0]
+        orderID = transaction[1]
+        amountowed = transaction[3]
+        creditorID = transaction[4]
+        holder.append((transactionID, orderID, creditorID, amountowed))
 
     holder.sort(key=takeSecond)
     return holder

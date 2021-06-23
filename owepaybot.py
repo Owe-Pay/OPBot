@@ -98,7 +98,7 @@ def getDebtors(update, context):
         )
     
     unsettledTransactions = getUnsettledTransactionsForCreditor(userID)
-    keyboardMarkup = formatTransactionsKeyboardMarkup(unsettledTransactions)
+    keyboardMarkup = formatTransactionsForCreditorKeyboardMarkup(unsettledTransactions)
 
     if len(unsettledTransactions) < 1:
         context.bot.send_message(
@@ -113,6 +113,30 @@ def getDebtors(update, context):
         reply_markup=keyboardMarkup
     )
 
+def getCreditors(update, context):
+    userID = update.effective_chat.id
+    if not userAlreadyAdded(userID):
+        context.bot.send_message(
+            chat_id=userID,
+            text=
+            "Please register with us first by using /start!"
+        )
+    
+    unsettledTransactions = getUnsettledTransactionsForDebtor(userID)
+    keyboardMarkup = formatTransactionsForDebtorKeyboardMarkup(unsettledTransactions)
+
+    # if len(unsettledTransactions) < 1:
+    #     context.bot.send_message(
+    #         chat_id=update.effective_chat.id,
+    #         text="Wow! Amazing! You don't owe anyone any money!"
+    #     )
+    #     return
+    
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="The kind people who you've taken from:",
+        reply_markup=keyboardMarkup
+    )
     
     # user already added
     
@@ -121,6 +145,8 @@ def cancel(update, context):
     userID = update.message.from_user.id
     messageID = update.message.message_id
     setUserStateInactive(userID, groupID)
+    resetUserTempAmount(userID, groupID)
+    resetUserTempOrderID(userID, groupID)
     context.bot.send_message(
         chat_id=groupID,
         reply_to_message_id=messageID,
@@ -187,8 +213,11 @@ def button(update, context):
             editMessageForSplitEvenly(update, context)
             return query
     
-    if 'settledebtcallbackdata' in choice:
-        settleDebt(update, context)
+    if 'settledebtforcreditor' in choice:
+        settleDebtForCreditor(update, context)
+
+    if 'settledebtfordebtor' in choice:
+        settleDebtForDebtor(update, context)
     
     if 'notifydebtorcallbackdata' in choice:
         notifyUserFromPrivateMessage(update, context)
@@ -709,18 +738,67 @@ def notifyUserFromPrivateMessage(update, context):
         text='%s (@%s) has been notified to return $%s for %s in %s' % (debtorName, debtorUsername, amountOwed, orderName, groupName)
     )
 
-def settleDebt(update, context):
+def updateOrderMessageAsSettledWhenTransactionSettled(transactionID):
+    if transactionAlreadySettled(transactionID):
+        return
+    bot = Bot(TOKEN)
+    orderID = getOrderIDFromTransactionID(transactionID)
+    debtorID = getDebtorIDFromTransactionID(transactionID)
+    messageID = getMessageIDFromOrder(orderID)
+    groupID = getGroupIDFromOrder(orderID)
+
+    debtorName = getFirstName(debtorID)
+    debtorUsername = getUsername(debtorID)
+    entry = '%s (@%s)' % (debtorName, debtorUsername)
+
+    isEven = orderIsEvenlySplit(orderID)
+
+    placeholderGroupMessage = bot.forward_message(
+        chat_id = -528685244,
+        from_chat_id=groupID,
+        message_id=messageID,
+    )
+    text = placeholderGroupMessage.text
+
+    textList = text.split('\n')
+
+    newTextList =[]
+    for item in textList:
+        if entry in item:
+            continue
+        else:
+            newTextList.append(item + '\n')
+
+    newText = ''.join(newTextList)
+
+    reply_markup = ''
+
+    if isEven:
+        reply_markup = splitEvenlyFinalisedKeyboardMarkup()
+    else:
+        reply_markup = splitUnevenlyFinalisedKeyboardMarkup()
+    
+    bot.editMessageText(
+        chat_id=groupID,
+        message_id=messageID,
+        text=newText,
+        reply_markup=reply_markup,
+    )
+        
+
+def settleDebtForCreditor(update, context):
     query = update.callback_query
     chat_id = query.message.chat_id
     message_id = query.message.message_id
     userID = query.from_user.id
     text = query.message.text
 
-    transactionID = query.data.replace('settledebtcallbackdata', '', 1)
+    transactionID = query.data.replace('settledebtforcreditor', '', 1)
     updateTransactionAsSettledWithTransactionID(transactionID)
+    updateOrderMessageAsSettledWhenTransactionSettled(transactionID)
 
     unsettledTransactions = getUnsettledTransactionsForCreditor(userID)
-    keyboardMarkup = formatTransactionsKeyboardMarkup(unsettledTransactions)
+    keyboardMarkup = formatTransactionsForCreditorKeyboardMarkup(unsettledTransactions)
     if (keyboardMarkup!=None):
         context.bot.editMessageText(
             chat_id=chat_id,
@@ -735,6 +813,34 @@ def settleDebt(update, context):
             text='All debts settled! You have such responsible friends... Unlike me ):'
         )
 
+def settleDebtForDebtor(update, context):
+    query = update.callback_query
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+    userID = query.from_user.id
+    text = query.message.text
+
+    transactionID = query.data.replace('settledebtfordebtor', '', 1)
+    updateOrderMessageAsSettledWhenTransactionSettled(transactionID)
+    updateTransactionAsSettledWithTransactionID(transactionID)
+
+    unsettledTransactions = getUnsettledTransactionsForDebtor(userID)
+    keyboardMarkup = formatTransactionsForDebtorKeyboardMarkup(unsettledTransactions)
+
+    if (keyboardMarkup!=None):
+        context.bot.editMessageText(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=text,
+            reply_markup=keyboardMarkup
+        )
+    else:
+        context.bot.editMessageText(
+            chat_id=chat_id,
+            message_id=message_id,
+            text='All debts settled! How responsible of you...'
+        )
+    
 
 def editMessageForSplitEvenly(update, context):
     query = update.callback_query
@@ -771,9 +877,26 @@ def debtorEvenlyPaid(update, context):
     username = query.from_user.username
     debtorID = query.from_user.id
     text = query.message.text
-    textAfterRemove = removeUsernameFromDebtMessage(username, text)
-    orderID = getOrderIDFromMessageAndGroupID(message_id, chat_id)
+    debtorName = getFirstName(debtorID)
+    entry = '%s (@%s)' % (debtorName, username)
+    textList = text.split('\n')
+    newTextList = []
+
     creditorID = getCreditorIDFromMessageAndGroupID(message_id, chat_id)
+
+    if str(creditorID) == str(debtorID):
+        return
+
+    for item in textList:
+        if entry in item:
+            continue
+        else:
+            newTextList.append(item + '\n')
+
+    textAfterRemove = ''.join(newTextList)
+
+    orderID = getOrderIDFromMessageAndGroupID(message_id, chat_id)
+    
 
     if textAfterRemove != text:
         markTransactionAsSettled(creditorID, debtorID, orderID)
@@ -792,15 +915,30 @@ def debtorEvenlyUnpaid(update, context):
     message_id = query.message.message_id
     username = query.from_user.username
     debtorID = query.from_user.id
+    debtorName = getFirstName(debtorID)
     text = query.message.text
-    textAfterAdd = addUsernameToDebtMessage(username, text)
+    creditorID = getCreditorIDFromMessageAndGroupID(message_id, chat_id)
+
+    if str(creditorID) == str(debtorID):
+        return
+    entry = '%s (@%s)' % (debtorName, username)
+    textList = text.split('\n')
+    newTextList = []
+    for item in textList:
+        if entry in item:
+            return
+        else:
+            newTextList.append(item + '\n')
+
+    newTextList.append(entry + '\n')
+    textAfterAdd = ''.join(newTextList)
+
     orderID = getOrderIDFromMessageAndGroupID(message_id, chat_id)
     creditorID = getCreditorIDFromMessageAndGroupID(message_id, chat_id)
-    bot = Bot(TOKEN)
 
     if textAfterAdd != text:
         markTransactionAsUnsettled(creditorID, debtorID, orderID)
-        bot.editMessageText(
+        context.bot.editMessageText(
             chat_id=chat_id,
             message_id=message_id,
             text=textAfterAdd,
@@ -1142,6 +1280,7 @@ def main():
     dp.add_handler(CommandHandler("start", startGroup, Filters.chat_type.groups))
     dp.add_handler(CommandHandler("start", startPrivate, Filters.chat_type.private))
     dp.add_handler(CommandHandler("whoowesme", getDebtors, Filters.chat_type.private))
+    dp.add_handler(CommandHandler("whomeowes", getCreditors, Filters.chat_type.private))
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("cancel", cancel, Filters.chat_type.groups))
     dp.add_handler(CallbackQueryHandler(button))

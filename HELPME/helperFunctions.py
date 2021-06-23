@@ -146,7 +146,7 @@ def addUsernameToDebtMessage(username, text):
 def takeSecond(element):
     return element[1]
 
-def formatTransactionsKeyboardMarkup(transactions):
+def formatTransactionsForCreditorKeyboardMarkup(transactions):
     if len(transactions) < 1:
         return
     
@@ -181,7 +181,47 @@ def formatTransactionsKeyboardMarkup(transactions):
             InlineKeyboardButton('@%s' % debtorUsername, callback_data='null'),
             InlineKeyboardButton('$%s' % amountOwed, callback_data='null'),
             InlineKeyboardButton('Notify', callback_data="notifydebtorcallbackdata%s" % transactionID),
-            InlineKeyboardButton('Settle', callback_data="settledebtcallbackdata%s" % transactionID)
+            InlineKeyboardButton('Settle', callback_data="settledebtforcreditor%s" % transactionID)
+        ]
+        keyboardHolder.append(tempKeyboard)
+    
+    return InlineKeyboardMarkup(keyboardHolder)
+
+def formatTransactionsForDebtorKeyboardMarkup(transactions):
+    
+    if len(transactions) < 1:
+        return
+    
+    firstTransaction = transactions[0]
+    currentOrderID = firstTransaction[1]
+    date = getOrderDateFromOrderID(currentOrderID)
+    formattedDate = date.strftime("%d %B %Y")
+    currentOrderName = getOrderNameFromOrderID(currentOrderID)
+    currentGroupID = getGroupIDFromOrder(currentOrderID)
+    currentGroupName = getGroupNameFromGroupID(currentGroupID)
+    keyboardHolder = []
+    keyboardHolder.append([InlineKeyboardButton('Order: %s %s (%s)' % (currentOrderName, formattedDate, currentGroupName), callback_data='null')])
+    for transaction in transactions:
+        transactionID = transaction[0]
+        transactionOrderID = transaction[1]
+        if transactionOrderID != currentOrderID:
+            currentOrderID = transactionOrderID
+            currentGroupID = getGroupIDFromOrder(currentOrderID)
+            currentGroupName = getGroupNameFromGroupID(currentGroupID)
+            date = getOrderDateFromOrderID(currentOrderID)
+            formattedDate = date.strftime("%d %B %Y")
+            currentOrderName = getOrderNameFromOrderID(currentOrderID)
+            keyboardHolder.append([InlineKeyboardButton('Order: %s %s (%s)' % (currentOrderName, formattedDate, currentGroupName), callback_data='null')])
+        
+        creditorID = transaction[2]
+        amountOwed = getFormattedAmountFromString(transaction[3])
+        creditorUsername = getUsername(creditorID)
+        creditorName = getFirstName(creditorID)
+        tempKeyboard = [
+            InlineKeyboardButton('%s' % creditorName, callback_data='null'),
+            InlineKeyboardButton('@%s' % creditorUsername, callback_data='null'),
+            InlineKeyboardButton('$%s' % amountOwed, callback_data='null'),
+            InlineKeyboardButton('Settle', callback_data="settledebtfordebtor%s" % transactionID)
         ]
         keyboardHolder.append(tempKeyboard)
     
