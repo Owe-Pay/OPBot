@@ -672,9 +672,9 @@ def editSplitUnevenlyAddEveryone(update, context):
     for user in userList:
         username = getUsername(user)
         firstName = getFirstName(user)
-        entry = '\n' + firstName + ' (@' + username + ')'
+        entry = firstName + ' (@' + username + ')'
         if entry not in splitByPara:
-            listOfUsersWithNameAndUsername.append(entry)
+            listOfUsersWithNameAndUsername.append(entry + '\n')
     
     text = text + ''.join(listOfUsersWithNameAndUsername)
     context.bot.editMessageText(
