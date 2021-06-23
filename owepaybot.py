@@ -646,11 +646,15 @@ def editSplitEvenlyAddEveryone(update, context):
         if entry not in text:
             listOfUsersWithNameAndUsername.append(entry)
     
-    text = text + ''.join(listOfUsersWithNameAndUsername)
+    newText = text + ''.join(listOfUsersWithNameAndUsername)
+    
+    if newText == text:
+        return
+
     context.bot.editMessageText(
         chat_id=chat_id,
         message_id=message_id,
-        text=text,
+        text=newText,
         reply_markup=query.message.reply_markup
     )
 
@@ -674,13 +678,17 @@ def editSplitUnevenlyAddEveryone(update, context):
         firstName = getFirstName(user)
         entry = firstName + ' (@' + username + ')'
         if entry not in splitByPara:
-            listOfUsersWithNameAndUsername.append(entry + '\n')
+            listOfUsersWithNameAndUsername.append('\n' + entry)
     
-    text = text + ''.join(listOfUsersWithNameAndUsername)
+    newText = text + ''.join(listOfUsersWithNameAndUsername)
+
+    if text == newText:
+        return
+
     context.bot.editMessageText(
         chat_id=chat_id,
         message_id=message_id,
-        text=text,
+        text=newText,
         reply_markup=query.message.reply_markup
     )
 
