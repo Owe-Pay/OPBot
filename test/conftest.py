@@ -44,6 +44,7 @@ from telegram import (
     ChosenInlineResult,
     File,
     ChatPermissions,
+    Bot
 )
 from telegram.ext import (
     Dispatcher,
@@ -59,12 +60,14 @@ from telegram.utils.helpers import DefaultValue, DEFAULT_NONE
 from .bots import get_bot
 
 
+
 # This is here instead of in setup.cfg due to https://github.com/pytest-dev/pytest/issues/8343
 def pytest_runtestloop(session):
     session.add_marker(
         pytest.mark.filterwarnings('ignore::telegram.utils.deprecate.TelegramDeprecationWarning')
     )
 
+TOKEN = os.environ['API_TOKEN']
 
 GITHUB_ACTION = os.getenv('GITHUB_ACTION', False)
 
@@ -90,13 +93,15 @@ def bot_info():
 
 
 @pytest.fixture(scope='session')
-def bot(bot_info):
-    class DictExtBot(
-        ExtBot
-    ):  # Subclass Bot to allow monkey patching of attributes and functions, would
-        pass  # come into effect when we __dict__ is dropped from slots
+def bot():
+    return Bot(TOKEN)
+# def bot(bot_info):
+    # class DictExtBot(
+    #     ExtBot
+    # ):  # Subclass Bot to allow monkey patching of attributes and functions, would
+        # pass  # come into effect when we __dict__ is dropped from slots
 
-    return DictExtBot(bot_info['token'], private_key=PRIVATE_KEY)
+    # return DictExtBot(bot_info['token'], private_key=PRIVATE_KEY)
 
 
 DEFAULT_BOTS = {}

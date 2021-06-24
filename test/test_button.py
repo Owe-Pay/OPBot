@@ -2,8 +2,8 @@ import pytest
 import os
 
 from flaky import flaky
-from telegram import CallbackQuery, User, Message, Chat, Update, user
-from ..src.owepaybot import button, groupDontRegister
+from telegram import CallbackQuery, User, Message, Chat, Update, user, Bot
+from ..owepaybot import button, groupDontRegister
 from ..HELPME.bot_sql_integration import *
 
 @pytest.fixture(scope='function', params=['message', 'inline'])
@@ -75,10 +75,10 @@ class tempContext:
     
 class TestButton:
     
-    from_user = User(1, 'test_user', False)
+    from_user = User(1,'testUser', False)
     chat_instance = 'chat_instance'
-    private_message = Message(3, None, Chat(4321234, 'private', username='bot'), from_user=User(5, 'bot', False, username='bot'))
-    group_message = Message(3, None, Chat(1234321, 'group', username='bot', title='bot_group'), from_user=User(5, 'bot', False, username='bot'))
+    private_message = Message(3, None, Chat(4321234, 'private', username='test,bot', first_name='botname'), from_user=User(5, 'bot', False, username='bota'))
+    group_message = Message(3, None, Chat(1234321, 'group', username='test,bot', first_name='botname', title='bot_group'), from_user=User(5, 'bot', False, username='bota'))
     game_short_name = 'the_game'
 
     @flaky(3, 1)
@@ -92,7 +92,7 @@ class TestButton:
         assert button(Update(1, callback_query=user_register_callback_query), tempContext).chat_instance == self.chat_instance
         assert button(Update(1, callback_query=user_register_callback_query), tempContext).message == self.private_message
         assert button(Update(1, callback_query=user_register_callback_query), tempContext).inline_message_id == 'userRegisterInlineMessageID'        
-        assert userAlreadyAdded('4321234')
+        assert userAlreadyAdded('4321234') # User must have been added after this
         massDelete("Users") # Deleting all entries from Users Table
 
         assert user_register_callback_query.from_user == self.from_user

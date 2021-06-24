@@ -33,6 +33,7 @@ def massDelete(table):
     mycursor = mysqldb.cursor()
     mycursor.execute("DELETE FROM " + table)
     mysqldb.commit()
+    return 'deleted %s' % table
     # print('Records updated successfully! %s is now empty') % table
 
 # massDelete("orders")
@@ -570,6 +571,7 @@ def addGroup(input):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print('Group inserted successfully!')
+    return "Group %s %s inserted" % (input[1], input[0])
 
 def groupAlreadyAdded(primary_key):
     mysqldb = pymysql.connect(

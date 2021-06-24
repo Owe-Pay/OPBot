@@ -71,7 +71,6 @@ def get(name, fallback):
 def get_bot():
     return {k: get(k, v) for k, v in random.choice(FALLBACKS).items()}
 
-
 # Patch request to xfail on flood control errors and TimedOut errors
 original_request_wrapper = Request._request_wrapper
 

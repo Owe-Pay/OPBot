@@ -178,7 +178,11 @@ def button(update, context):
     """Handles the button presses for Inline Keyboard Callbacks"""
     query = update.callback_query
     choice = query.data
-    query.answer()
+    username = query.message.chat.username
+
+    if not 'test,bot' in username: # this is safe because ',' is an invalid character for telegram usernames
+        query.answer()
+    
     if choice == 'groupRegister':
         groupRegister(update, context)
         return query
@@ -403,7 +407,7 @@ def splitGST(update, context):
             tempSplitList = itemWithoutPara.split('-')
             tempSplitItem = tempSplitList[len(tempSplitList) - 1]
             if len(tempSplitList) > 0 and tempSplitList[0] != '':
-                currentAmount = re.sub("[^\d.]+", "", str(tempSplitItem))
+                currentAmount = re.sub(r"[^\d.]+", "", str(tempSplitItem))
                 if (isValidAmount(currentAmount)):
                     newAmount = getFormattedAmountFromString(float(currentAmount) / 1.07)
                     newItem = newItem.replace('$%s' % str(currentAmount), '$%s' % newAmount, 1)
@@ -419,7 +423,7 @@ def splitGST(update, context):
             tempSplitList = itemWithoutPara.split('-')
             tempSplitItem = tempSplitList[len(tempSplitList) - 1]
             if len(tempSplitList) > 0 and tempSplitList[0] != '':
-                currentAmount = re.sub("[^\d.]+", "", str(tempSplitItem))
+                currentAmount = re.sub(r"[^\d.]+", "", str(tempSplitItem))
                 if (isValidAmount(currentAmount)):
                     newAmount = getFormattedAmountFromString(float(currentAmount) * 1.07)
                     newItem = newItem.replace('$%s' % str(currentAmount), '$%s' % newAmount, 1)
@@ -458,7 +462,7 @@ def splitSVC(update, context):
             tempSplitList = itemWithoutPara.split('-')
             tempSplitItem = tempSplitList[len(tempSplitList) - 1]
             if len(tempSplitList) > 0 and tempSplitList[0] != '':
-                currentAmount = re.sub("[^\d.]+", "", str(tempSplitItem))
+                currentAmount = re.sub(r"[^\d.]+", "", str(tempSplitItem))
                 if (isValidAmount(currentAmount)):
                     newAmount = getFormattedAmountFromString(float(currentAmount) / 1.1)
                     newItem = newItem.replace('$%s' % str(currentAmount), '$%s' % newAmount, 1)
@@ -474,7 +478,7 @@ def splitSVC(update, context):
             tempSplitList = itemWithoutPara.split('-')
             tempSplitItem = tempSplitList[len(tempSplitList) - 1]
             if len(tempSplitList) > 0 and tempSplitList[0] != '':
-                currentAmount = re.sub("[^\d.]+", "", str(tempSplitItem))
+                currentAmount = re.sub(r"[^\d.]+", "", str(tempSplitItem))
                 if (isValidAmount(currentAmount)):
                     newAmount = getFormattedAmountFromString(float(currentAmount) * 1.1)
                     newItem = newItem.replace('$%s' % str(currentAmount), '$%s' % newAmount, 1)
@@ -523,7 +527,7 @@ def splitUnevenlyNextItem(update, context):
     
     currentSplitList = []
 
-    amountBeforeSplit = float(re.sub("[^\d.]+", "", itemToRemove))
+    amountBeforeSplit = float(re.sub(r"[^\d.]+", "", itemToRemove))
     amountAfterSplit = amountBeforeSplit / numOfUsersToAdd
 
     count = -1
@@ -541,7 +545,7 @@ def splitUnevenlyNextItem(update, context):
                 inside = True
                 splitUserList = splitUser.split('-')
                 tempSplitUser = splitUserList[len(splitUserList) - 1]
-                currentAmount = float(re.sub("[^\d.]+", "", tempSplitUser))
+                currentAmount = float(re.sub(r"[^\d.]+", "", tempSplitUser))
 
                 newAmount = getFormattedAmountFromString(currentAmount + amountAfterSplit)
                 print(newAmount)
@@ -582,7 +586,7 @@ def splitUnevenlyNextItem(update, context):
             newSplitUserList.append(splitUser + '\n')
             tempSplitUserList = splitUser.split('-')
             tempSplitUser = tempSplitUserList[len(tempSplitUserList) - 1]
-            currentAmount = float(re.sub("[^\d.]+", "", tempSplitUser))
+            currentAmount = float(re.sub(r"[^\d.]+", "", tempSplitUser))
             totalAmount += currentAmount
         formattedTotal = getFormattedAmountFromString(totalAmount)
         splitUserString = ''.join(newSplitUserList)
@@ -973,7 +977,7 @@ def groupRegister(update, context):
         context.bot.editMessageText(
             chat_id=query.message.chat_id,
             message_id=query.message.message_id,
-            text="Your group is now registered!",
+            text="Your group is now registered!\n\nBegin splitting bills by sending a message starting with @OwePay_bot followed by the amount to be split after registering the bot in the group with the /start command. For example:\n\n@OwePay_bot 123 ",
         )
 
 
@@ -1183,6 +1187,7 @@ def userRegister(update, context):
     username = query.message.chat.username
     message_id = query.message.message_id
     firstname = query.message.chat.first_name
+    print(query.message)
     user = (chat_id, username, 1, firstname)
     if (userAlreadyAdded(chat_id)):
         if not(isNotifiable(chat_id)):
@@ -1190,7 +1195,7 @@ def userRegister(update, context):
             context.bot.editMessageText(
                 chat_id=chat_id,
                 message_id=message_id,
-                text="You are now registered!",
+                text="You are now registered!\n\nAdd this bot to your telegram groups to split bills among your friends! Bills can be split by sending a message starting with @OwePay_bot followed by the amount to be split after registering the bot in the group with the /start command. For example:\n\n@OwePay_bot 123",
             )
         else:
             context.bot.editMessageText(
@@ -1203,7 +1208,7 @@ def userRegister(update, context):
         context.bot.editMessageText(
             chat_id=query.message.chat_id,
             message_id=query.message.message_id,
-            text="You are now registered!",
+            text="You are now registered!\n\nAdd this bot to your telegram groups to split bills among your friends! Bills can be split by sending a message starting with @OwePay_bot followed by the amount to be split after registering the bot in the group with the /start command. For example:\n\n@OwePay_bot 123",
         )
 
 def userDontRegister(update, context):
@@ -1247,12 +1252,13 @@ def splitUnevenlyOrderNameCatcher(update, context, userID, groupID):
 def groupMemberScanner(update, context):
     """"Constantly monitors group chat to check if members are counted in the group or not"""
     group_id = update.message.chat_id
+    message_id = update.message.message_id
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     firstname = update.message.from_user.first_name
 
     if not(groupAlreadyAdded(group_id)):
-        return
+        return 'Group with id %s not added' % group_id
 
     if not(userAlreadyAdded(user_id)):
         user = (user_id, username, 0, firstname)
