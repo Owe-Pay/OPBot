@@ -89,18 +89,19 @@ You will find our proposed timeline below:
 ![New Order Flow](https://res.cloudinary.com/jianoway/image/upload/v1622368925/O_P_-_TeleBot_New_Order_Flow_qfpbtr.jpg)
 *Figure 2: Process of creating a new order*
 
-* **Bill Splitting (Partial implementation)**
-  1. The bot can be prompted to split bills via an Inline Query from the group that they’re splitting from (e.g @OwePay_bot <Amount to be split>).
-  1. After entering the Inline Query, the user will be prompted to choose if they wish to split amongst either everyone in the group or only some people in the group and will also be prompted to input an order name.
-  1. Splitting bills will create an Order in the Orders database so each Order is unique and will be associated with the group it was split in.
-  1. Splitting with everyone will pull all users in the current group from the group database and split among these users while splitting with some will require the user submitting the Order to manually input all the members who are being split among (To be reconsidered)
-  1. Splitting bills will create a Transaction in the Transactions database between the creditor and the debtors which is related to the Order created in c.
+* **Bill Splitting**
+  1. Bill spliting can be done via an Inline Query from the group that they're splitting the bill from. (e.g <@OwePay_bot 123> would prompt the bot to recognise that the user is attempting to split a bill of $123.00.
+  1. After recognising the user's intentions, the bot will prompt the user to choose if they wish to split the bill evenly or unevenly through means of the Inline Query Result Article.
+  1. The process flow can be seen from the flowchart above (Fig. 2), with the users being able to add users to the split throguh means of an Inline Keyboard Button. 
+  1. The 'Split Evenly' function asks for the users to add the people involved in the bill only once while the 'Split Unevenly' will have the additional step of requesting the user for the list of items to split before asking the user to add the people paying for each item.
+  1. Splitting bills will create an Order in the Orders database such that each order is unique and will be able to be tracked through its unique ID.
+  1. After the Order is created, for each user that owes the creditor for the bill being split, a unique Transaction is created between the debtor and the creditor in the Transactions database and will be linked back to the Order it was created from.
 
 ![Get Debtors](https://res.cloudinary.com/jianoway/image/upload/v1622368841/O_P_-_TeleBot_Check_Debtors_t9mpw0.jpg)
 *Figure 3: Keeping track of creditor’s personal debtors*
    
 * **Creditor’s Debtors (To be implemented)**
-  1. The bot can retrieve a creditor’s debtors by looking up the respective creditor’s chat_id in the Transactions database where they are the creditor and reply to them with a list of their debtors sorted by their Groups and the respective Order names the Transactions are associated with.
+  1. The bot can retrieve a creditor’s debtors by looking up the respective creditor’s chat_id in the Transactions database where they are the creditor and reply to them with a list of their debtors sorted by their associated Order.
   1. If the creditor does not exist, it prompts the creditor to first register with us. In this case, since the creditor does not exist then it is not possible that our system has records of their transactions and will not return.
   1. After the bot replies to the creditor with the appropriate message listing their debtors, the creditor will have an option to select which debtors to notify or they can also choose to notify all debtors that they have yet to return the creditor their money. After the selection is done, the creditor then sends in the notification request to the bot and the bot will send out a private message to each debtor if they are notifiable.
   1. For debtors who are non-notifiable, the creditor will receive a compiled list of the debtors who the bot had failed to notify along with the respective Transaction details.
@@ -111,7 +112,7 @@ You will find our proposed timeline below:
 *Figure 4: Keeping track of debtor’s personal creditors*
    
 * **Debtor’s Creditors (To be implemented)**
-  1. The bot can retrieve a debtor’s creditors by looking up the respective debtor’s chat_id in the Transactions database where they are the debtor and reply to them with a list of their creditors sorted by their Groups and the respective Order names the Transactions are associated with.
+  1. The bot can retrieve a debtor’s creditors by looking up the respective debtor’s chat_id in the Transactions database where they are the debtor and reply to them with a list of their creditors sorted by their associated Order.
      1. If the debtor does not exist, it prompts the debtor to first register with us. In this case, since the creditor does not exist then it is not possible that our system has records of their transactions and will not return.
   1. After the bot replies to the debtor with the appropriate message listing their creditors, the debtor will have an option to select which creditor to notify or they can also choose to notify all debtors that they have successfully returned the creditor their money. After the selection is done, the creditor then sends in the notification request to the bot and the bot will send out a private message to each creditor if they are notifiable.
      1. For creditors who are non-notifiable, the debtor will receive a compiled list of the creditors who the bot had failed to notify along with the respective Transaction details.
@@ -141,7 +142,7 @@ We have created various guides for both Users and Developers alike with more inf
 ## O$P$ Telegram Bot (@OwePay_bot)
 One of the main ways we intend to execute our project is through our Telegram Bot. Telegram is one of the most used Instant Messaging Platforms amongst both university students and the world at large today. Hence, we decided that it would be an excellent platform to execute our idea since most friend groups who would typically have a Telegram Group to chat in.
 
-Currently, we have implemented our bot with the ability to create a debt collection order from a user between all other users in the group by going dutch (everyone pays the same amount) as well as the ability for the bot to privately message registered users debt collection orders from their creditors.
+Currently, we have implemented our bot with the ability to create a debt collection order between a user and other users in the group by either going dutch (everyone pays the same amount) or each item has different people paying for it. It also has the ability to privately message registered users debt collection orders from their creditors.
 
 Our bot then tracks this order and takes note of who has yet to pay and sends a message to the group with a ‘I Paid!’ button where users can have the option of letting the bot as well as others know that 
 
