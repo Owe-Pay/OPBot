@@ -179,8 +179,10 @@ def button(update, context):
     query = update.callback_query
     choice = query.data
     username = query.message.chat.username
+    query.answer()
+    print(username)
 
-    if not 'test,bot' in username: # this is safe because ',' is an invalid character for telegram usernames
+    if username == None or not 'test,bot' in username: # this is safe because ',' is an invalid character for telegram usernames
         query.answer()
     
     if choice == 'groupRegister':
@@ -1270,7 +1272,7 @@ def groupMemberScanner(update, context):
         
     if userStateSplitEvenly(user_id, group_id):
         waitingForSomeNames(update, context, user_id, group_id)
-
+        return "User %s has state 'splitevenly'" % user_id
 
     if userStateSplitUnevenly(user_id, group_id):
         splitDifferentAmounts(update, context, user_id, group_id)

@@ -113,7 +113,7 @@ def updateUserStateSplitEvenly(userId, groupId):
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
-    print("User is now in splitsome state temporarily!")
+    return "User %s in Group %s has state 'splitevenly'" % (userId, groupId)
 
 def updateUserTempAmount(user_id, group_id, amount):
     mysqldb = pymysql.connect(
@@ -123,8 +123,7 @@ def updateUserTempAmount(user_id, group_id, amount):
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
-    print("User amount is updated temporarily!")
-
+    return "User %s in Group %s has the temporary amount %s" % (user_id, group_id, amount)
 
 def userStateSplitAllEvenly(user_id,group_id):
     mysqldb = pymysql.connect(
