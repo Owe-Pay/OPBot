@@ -153,6 +153,7 @@ def updateUserStateSplitUnevenlyWaitingForName(userID, groupID):
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
+    return "User %s in Group %s has state 'splitunevenlywaitingname'" % (userID, groupID)
 
 def userStateSplitUnevenlyWaitingForName(user_id,group_id):
     mysqldb = pymysql.connect(

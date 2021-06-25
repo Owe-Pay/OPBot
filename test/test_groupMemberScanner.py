@@ -8,9 +8,15 @@ from telegram import Update, User, Message, Chat
 from ..owepaybot import groupMemberScanner
 from ..HELPME.bot_sql_integration import *
 
+BOT_ID = os.environ['BOT_ID']
+
 @pytest.fixture(scope='class')
 def notAddedUpdate():
-    return Update(1, TestGroupMemebrScanner.group_message)
+    return Update(1, TestGroupMemberScanner.group_message)
+
+@pytest.fixture(scope='class')
+def viaBotUpdate():
+    return Update(1, TestGroupMemberScanner.bot_message)
 
 class tempContext:
     class bot:
@@ -20,12 +26,13 @@ class tempContext:
 
 
 
-class TestGroupMemebrScanner:
+class TestGroupMemberScanner:
 
     from_user = User(1,'testUser', False)
     chat_instance = 'chat_instance'
     private_message = Message(3, None, Chat(4321234, 'private', username='test,bot', first_name='botname'), from_user=User(5, 'bot', False, username='bota'))
     group_message = Message(3, None, text='ok-123\nkk-1234\niok - 5\n', chat=Chat(1234321, 'group', username='test,bot', first_name='botname', title='bot_group'), from_user=User(11223344, 'bot', False, username='bota'))
+    bot_message = Message(3, None, text='ok-123\nkk-1234\niok - 5\n', chat=Chat(1234321, 'group', username='test,bot', first_name='botname', title='bot_group'), from_user=User(11223344, 'bot', False, username='bota'), via_bot=User(BOT_ID, 'bot', True))
 
     @flaky(3, 1)
     def test_groupNotAdded(self, notAddedUpdate):
@@ -72,7 +79,6 @@ class TestGroupMemebrScanner:
         massDelete("UserGroupRelational")
         massDelete("TelegramGroups")
         massDelete("Users")
-        massDelete("Orders")
 
     @flaky(3, 1)
     def test_userStateSplitUnevenly(self, notAddedUpdate):
@@ -88,3 +94,25 @@ class TestGroupMemebrScanner:
         massDelete("TelegramGroups")
         massDelete("Users")
         massDelete("Orders")
+
+    @flaky(3, 1)
+    def test_userStateSplitUnevenlyWaitingForName(self, notAddedUpdate):
+        massDelete("UserGroupRelational")
+        assert addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'
+        groupMemberScanner(notAddedUpdate, tempContext) # Initial
+        assert updateUserStateSplitUnevenlyWaitingForName('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitunevenlywaitingname'"
+        assert groupMemberScanner(notAddedUpdate, tempContext) == "Waiting for User 11223344 in Group 1234321 to send in their Order Name"
+        massDelete("UserGroupRelational")
+        massDelete("TelegramGroups")
+        massDelete("Users")
+    
+    @flaky(3, 1)
+    def test_viabotCheck(self, viaBotUpdate):
+        massDelete("UserGroupRelational")
+        assert addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'
+        assert groupMemberScanner(viaBotUpdate, tempContext) == "Bot found %s" % BOT_ID # Initial
+        massDelete("UserGroupRelational")
+        massDelete("TelegramGroups")
+        massDelete("Users")
+
+

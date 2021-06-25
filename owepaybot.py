@@ -179,8 +179,6 @@ def button(update, context):
     query = update.callback_query
     choice = query.data
     username = query.message.chat.username
-    query.answer()
-    print(username)
 
     if username == None or not 'test,bot' in username: # this is safe because ',' is an invalid character for telegram usernames
         query.answer()
@@ -1279,10 +1277,13 @@ def groupMemberScanner(update, context):
 
     if userStateSplitUnevenlyWaitingForName(user_id, group_id):
         splitUnevenlyOrderNameCatcher(update, context, user_id, group_id)
+        return "Waiting for User %s in Group %s to send in their Order Name" % (user_id, group_id)
 
     if viabot_check(update, context):
+        bot = update.message.via_bot.id
         messageContainsSplitEvenly(update, context)
         messageContainsSplitUnevenly(update, context)
+        return "Bot found %s" % bot
 
 def main():
     """Start the bot."""
