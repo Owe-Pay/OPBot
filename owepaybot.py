@@ -1058,7 +1058,6 @@ def splitDifferentAmounts(update, context, userID, groupID):
         for t in tempText:
             tempList.append(removeCrustFromString(t))
         textListSeparated.append(tempList)
-    
     for item in textListSeparated:
         tempList = []
         if len(item) != 2 or not isValidAmount(item[1]):
@@ -1276,6 +1275,7 @@ def groupMemberScanner(update, context):
 
     if userStateSplitUnevenly(user_id, group_id):
         splitDifferentAmounts(update, context, user_id, group_id)
+        return "User %s has state 'splitunevenly'" % user_id
 
     if userStateSplitUnevenlyWaitingForName(user_id, group_id):
         splitUnevenlyOrderNameCatcher(update, context, user_id, group_id)

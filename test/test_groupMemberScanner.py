@@ -1,6 +1,8 @@
 import os
 import pytest
 from flaky import flaky
+import datetime
+from datetime import *
 
 from telegram import Update, User, Message, Chat
 from ..owepaybot import groupMemberScanner
@@ -23,7 +25,7 @@ class TestGroupMemebrScanner:
     from_user = User(1,'testUser', False)
     chat_instance = 'chat_instance'
     private_message = Message(3, None, Chat(4321234, 'private', username='test,bot', first_name='botname'), from_user=User(5, 'bot', False, username='bota'))
-    group_message = Message(3, None, text='123', chat=Chat(1234321, 'group', username='test,bot', first_name='botname', title='bot_group'), from_user=User(11223344, 'bot', False, username='bota'))
+    group_message = Message(3, None, text='ok-123\nkk-1234\niok - 5\n', chat=Chat(1234321, 'group', username='test,bot', first_name='botname', title='bot_group'), from_user=User(11223344, 'bot', False, username='bota'))
 
     @flaky(3, 1)
     def test_groupNotAdded(self, notAddedUpdate):
@@ -67,11 +69,22 @@ class TestGroupMemebrScanner:
         assert updateUserStateSplitEvenly('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitevenly'"
         assert updateUserTempAmount('11223344', '1234321', '123') == "User 11223344 in Group 1234321 has the temporary amount 123"
         assert groupMemberScanner(notAddedUpdate, tempContext) == "User 11223344 has state 'splitevenly'"
-        
-        
         massDelete("UserGroupRelational")
         massDelete("TelegramGroups")
         massDelete("Users")
         massDelete("Orders")
 
-
+    @flaky(3, 1)
+    def test_userStateSplitUnevenly(self, notAddedUpdate):
+        massDelete("UserGroupRelational")
+        assert addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'
+        groupMemberScanner(notAddedUpdate, tempContext) # Initial
+        updateUserStateSplitUnevenly('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitunevenly'"
+        assert addOrder(('4321', '1234321', 'ordertestname', '123', '11223344', datetime.now())) == "Order 4321 has been added"
+        assert updateUserTempAmount('11223344', '1234321', '123') == "User 11223344 in Group 1234321 has the temporary amount 123"
+        assert updateOrderIDToUserGroupRelational('11223344', '1234321', '4321') == "User 11223344 in Group 1234321 has OrderID 4321"
+        assert groupMemberScanner(notAddedUpdate, tempContext) == "User 11223344 has state 'splitunevenly'"        
+        massDelete("UserGroupRelational")
+        massDelete("TelegramGroups")
+        massDelete("Users")
+        massDelete("Orders")

@@ -173,6 +173,7 @@ def updateUserStateSplitUnevenly(userID, groupID):
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
+    return "User %s in Group %s has state 'splitunevenly'" % (userID, groupID)
 
 def userStateSplitUnevenly(user_id,group_id):
     mysqldb = pymysql.connect(
@@ -319,6 +320,7 @@ def updateOrderIDToUserGroupRelational(userID, groupID, orderID):
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
+    return "User %s in Group %s has OrderID %s" % (userID, groupID, orderID)
 
 def getOrderIDFromUserIDAndGroupID(userID, groupID):
     mysqldb = pymysql.connect(
@@ -450,6 +452,7 @@ def addOrder(input):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print('Records inserted successfully!')
+    return "Order %s has been added" % input[0]
 
     # except:
     #     closeConnection(mysqldb, mycursor)
