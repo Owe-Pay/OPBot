@@ -35,12 +35,21 @@ def formattedKeyboardMarkupOfDebtors():
     users = ('4321', '4322', '4323')
     usernames = ('debtor1', 'debtor2', 'debtor3')
     names = ('debtorname1', 'debtorname2', 'debtorname3')
+    transactionIDs = ('2341', '2342', '2343')
     count = 0
     for user in users:
+        transactionID = transactionIDs[count]
         tempKeyboard = [
             InlineKeyboardButton('%s' % names[count], callback_data='null'),
-            InlineKeyboardButton('@%s' % usernames[count], callback_data='null')
+            InlineKeyboardButton('@%s' % usernames[count], callback_data='null'),
+            InlineKeyboardButton('$123.00', callback_data='null'),            
+            InlineKeyboardButton('Notify', callback_data="notifydebtorcallbackdata%s" % transactionID),
+            InlineKeyboardButton('Settle', callback_data="settledebtforcreditor%s" % transactionID)
         ]
+        count = count + 1
+        keyboardHolder.append(tempKeyboard)
+
+    return InlineKeyboardMarkup(keyboardHolder)
 
 
 
@@ -82,7 +91,7 @@ class TestGetDebtors:
         
 
     @flaky(3, 1)
-    def test_getDebtors(self, getDebtorUpdate):
+    def test_getDebtors(self, getDebtorUpdate, formattedKeyboardMarkupOfDebtors):
         massDelete("Users")
         massDelete("Orders")
         massDelete("Transactions")
@@ -107,7 +116,11 @@ class TestGetDebtors:
             ('2342', '5432', '4322', 123),
             ('2343', '5432', '4323', 123),
         ]
-        assert formatTransactionsForCreditorKeyboardMarkup()
+        assert formatTransactionsForCreditorKeyboardMarkup(getUnsettledTransactionsForCreditor('1234')) == formattedKeyboardMarkupOfDebtors
+        assert isinstance(getDebtors(getDebtorUpdate, contextWithMarkup), Message)
+        assert getDebtors(getDebtorUpdate, contextWithMarkup).chat_id == 1234
+        assert getDebtors(getDebtorUpdate, contextWithMarkup).text == 'The baddies who have your cash money! >:('
+        assert getDebtors(getDebtorUpdate, contextWithMarkup).reply_markup == formattedKeyboardMarkupOfDebtors
 
         massDelete("Users")
         massDelete("Orders")

@@ -221,7 +221,7 @@ def formatTransactionsForDebtorKeyboardMarkup(transactions):
             InlineKeyboardButton('%s' % creditorName, callback_data='null'),
             InlineKeyboardButton('@%s' % creditorUsername, callback_data='null'),
             InlineKeyboardButton('$%s' % amountOwed, callback_data='null'),
-            InlineKeyboardButton('Settle', callback_data="settledebtfordebtor%s" % transactionID)
+            InlineKeyboardButton('Settle', callback_data="settledebtfordebtorcallbackdata%s" % transactionID)
         ]
         keyboardHolder.append(tempKeyboard)
     
@@ -296,3 +296,4 @@ class Transaction:
         self.creditorID = creditorID
         self.userID = userID
 
+print(formatTransactionsForDebtorKeyboardMarkup(getUnsettledTransactionsForDebtor('1234')))

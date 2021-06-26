@@ -768,4 +768,3 @@ def getTransactionIDFromOrderIDCreditorIDDebtorID(orderID, creditorID, debtorID)
     closeConnection(mysqldb, mycursor)
     return t[0]
 
-# print(getUnsettledTransactionsForCreditor(497722299))

@@ -119,27 +119,29 @@ def getDebtors(update, context):
 def getCreditors(update, context):
     userID = update.effective_chat.id
     if not userAlreadyAdded(userID):
-        context.bot.send_message(
+        message = context.bot.send_message(
             chat_id=userID,
             text=
             "Please register with us first by using /start!"
         )
+        return message
     
     unsettledTransactions = getUnsettledTransactionsForDebtor(userID)
     keyboardMarkup = formatTransactionsForDebtorKeyboardMarkup(unsettledTransactions)
 
-    # if len(unsettledTransactions) < 1:
-    #     context.bot.send_message(
-    #         chat_id=update.effective_chat.id,
-    #         text="Wow! Amazing! You don't owe anyone any money!"
-    #     )
-    #     return
+    if len(unsettledTransactions) < 1:
+        message = context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Wow! Amazing! You don't owe anyone any money!"
+        )
+        return message
     
-    context.bot.send_message(
+    message = context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="The kind people who you've taken from:",
         reply_markup=keyboardMarkup
     )
+    return message
     
     # user already added
     
@@ -417,7 +419,7 @@ def splitGST(update, context):
                 if 'w/ SVC' in itemWithoutPara:
                     newItem = itemWithoutPara.replace('w/ ', 'w/ GST and ', 1)
                 else:
-                    newItem = itemWithoutPara.replace(':', ' w/ GST:')
+                    newItem = itemWithoutPara.replace(':', ' w/ GST:', 1)
             tempSplitList = itemWithoutPara.split('-')
             tempSplitItem = tempSplitList[len(tempSplitList) - 1]
             if len(tempSplitList) > 0 and tempSplitList[0] != '':
