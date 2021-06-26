@@ -560,7 +560,7 @@ def splitUnevenlyNextItem(update, context):
     
     
     if not last:
-        nextItem = itemList.pop(numOfItemsLeft - 1)
+        nextItem = itemList.pop(0)
         newItemList = []
         for item in itemList:
             newItemList.append(item + '\n')
