@@ -304,6 +304,20 @@ def getUserIDListFromUsernameList(usernameList):
             holder.append(t[0])
     return holder
 
+def getUserStateFromUserIDAndGroupID(userID, groupID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT State FROM UserGroupRelational WHERE UserID LIKE '%s' and GroupID LIKE '%s'" % (userID, groupID)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    if t != None:
+        return t[0]
+    else:
+        return None
+
+
 def getUserIDFromUsername(username):
     mysqldb = pymysql.connect(
             host=db_host, user=db_username, password=db_password, db=db_database)

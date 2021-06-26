@@ -7,8 +7,8 @@ import sys
 import pytz
 import re
 
-from HELPME.bot_sql_integration import *
-from HELPME.helperFunctions import *
+from .HELPME.bot_sql_integration import *
+from .HELPME.helperFunctions import *
 
 from uuid import uuid4, uuid1
 from telegram.utils.helpers import escape_markdown
@@ -1072,16 +1072,17 @@ def splitDifferentAmounts(update, context, userID, groupID):
     firstItem = itemList.pop(0)
     firstItemString = firstItem[0] + ' ($' + firstItem[1] + ')'
     itemListString = itemListToString(itemList)
-    last = len(itemList) < 1
     messageText = 'Current split for %s:\n\nItems left to split:%s\n\nPeople paying for %s:' % (orderName, itemListString, firstItemString)
     orderMessage = context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=messageText,
         reply_markup=splitUnevenlyKeyboardMarkup(groupID, False)
     )
+    print(splitUnevenlyKeyboardMarkup(groupID, False))
     messageID = orderMessage.message_id
     addMessageIDToOrder(orderID, messageID)
     setUserStateInactive(userID, groupID)
+    return orderMessage
     
 def getTotalAmountFromMessage(update, context):
     chat_message=update.message.text
@@ -1100,11 +1101,12 @@ def messageContainsSplitUnevenly(update, context):
         user_id = update.message.from_user.id
         GroupID = update.message.chat_id
         updateUserStateSplitUnevenlyWaitingForName(user_id, GroupID)
-        context.bot.send_message(
+        message = context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=
             "Hi! Please send the name of the order!",
-    )
+        )
+        return message
 
 def messageContainsSplitEvenly(update, context):
     if "Split evenly:" in update.message.text:
@@ -1113,12 +1115,12 @@ def messageContainsSplitEvenly(update, context):
         GroupID = update.message.chat_id
         updateUserStateSplitEvenly(user_id, GroupID)
         updateUserTempAmount(user_id,GroupID, total_amount)
-        print("updated temp amount and state")
-        context.bot.send_message(
+        message = context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=
             "Hi! Please send the name of the order!",
-    )
+        )
+        return message
 
 def catchOrderFromUpdate(update):
     order_id = str(uuid1())
@@ -1237,13 +1239,13 @@ def splitUnevenlyOrderNameCatcher(update, context, userID, groupID):
 
     updateOrderIDToUserGroupRelational(userID, groupID, orderID)
     setOrderDifferentAmountsFromOrderID(orderID)
-
-    context.bot.send_message(
+    message = context.bot.send_message(
         chat_id=update.effective_chat.id,
         reply_to_message_id=messageID,
         text='Please send in the items in the following format:\nItem Name - Price\n\nFor example:\nChicken Rice - 5\nCurry Chicken - 5.50\nNasi Lemak - 4'
     )
     updateUserStateSplitUnevenly(userID, groupID)
+    return message
 
 
 
