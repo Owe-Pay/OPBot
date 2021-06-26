@@ -19,7 +19,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 tz = pytz.timezone('Asia/Singapore')
-now = datetime.now(tz) # the current time in your local timezone
+now = datetime.now(tz).replace(microsecond=0) # the current time in your local timezone
 
 logger = logging.getLogger(__name__)
 TOKEN = os.environ["API_TOKEN"]
@@ -333,7 +333,7 @@ def splitUnevenlyFinalise(update, context):
     message_id = query.message.message_id
     userID = query.from_user.id
     text = query.message.text
-    date = datetime.now(tz)
+    date = datetime.now(tz).replace(microsecond=0)
 
     if not (userIsCreditorForMessage(message_id, groupID, userID)):
         return
@@ -705,7 +705,7 @@ def notifyUserFromPrivateMessage(update, context):
     transactionID = query.data.replace('notifydebtorcallbackdata', '', 1)
 
     lastNotifiedTime = getLastNotifiedTimeFromTransactionID(transactionID)
-    currentTime = datetime.now(tz)
+    currentTime = datetime.now(tz).replace(microsecond=0)
     to_add = timedelta(minutes=60)
     thresholdTime = lastNotifiedTime + to_add    
 
@@ -988,7 +988,7 @@ def splitEvenly(update, context):
     message_id = query.message.message_id
     userID = query.from_user.id
     text = query.message.text
-    date = datetime.now(tz)
+    date = datetime.now(tz).replace(microsecond=0)
 
     if not (userIsCreditorForMessage(message_id, groupID, userID)):
         return
@@ -1121,15 +1121,13 @@ def messageContainsSplitEvenly(update, context):
     )
 
 def catchOrderFromUpdate(update):
-    print("caught request")
     order_id = str(uuid1())
     user_id = update.message.from_user.id
     group_id = update.message.chat_id
     order_name = update.message.text
     order_amount= getUserTempAmount(user_id,group_id)
-    date = datetime.now(tz)
+    date = datetime.now(tz).replace(microsecond=0)
     addOrder((order_id, group_id, order_name, order_amount, user_id, date))
-    print("order added")
     return Order(order_id, group_id, order_name, order_amount, user_id, date)
 
 
@@ -1147,6 +1145,7 @@ def waitingForSomeNames(update, context, user_id, group_id):
     )
     messageID = message.message_id
     addMessageIDToOrder(orderID, messageID)
+    return message
 
 def createTransactionBetweenSomeUsers(order, userIDList):
     creditorID = order.creditorID

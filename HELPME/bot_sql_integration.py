@@ -51,6 +51,7 @@ def addUser(input):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     print('User added successfully!')
+    return "User %s inserted" % input[0]
 
 # addUser((339096917,"poo_poo_platter",1))
 
@@ -594,7 +595,7 @@ def addUserToGroup(userId, groupId):
     mycursor.execute(sql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
-    print('User inserted successfully!')
+    return "User %s added to Group %s" % (userId, groupId)
 
 def increaseGroupMemberCount(group_id):
     mysqldb = pymysql.connect(

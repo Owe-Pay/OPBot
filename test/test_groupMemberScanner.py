@@ -45,7 +45,6 @@ class TestGroupMemberScanner:
         massDelete("Users") 
         massDelete("UserGroupRelational")
 
-
     @flaky(3, 1)
     def test_userNotAdded(self, notAddedUpdate):
         massDelete("TelegramGroups")
