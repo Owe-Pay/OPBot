@@ -7,8 +7,8 @@ import sys
 import pytz
 import re
 
-from .HELPME.bot_sql_integration import *
-from .HELPME.helperFunctions import *
+from HELPME.bot_sql_integration import *
+from HELPME.helperFunctions import *
 
 from uuid import uuid4, uuid1
 from telegram.utils.helpers import escape_markdown
@@ -91,21 +91,23 @@ def startPrivate(update, context):
 def getDebtors(update, context):
     userID = update.effective_chat.id
     if not userAlreadyAdded(userID):
-        context.bot.send_message(
+        message = context.bot.send_message(
             chat_id=userID,
             text=
             "Please register with us first by using /start!"
         )
+        return message
+        
     
     unsettledTransactions = getUnsettledTransactionsForCreditor(userID)
     keyboardMarkup = formatTransactionsForCreditorKeyboardMarkup(unsettledTransactions)
 
     if len(unsettledTransactions) < 1:
-        context.bot.send_message(
+        message = context.bot.send_message(
             chat_id=update.effective_chat.id,
             text='No one owes you money! What great friends you have!!!'
         )
-        return
+        return message
 
     context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -382,11 +384,6 @@ def splitUnevenlyFinalise(update, context):
     )
     resetUserTempOrderID(userID, groupID)
 
-
-
-    
-    
-
         
 def splitGST(update, context):
     query = update.callback_query
@@ -400,7 +397,7 @@ def splitGST(update, context):
         for itemWithoutPara in textList:
             newItem = itemWithoutPara
             if 'People paying for ' in itemWithoutPara:
-                if 'w/ SVC' in itemWithoutPara:
+                if 'and SVC' in itemWithoutPara:
                     newItem = itemWithoutPara.replace('w/ GST and ', 'w/ ', 1)
                 else:
                     newItem = itemWithoutPara.replace(' w/ GST:', ':', 1)
