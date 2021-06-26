@@ -8,6 +8,8 @@ from ..owepaybot import getDebtors
 from ..HELPME.bot_sql_integration import *
 from ..HELPME.helperFunctions import *
 
+date = datetime.now().replace(microsecond=0)
+
 @pytest.fixture(scope='class')
 def getDebtorUpdate():
     return Update(
@@ -25,6 +27,23 @@ def getDebtorUpdate():
         )
     )
 
+@pytest.fixture(scope='class')
+def formattedKeyboardMarkupOfDebtors():
+    keyboardHolder = []
+    orderTitle = InlineKeyboardButton('Order: testOrderName %s (groupname)' % date.strftime("%d %B %Y"), callback_data='null')
+    keyboardHolder.append([orderTitle])
+    users = ('4321', '4322', '4323')
+    usernames = ('debtor1', 'debtor2', 'debtor3')
+    names = ('debtorname1', 'debtorname2', 'debtorname3')
+    count = 0
+    for user in users:
+        tempKeyboard = [
+            InlineKeyboardButton('%s' % names[count], callback_data='null'),
+            InlineKeyboardButton('@%s' % usernames[count], callback_data='null')
+        ]
+
+
+
 class contextNoMarkup:
     class bot:
         def send_message(chat_id, text):
@@ -34,9 +53,6 @@ class contextWithMarkup:
     class bot:
         def send_message(chat_id, text, reply_markup):
             return Message(1, datetime.now(), chat=Chat(chat_id, 'groupname'), text=text, reply_markup=reply_markup)
-
-
-
 
 class TestGetDebtors:
 
@@ -60,9 +76,9 @@ class TestGetDebtors:
         assert addUser(('1234', 'creditoruser', 0, 'creditorname')) == "User 1234 inserted"
         assert addGroup(('9871', 'groupname')) == "Group groupname 9871 inserted"
         assert addUserToGroup('1234', '9871') == "User 1234 added to Group 9871"
-        # assert isinstance(getDebtors(getDebtorUpdate, contextNoMarkup), Message)
-        # assert getDebtors(getDebtorUpdate, contextNoMarkup).chat_id == 1234
-        # assert getDebtors(getDebtorUpdate, contextNoMarkup).text == 'No one owes you money! What great friends you have!!!'
+        assert isinstance(getDebtors(getDebtorUpdate, contextNoMarkup), Message)
+        assert getDebtors(getDebtorUpdate, contextNoMarkup).chat_id == 1234
+        assert getDebtors(getDebtorUpdate, contextNoMarkup).text == 'No one owes you money! What great friends you have!!!'
         
 
     @flaky(3, 1)
@@ -72,7 +88,6 @@ class TestGetDebtors:
         massDelete("Transactions")
         massDelete("TelegramGroups")
         massDelete("UserGroupRelational")
-        date = datetime.now().replace(microsecond=0)
 
         assert addUser(('1234', 'creditoruser', 0, 'creditorname')) == "User 1234 inserted"
         assert addUser(('4321', 'debtor1', 0, 'debtorname1')) == "User 4321 inserted"
@@ -85,9 +100,15 @@ class TestGetDebtors:
         assert addUserToGroup('4323', '9871') == "User 4323 added to Group 9871"
         assert addOrder(('5432', '9871', 'testOrderName', '369', '1234', date)) == "Order 5432 has been added"
         assert addTransaction(('2341', '5432', '123', '1234', '4321', date)) == "User 4321 owes User 1234 123"
-        assert addTransaction(('2341', '5432', '123', '1234', '4322', date)) == "User 4322 owes User 1234 123"
-        assert addTransaction(('2341', '5432', '123', '1234', '4323', date)) == "User 4323 owes User 1234 123"
-        
+        assert addTransaction(('2342', '5432', '123', '1234', '4322', date)) == "User 4322 owes User 1234 123"
+        assert addTransaction(('2343', '5432', '123', '1234', '4323', date)) == "User 4323 owes User 1234 123"
+        assert getUnsettledTransactionsForCreditor('1234') == [
+            ('2341', '5432', '4321', 123),
+            ('2342', '5432', '4322', 123),
+            ('2343', '5432', '4323', 123),
+        ]
+        assert formatTransactionsForCreditorKeyboardMarkup()
+
         massDelete("Users")
         massDelete("Orders")
         massDelete("Transactions")

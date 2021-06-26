@@ -109,11 +109,12 @@ def getDebtors(update, context):
         )
         return message
 
-    context.bot.send_message(
+    message = context.bot.send_message(
         chat_id=update.effective_chat.id,
         text='The baddies who have your cash money! >:(',
         reply_markup=keyboardMarkup
     )
+    return message
 
 def getCreditors(update, context):
     userID = update.effective_chat.id
@@ -455,7 +456,7 @@ def splitSVC(update, context):
                 if 'w/ GST' in itemWithoutPara:
                     newItem = itemWithoutPara.replace(' and SVC:', ':', 1)
                 else:
-                    newItem = itemWithoutPara.replace(' w/ SVC', ':', 1)
+                    newItem = itemWithoutPara.replace(' w/ SVC:', ':', 1)
             tempSplitList = itemWithoutPara.split('-')
             tempSplitItem = tempSplitList[len(tempSplitList) - 1]
             if len(tempSplitList) > 0 and tempSplitList[0] != '':
