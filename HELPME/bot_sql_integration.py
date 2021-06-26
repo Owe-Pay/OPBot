@@ -411,6 +411,7 @@ def addTransaction(input):
     except:
         closeConnection(mysqldb, mycursor)
         print("entry already in database")
+    return "User %s owes User %s %s" % (input[4], input[3], input[2])
 
 def markTransactionAsSettled(creditorID, debtorID, orderID):
     mysqldb = pymysql.connect(
