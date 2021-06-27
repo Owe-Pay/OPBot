@@ -20,33 +20,33 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
   - [Planned Implementation](#planned-implementation)
   - [MySQL Setup](#mysql-setup)
 - [Guides](#guides)
-- [User Guide](#user-guide)
-  - [O$P$ Telegram Bot (@OwePay_bot)](#op-telegram-bot-owepay_bot)
-      - [User Setup](#user-setup)
-      - [Group Setup](#group-setup)
-      - [Splitting bills among](#splitting-bills-among)
-      - [Getting Help in a Group](#getting-help-in-a-group)
-      - [Getting Help via Private message](#getting-help-via-private-message)
-- [Developer Guide](#developer-guide)
-  - [Setup](#setup)
-    - [Telegram Bot](#telegram-bot)
-    - [1. Install Python](#1-install-python)
-    - [2. Cloning of Git Repository](#2-cloning-of-git-repository)
-      - [3. Install Necessary Plugins](#3-install-necessary-plugins)
-    - [4. MySql](#4-mysql)
-      - [5. .env](#5-env)
-  - [Testing](#testing)
-      - [Testing Methodology](#testing-methodology)
-      - [Design of Tests](#design-of-tests)
-      - [Unit Testing](#unit-testing)
-        - [Testing the *help* function of *owepaybot.py*](#testing-the-help-function-of-owepaybotpy)
-        - [Testing the *button* function of *owepaybot.py*](#testing-the-button-function-of-owepaybotpy)
-      - [Integration Testing](#integration-testing)
-      - [System Testing](#system-testing)
-  - [Prototyping](#prototyping)
-    - [O$P$ Mobile Application](#op-mobile-application)
-    - [Telegram Bot (@OwePay_bot)](#telegram-bot-owepay_bot)
-  - [Software Engineering Principles](#software-engineering-principles)
+  - [User Guide](#user-guide)
+    - [O$P$ Telegram Bot (@OwePay_bot)](#op-telegram-bot-owepay_bot)
+        - [User Setup](#user-setup)
+        - [Group Setup](#group-setup)
+        - [Splitting bills among](#splitting-bills-among)
+        - [Getting Help in a Group](#getting-help-in-a-group)
+        - [Getting Help via Private message](#getting-help-via-private-message)
+  - [Developer Guide](#developer-guide)
+    - [Setup](#setup)
+      - [Telegram Bot](#telegram-bot)
+        - [1. Install Python](#1-install-python)
+        - [2. Cloning of Git Repository](#2-cloning-of-git-repository)
+        - [3. Install Necessary Plugins](#3-install-necessary-plugins)
+        - [4. MySql](#4-mysql)
+        - [5. .env](#5-env)
+    - [Testing](#testing)
+        - [Testing Methodology](#testing-methodology)
+        - [Design of Tests](#design-of-tests)
+        - [Unit Testing](#unit-testing)
+          - [Testing the *help* function of *owepaybot.py*](#testing-the-help-function-of-owepaybotpy)
+          - [Testing the *button* function of *owepaybot.py*](#testing-the-button-function-of-owepaybotpy)
+        - [Integration Testing](#integration-testing)
+        - [System Testing](#system-testing)
+    - [Prototyping](#prototyping)
+      - [O$P$ Mobile Application](#op-mobile-application)
+      - [Telegram Bot (@OwePay_bot)](#telegram-bot-owepay_bot)
+    - [Software Engineering Principles](#software-engineering-principles)
 
 
 # Motivation 
@@ -192,53 +192,53 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    
 #### User Setup
 	
-   1.Start a private conversation with our bot (@OwePay_bot)
+   1. Start a private conversation with our bot (@OwePay_bot)
    
-   2.Send the /start command
+   2. Send the /start command
    
-   3.Click on ‘Register’ to get registered in our database
+   3. Click on ‘Register’ to get registered in our database
 
    
 
 #### Group Setup
 	
-   1.Add the bot (@OwePay_bot) to the group
+   1. Add the bot (@OwePay_bot) to the group
    
-   2.Send the /start@OwePay_bot command
+   2. Send the /start@OwePay_bot command
    
-   3.Click on ‘Register’ to get your group registered in our database
+   3. Click on ‘Register’ to get your group registered in our database
    
-   4.Start splitting!
+   4. Start splitting!
 
 #### Splitting bills among 
 	
-   1.Begin your message with the following: @OwePay_bot and an inline message asking you to key in the amount to be split should appear
+   1. Begin your message with the following: @OwePay_bot and an inline message asking you to key in the amount to be split should appear
    
-   2.Key in the amount to be split (currently, only $ is supported) and two popups will appear above the textbox asking you to choose whether you wish to split the bill evenly among everyone or among some people
+   2. Key in the amount to be split (currently, only $ is supported) and two popups will appear above the textbox asking you to choose whether you wish to split the bill evenly among everyone or among some people
    
-   3.Selecting the ‘split among everyone’ option will cause a message to be sent in the group by you detailing the amount to be split and that everyone is partaking
+   3. Selecting the ‘split among everyone’ option will cause a message to be sent in the group by you detailing the amount to be split and that everyone is partaking
    
-   4.The bot will now prompt you to send in a name for the bill
+   4. The bot will now prompt you to send in a name for the bill
    
-   5.The next message you send will be registered as the bill’s name
+   5. The next message you send will be registered as the bill’s name
    
-   6.The bot will finally send a message to the group with the total amount, amount to be paid by each person, and a list of people who have yet to pay and below this message will be a clickable button ‘I paid!’
+   6. The bot will finally send a message to the group with the total amount, amount to be paid by each person, and a list of people who have yet to pay and below this message will be a clickable button ‘I paid!’
    
-   7.Other users can click the ‘I paid!’ button in step 6 in order to remove their name from the list.
+   7. Other users can click the ‘I paid!’ button in step 6 in order to remove their name from the list.
 	
 #### Getting Help in a Group
 	
-   1.Send the /help@OwePay_bot command
+   1. Send the /help@OwePay_bot command
    
-   2.The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot
+   2. The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot
 
 #### Getting Help via Private message
 	
-   1.Send the /help command
+   1. Send the /help command
    
-   2.The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot 
+   2. The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot 
    
-   3.To document your work, please start creating a user guide and a developer guide.
+   3. To document your work, please start creating a user guide and a developer guide.
 
 # Developer Guide
 
