@@ -10,8 +10,6 @@ In the future, we also hope to create a system to simplify the process of tracki
 Track our progress via our GitHub page: https://github.com/Owe-Pay/
 
 # Table of contents
-- [O$P$](#op)
-- [Table of contents](#table-of-contents)
 - [Motivation](#motivation)
 - [User Stories](#user-stories)
 - [Development Plan](#development-plan)
