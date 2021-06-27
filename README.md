@@ -1,3 +1,6 @@
+# Table of contents
+- [Table of contents](#table-of-contents)
+- [O$P$](#op)
 - [Motivation](#motivation)
 - [User Stories](#user-stories)
 - [Development Plan](#development-plan)
@@ -35,6 +38,11 @@
     - [O$P$ Mobile Application](#op-mobile-application)
     - [Telegram Bot (@OwePay_bot)](#telegram-bot-owepay_bot)
   - [Software Engineering Principles](#software-engineering-principles)
+
+
+
+
+# O$P$
 
 We at Owe$Pay$ hope to make the tracking payments for ordering of food simple and integrable into Telegram group chats.
 
