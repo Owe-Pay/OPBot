@@ -25,7 +25,7 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
       - [User Setup](#user-setup)
       - [Group Setup](#group-setup)
       - [Splitting bills among](#splitting-bills-among)
-      - [Getting help in a Group](#getting-help-in-a-group)
+      - [Getting Help in a Group](#getting-help-in-a-group)
       - [Getting Help via Private message](#getting-help-via-private-message)
 - [Developer Guide](#developer-guide)
   - [Setup](#setup)
@@ -226,7 +226,7 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    
    7.Other users can click the ‘I paid!’ button in step 6 in order to remove their name from the list.
 	
-#### Getting help in a Group
+#### Getting Help in a Group
 	
    1.Send the /help@OwePay_bot command
    
@@ -399,23 +399,23 @@ The .env file has been added to our .gitignore and will not be tracked by Git so
 
 ## Testing
 
-#### Testing Methodology 
+### Testing Methodology 
 	
 We will be using the pytest framework to design our tests since most of our code is in Python. It is a very flexible testing framework and allows us to design test cases that are specific to our requirements. In pytest, the Stubs used in testing can be called fixtures and are defined before the execution of the test.
 
 We are currently in the process of designing tests for the rest of our functions.
 	
-#### Design of Tests
+### Design of Tests
 
 The tests designed are hopefully sufficient to catch out all bugs and leave no cases unaccounted for. We will be designing them with the mindset of the trying to capture all possible inputs and how will our functions and system react when given these inputs either directly fed from the User or passed in as a result of another function,
 	
-#### Unit Testing
+### Unit Testing
 
 Unit Tests would involve testing the functionality of individual functions used in our code so as to ensure that our code is safe and relatively bug-free.
 
-##### Testing the *help* function of *owepaybot.py*
+### **Testing the *help* function of *owepaybot.py***
 	
-**Stubs used**
+#### **Stubs used**
 	
 * test_bot: A bot to simulate the functionality of a Telegram bot without actually running one
 
@@ -437,9 +437,9 @@ Unit Tests would involve testing the functionality of individual functions used 
 | test_help_wrong_private_id    | To test if an error is raised when an Group Update is sent from an Invalid chat_id (bot has not conversed with user before, user does not exist)|   BadRequest: Chat not found error caught|  BadRequest: Chat not found error caught |
 
 
-##### Testing the *button* function of *owepaybot.py*
+### Testing the *button* function of *owepaybot.py*
 	
-**Stubs used**
+#### **Stubs used**
 
 * user_register_callback_query: A Callback Query object that is used to simulate the event when a Callback Query is sent out after the Register button is pressed by a User via private message
 
@@ -458,11 +458,11 @@ Unit Tests would involve testing the functionality of individual functions used 
 | test_group_register_callback_query | To test if the correct callback_query is caught when when the User presses the Register button in a group. <br /> The test for groupAlreadyAdded is actually an integration test.|query.data == ‘groupRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’| query.data == ‘groupRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’ |query.data == ‘groupRegister’ <br /> query.from_user == self.from_user <br /> query.chat_instance == self.chat_instance <br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’
 | test_group_dont_register_callback_query    | To test if the correct callback_query is caught when when the User presses the Don’t Register button in a group<br /> The test for groupAlreadyAdded is actually an integration test.|   query.data == ‘groupDontRegister’<br /> query.from_user == self.from_user<br /> query.chat_instance == self.chat_instance<br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|  query.data == ‘groupDontRegister’<br /> query.from_user == self.from_user<br /> query.chat_instance == self.chat_instance<br /> query.message == self.group_message<br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|	
 
-#### Integration Testing
+### Integration Testing
 
 Integration Tests would involve testing whether different parts of our software work together. In our case, we will be testing the interaction between our Telegram Bot and our backend MySQL database.
 
-#### System Testing
+### System Testing
 
 System Tests would involve testing whether the system would function properly on day to day usage. In our case, we will be testing whether any bugs arise when the system is subjected to heavy user load among other tests.
 
