@@ -50,7 +50,8 @@ class TestSplitUnevenlyOrderNameCatcher:
         assert isinstance(splitUnevenlyOrderNameCatcher(orderUpdate, tempContext, 456, 345), Message)
         assert splitUnevenlyOrderNameCatcher(orderUpdate, tempContext, 456, 345).chat_id == 345
         assert splitUnevenlyOrderNameCatcher(orderUpdate, tempContext, 456, 345).text ==  "Please send in the items in the following format:\nItem Name - Price\n\nFor example:\nChicken Rice - 5\nCurry Chicken - 5.50\nNasi Lemak - 4"
-
+        assert userStateSplitUnevenly('456', '345') == True
+        
         massDelete("Users")
         massDelete("Orders")
         massDelete("TelegramGroups")

@@ -84,7 +84,7 @@ class TestGroupMemberScanner:
         massDelete("UserGroupRelational")
         assert addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'
         groupMemberScanner(notAddedUpdate, tempContext) # Initial
-        updateUserStateSplitUnevenly('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitunevenly'"
+        assert updateUserStateSplitUnevenly('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitunevenly'"
         assert addOrder(('4321', '1234321', 'ordertestname', '123', '11223344', datetime.now())) == "Order 4321 has been added"
         assert updateUserTempAmount('11223344', '1234321', '123') == "User 11223344 in Group 1234321 has the temporary amount 123"
         assert updateOrderIDToUserGroupRelational('11223344', '1234321', '4321') == "User 11223344 in Group 1234321 has OrderID 4321"

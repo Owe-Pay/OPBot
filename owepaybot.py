@@ -48,7 +48,7 @@ def startGroup(update, context):
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     # Sends the welcome message for the group.
-    context.bot.send_message(
+    message = context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=
         "Hello this is O$P$, your personal Telegram loan chaser and debt tracker!\n\n" +
@@ -59,6 +59,7 @@ def startGroup(update, context):
         "Simply register your group with us by pressing the button below!",
         reply_markup=reply_markup,
     )
+    return message
 
 def startPrivate(update, context):
     """Send the welcome message when the command /start is issued via PM"""
@@ -80,13 +81,14 @@ def startPrivate(update, context):
     # Sets up the InlineKeyboardMarkup as the reply_markup to be used in the message.
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    context.bot.send_message(
+    message = context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=
         "Hi! Thank you for choosing O$P$, your one stop debt chaser!\n\n" +
         "Simply register with us by clicking pressing the button below!",
         reply_markup=reply_markup,
     )
+    return message
 
 def getDebtors(update, context):
     userID = update.effective_chat.id

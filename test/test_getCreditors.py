@@ -78,7 +78,7 @@ class TestGetCreditors:
         assert getCreditors(getCreditorUpdate, contextNoMarkup).text == 'Please register with us first by using /start!'
 
     @flaky(3, 1)
-    def test_getDebtorsNoOneOwes(self, getCreditorUpdate):
+    def test_getCreditorsNoOneOwes(self, getCreditorUpdate):
         massDelete("Users")
         massDelete("Orders")
         massDelete("Transactions")
