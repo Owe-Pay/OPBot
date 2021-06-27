@@ -275,135 +275,135 @@ Navigate to the newly created OPBot directory. You will notice that this folder 
 	
 Our codebase uses several plugins and we will go over how to install them. 
 
-   3.1 Pipenv
+1. Pipenv
    
-    Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If you wish to run the code via you local machine please continue with the installation of other plugins.
+   Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If you wish to run the code via you local machine please continue with the installation of other plugins.
     
-```
-pip install pipenv
-```
+   ```
+   pip install pipenv
+   ```
    In the event that the above code does not work for you (especially if you are on Windows, try running any variation of the following code and continue to replace pip with the one that works for you.
-```
-python -m pip install pipenv
-py -m pip install pipenv
-```
+   ```
+   python -m pip install pipenv
+   py -m pip install pipenv
+   ```
    If you are still struggling with installing via pip feel free to contact us via GitHub and we’ll try our best to help you out! :)
 	
-   3.2 Python-Telegram-Bot
+2. Python-Telegram-Bot
    
    Python-Telegram-Bot is a wrapper tool that helps us to control and interact with our bot and is the backbone of our bot. Please try to familiarize yourself with it’s API and wrappers as a fundamental understanding of their classes is crucial for developing the codebase for O$P$.
-```
-pip install python-telegram-bot
-```
+   ```
+   pip install python-telegram-bot
+   ```
 	
-   3.3 Logging
+3. Logging
    
    Nothing much to say here. Just to create error logs for us to view later on.
-```
-pip install logging
-```
+   ```
+   pip install logging
+   ```
 	
-   3.4 Cryptography
+4. Cryptography
 	
-   This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-    bot.
-```
-pip install cryptography
-```
+   This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-bot.
+   ```
+   pip install cryptography
+   ```
 
-   3.5 Pytest
+5. Pytest
 	
    A very useful package that forms the backbone of our testing environment
 	
-```
-pip install pytest
-```
+   ```
+   pip install pytest
+   ```
 	
-   3.6 Flaky
+6. Flaky
 	
    This package helps to rerun Pytest tests for some of the more gimmicky tests that might not pass on the first try.
 	
-```
-pip install flaky
-```
-   3.7 Tabulate
+   ```
+   pip install flaky
+   ```
+7. Tabulate
    
    This package helps to make printing of tables prettier. Mostly for aesthetic purposes only.	
-```
-pip install tabulate
-```
-   3.8 Pymysql
+   ```
+   pip install tabulate
+   ```
+8. Pymysql
 	
    This package allows us to create MySQL queries with our Python functions in order to access our backend MySQL database.
 	
-```
-pip install pymsysql
-```
-   3.9 os-sys
+   ```
+   pip install pymsysql
+   ```
+9. os-sys
 	
    If for some odd reason you don’t have os-sys installed you can do so as follows. It is crucial for accessing environment variables which I will explain how to set up later.
 	
-```
-pip install os-sys
-```
+   ```
+   pip install os-sys
+   ```
 	
 ### 4. MySql
  
-To set up MySQL, first go to their official website and download the MySQL installer [here](https://dev.mysql.com/downloads/installer/). As of time of writing, we are using MySQL version 8.0.25. Run the installer and go through the necessary steps. If you encounter any difficulties, please refer to the guide [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/).
+   To set up MySQL, first go to their official website and download the MySQL installer [here](https://dev.mysql.com/downloads/installer/). As of time of writing, we are using MySQL version 8.0.25. Run the installer and go through the necessary steps. If you encounter any difficulties, please refer to the guide [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/).
 	
-To initialise a local MySQL database on Windows, please follow this guide [here](https://www.microfocus.com/documentation/idol/IDOL_12_0/MediaServer/Guides/html/English/Content/Getting_Started/Configure/_TRN_Set_up_MySQL.html).
+   To initialise a local MySQL database on Windows, please follow this guide [here](https://www.microfocus.com/documentation/idol/IDOL_12_0/MediaServer/Guides/html/English/Content/Getting_Started/Configure/_TRN_Set_up_MySQL.html).
 
-To initialise a local MySQL database on MacOS, please follow this guide [here](https://dev.mysql.com/doc/refman/8.0/en/macos-installation-launchd.html).
+   To initialise a local MySQL database on MacOS, please follow this guide [here](https://dev.mysql.com/doc/refman/8.0/en/macos-installation-launchd.html).
 	
-In order to access the MySQL database, install MySQL Workbench from the link here and run the installation setup. After you have successfully set up MySQL Workbench you will be able to access your local MySQL database which would be called localhost if you have already initialised and would be visible in the home page of MySQL Workbench.
+   In order to access the MySQL database, install MySQL Workbench from the link here and run the installation setup. After you have successfully set up MySQL Workbench you will be able to access your local MySQL database which would be called localhost if you have already initialised and would be visible in the home page of MySQL Workbench.
 
-Our bot’s backend relies on a Heroku hosted ClearDB MySQL implementation. To access our database you will require a specific API token. Please submit a request to us via GitHub if you would like to have access to our database.
+   Our bot’s backend relies on a Heroku hosted ClearDB MySQL implementation. To access our database you will require a specific API token. Please submit a request to us via GitHub if you would like to have access to our database.
 
-Because of the way ClearDB works, it does not allow us to create new databases to work with and instead we work with the database that is created by default. To optimally set up the MySQL database on your computer, we will be doing it on a new database so as to ensure your default sys database does not get overcrowded.
+   Because of the way ClearDB works, it does not allow us to create new databases to work with and instead we work with the database that is created by default. To optimally set up the MySQL database on your computer, we will be doing it on a new database so as to ensure your default sys database does not get overcrowded.
 
-The video tutorial on how to set up the database can be found [here](https://www.youtube.com/watch?v=tl1O0NVMB2U). Please have MySQL Workbench up and running first though! For clarity’s sake, the command that is run can be found below:
+   The video tutorial on how to set up the database can be found [here](https://www.youtube.com/watch?v=tl1O0NVMB2U). Please have MySQL Workbench up and running first though! For clarity’s sake, the command that is run can be found below:
 	
-``` 
-CREATE DATABASE `owepay`
-```
+   ``` 
+   CREATE DATABASE `owepay`
+   ```
 	
-Please note that the botsql_1.sql file used in the video might be outdated by the time you watch it.   
+   Please note that the botsql_1.sql file used in the video might be outdated by the time you watch it.   
    
 #### 5. .env
 
-After reading some of the code you will realise that there is a reference to os.environ[‘’]. This is because we are accessing environment variables. We have set up the variables to be retrieved on Heroku but for your local machine which should not have access to the Heroku server at all times, you should set up a .env file for your own testing purposes.
+   After reading some of the code you will realise that there is a reference to os.environ[‘’]. This is because we are accessing environment variables. We have set up the variables to be retrieved on Heroku but for your local machine which should not have access to the Heroku server at all times, you should set up a .env file for your own testing purposes.
 
-First create the .env file. You can use any Integrated Development Environment (IDE) but for the sake of demonstration we will be using Visual Studio Code (VSC).
+   First create the .env file. You can use any Integrated Development Environment (IDE) but for the sake of demonstration we will be using Visual Studio Code (VSC).
 	
-```
+   ```
    code .env
-```
+   ```
 
-Next, you will need to set up the path to the parent of the Git Repository you’re working in. To do this,  in .env include the following in the first line.	
-```
+   Next, you will need to set up the path to the parent of the Git Repository you’re working in. To do this,  in .env include the following in the first line.	
+   ```
    CONFIG_PATH=${HOME}<PATH TO THE PARENT OF THE OPBOT REPOSITORY>
-```
+   ```
 	
-Now we will be declaring the following variables. Do so by including them in the lines after the first.
+   Now we will be declaring the following variables. Do so by including them in the lines after the first.
 
-```
+   ```
    API_TOKEN=’SOME TOKEN’
    DB_HOST='localhost'
    DB_USER=root
    DB_PASSWORD=<YOUR LOCALHOST PASSWORD>
    DB_DB='owepay'
-```
+   ```
 	
-The field API_TOKEN is the token that we will be using to connect to the bot. For testing purposes, we have a bot dedicated to it. Please submit a request to us via GitHub if you wish to obtain a copy of the token as it is sensitive. You can also choose to use your own test bot. Instructions on how to make your own Telegram Bot can be found [here](https://core.telegram.org/bots).
+   The field API_TOKEN is the token that we will be using to connect to the bot. For testing purposes, we have a bot dedicated to it. Please submit a request to us via GitHub if you wish to obtain a copy of the token as it is sensitive. You can also choose to use your own test bot. Instructions on how to make your own Telegram Bot can be found [here](https://core.telegram.org/bots).
 
-The .env file has been added to our .gitignore and will not be tracked by Git so you can rest assured that your personal data will not be uploaded every time you commit a change.
+   The .env file has been added to our .gitignore and will not be tracked by Git so you can rest assured that your personal data will not be uploaded every time you commit a change.
 
 ## Testing
 
 ### Testing Methodology 
 	
-We will be using the pytest framework to design our tests since most of our code is in Python. It is a very flexible testing framework and allows us to design test cases that are specific to our requirements. In pytest, the Stubs used in testing can be called fixtures and are defined before the execution of the test.
+   We will be using the pytest framework to design our tests since most of our code is in Python. It is a very flexible testing framework and allows us to design test cases that are specific to our requirements. In pytest, the Stubs used in testing can be called fixtures and are defined before the execution of the test.
 
-We are currently in the process of designing tests for the rest of our functions.
+   We are currently in the process of designing tests for the rest of our functions.
 	
 ### Design of Tests
 
