@@ -24,7 +24,11 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
     - [O$P$ Telegram Bot (@OwePay_bot)](#op-telegram-bot-owepay_bot)
         - [User Setup](#user-setup)
         - [Group Setup](#group-setup)
-        - [Splitting bills among](#splitting-bills-among)
+        - [Splitting bills](#splitting-bills)
+           - [Splitting Evenly](#splitting-evenly)
+           - [Splitting Unevenly](#splitting-unevenly)
+        - [Checking your Debtors](#checking-your-debtors)
+        - [Checking your Creditors](#checking-your-creditors)
         - [Getting Help in a Group](#getting-help-in-a-group)
         - [Getting Help via Private message](#getting-help-via-private-message)
   - [Developer Guide](#developer-guide)
@@ -254,13 +258,13 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    
    7. Other users can click the ‘I've paid!’ button in step 6 in order to remove their name from the list.
 	
-#### Checking who owes you money
+#### Checking your Debtors
 
    1. Send the /whoowesme command to @OwePay_bot via private message
    
    2. The bot will send a list of the people who still owe you money organised by the bills they are associated with along with the option next to each person to notify them or settle the debt. Please only press settle if you have guaranteed the bill has been settled.
 
-#### Checking whom you owe money to
+#### Checking your Creditors
   
    1. Send the /whoomeowes command to @OwePay_bot via private message
    
