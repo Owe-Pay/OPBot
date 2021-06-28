@@ -35,7 +35,7 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
         - [1. Install Python](#1-install-python)
         - [2. Cloning of Git Repository](#2-cloning-of-git-repository)
         - [3. Install Necessary Plugins](#3-install-necessary-plugins)
-        - [4. MySql](#4-mysql)
+        - [4. MySQL](#4-mysql)
         - [5. .env](#5-env)
     - [Testing](#testing)
         - [Testing Methodology](#testing-methodology)
@@ -431,7 +431,7 @@ Our codebase uses several plugins and we will go over how to install them.
    pip install os-sys
    ```
 	
-### 4. MySql
+### 4. MySQL
  
    To set up MySQL, first go to their official website and download the MySQL installer [here](https://dev.mysql.com/downloads/installer/). As of time of writing, we are using MySQL version 8.0.25. Run the installer and go through the necessary steps. If you encounter any difficulties, please refer to the guide [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/).
 	
