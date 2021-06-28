@@ -47,6 +47,8 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
           - [Testing the *button* function of *owepaybot.py*](#testing-the-button-function-of-owepaybotpy)
           - [Testing the *messageContains* functions of *owepaybot.py*](#testing-the-messagecontainssplitevenly-and-messagecontainssplitunevenly-functions-of-owepaybotpy)
           - [Testing the *splitUnevenlyOrderNameCatcher* function of *owepaybot.py*](#testing-the-splitunevenlyordernamecatcher-function-of-owepaybotpy)
+          - [Testing the *splitEvenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*](#testing-the-splitevenlykeyboardmarkup-function-of-helpmehelperfunctionspy)
+          - Testing the *splitUnevenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*](#testing-the-splitunevenlykeyboardmarkup-function-of-helpmehelperfunctionspy)
         - [Integration Testing](#integration-testing)
            - [Testing the *groupMemberScanner* function of *owepaybot.py*](#testing-the-groupmemberscanner-function-of-owepaybotpy)
            - [Testing the *waitingForSomeNames* function of *owepaybot.py*](#testing-the-waitingforsomenames-function-of-owepaybotpy)
@@ -580,6 +582,29 @@ The main purpose of this test is to test if the splitUnevenlyOrderNameCatcher is
 | --------- |-------------| -------------------| -------------------|
 |test_splitUnevenlyOrderNameCatcher|To test if splitUnevenlyOrderNameCatcher correctly catches the order name message, updates the user’s state to the expected state and returns the expected Message|addGroup((345, 'groupname')) == "Group groupname 345 inserted"<br /><br />addUser((456, 'userusername', 0, 'userfirstname')) == "User 456 inserted"<br /><br />addUserToGroup(456, 345) == "User 456 added to Group 345"<br /><br />updateUserTempAmount('456', '345', '123') == "User 456 in Group 345 has the temporary amount 123"<br /><br />isinstance(splitUnevenlyOrderNameCatcher(orderUpdate, tempContext, 456, 345), Message)<br /><br />splitUnevenlyOrderNameCatcher(orderUpdate, tempContext, 456, 345).chat_id == 345<br /><br />userStateSplitUnevenly('456', '345') == True<br /><br />splitUnevenlyOrderNameCatcher(orderUpdate, tempContext, 456, 345).text ==  "Please send in the items in the following format:\nItem Name - Price\n\nFor example:\nChicken Rice - 5\nCurry Chicken - 5.50\nNasi Lemak - 4"|addGroup((345, 'groupname')) == "Group groupname 345 inserted"<br /><br />addUser((456, 'userusername', 0, 'userfirstname')) == "User 456 inserted"<br /><br />addUserToGroup(456, 345) == "User 456 added to Group 345"<br /><br />updateUserTempAmount('456', '345', '123') == "User 456 in Group 345 has the temporary amount 123"<br /><br />isinstance(splitUnevenlyOrderNameCatcher(orderUpdate, tempContext, 456, 345), Message)<br /><br />splitUnevenlyOrderNameCatcher(orderUpdate, tempContext, 456, 345).chat_id == 345<br /><br />userStateSplitUnevenly('456', '345') == True<br /><br />splitUnevenlyOrderNameCatcher(orderUpdate, tempContext, 456, 345).text ==  "Please send in the items in the following format:\nItem Name - Price\n\nFor example:\nChicken Rice - 5\nCurry Chicken - 5.50\nNasi Lemak - 4"|
 
+### **Testing the *splitEvenlyKeyboardMarkup* function of *HELPME/helperFunctions.py***
+
+The main purpose of this test is to test if the splitEvenlyKeyboardMarkup function returns the expected InlineKeyboardMarkup given a certain input.
+
+#### **Stubs used**
+
+* testsplitevenlykeyboardmarkup: A hardcoded version of the expected InlineKeyboardMarkup object with the expected buttons and their respective callback data.
+
+| Test Name | Description | Expected           | Actual             |
+| --------- |-------------| -------------------| -------------------|
+|test_splitEvenlyKeyboardMarkup|To test the ability for the splitEvenlyKeyboardMarkup function to return the expected InlineKeyboardMarkup object|addGroup((345, 'groupname')) == "Group groupname 345 inserted"<br /><br />addUser((456, 'userusername', 0, 'userfirstname')) == "User 456 inserted"<br /><br />addUser((9871, 'dummyusername1', 0, 'dummyuser1')) == "User 9871 inserted"<br /><br />addUser((9872, 'dummyusername2', 0, 'dummyuser2')) == "User 9872 inserted"<br /><br />addUser((9873, 'dummyusername3', 0, 'dummyuser3')) == "User 9873 inserted”<br /><br />addUserToGroup(456, 345) == "User 456 added to Group 345"<br /><br />addUserToGroup(9871, 345) == "User 9871 added to Group 345"<br /><br />addUserToGroup(9872, 345) == "User 9872 added to Group 345"<br /><br />addUserToGroup(9873, 345) == "User 9873 added to Group 345"<br /><br />splitEvenlyKeyboardMarkup(345) == testsplitevenlykeyboardmarkup|addGroup((345, 'groupname')) == "Group groupname 345 inserted"<br /><br />addUser((456, 'userusername', 0, 'userfirstname')) == "User 456 inserted"<br /><br />addUser((9871, 'dummyusername1', 0, 'dummyuser1')) == "User 9871 inserted"<br /><br />addUser((9872, 'dummyusername2', 0, 'dummyuser2')) == "User 9872 inserted"<br /><br />addUser((9873, 'dummyusername3', 0, 'dummyuser3')) == "User 9873 inserted”<br /><br />addUserToGroup(456, 345) == "User 456 added to Group 345"<br /><br />addUserToGroup(9871, 345) == "User 9871 added to Group 345"<br /><br />addUserToGroup(9872, 345) == "User 9872 added to Group 345"<br /><br />addUserToGroup(9873, 345) == "User 9873 added to Group 345"<br /><br />splitEvenlyKeyboardMarkup(345) == testsplitevenlykeyboardmarkup|
+
+### **Testing the *splitUnevenlyKeyboardMarkup* function of *HELPME/helperFunctions.py***
+
+The main purpose of this test is to test if the splitUnevenlyKeyboardMarkup function returns the expected InlineKeyboardMarkup given a certain input.
+
+#### **Stubs used**
+
+* splitUnevenlyReplyMarkupForTestManual: A hardcoded version of the expected InlineKeyboardMarkup object with the expected buttons and their respective callback data.
+
+| Test Name | Description | Expected           | Actual             |
+| --------- |-------------| -------------------| -------------------|
+|test_splitUnevenly|To test the ability for the splitUnevenlyKeyboardMarkup function to return the expected InlineKeyboardMarkup object|addGroup((345, 'groupname')) == "Group groupname 345 inserted"<br /><br />addUser((456, 'userusername', 0, 'userfirstname')) == "User 456 inserted"<br /><br />addUser((9871, 'dummyusername1', 0, 'dummyuser1')) == "User 9871 inserted"<br /><br />addUser((9872, 'dummyusername2', 0, 'dummyuser2')) == "User 9872 inserted"<br /><br />addUser((9873, 'dummyusername3', 0, 'dummyuser3')) == "User 9873 inserted”<br /><br />addUserToGroup(456, 345) == "User 456 added to Group 345"<br /><br />addUserToGroup(9871, 345) == "User 9871 added to Group 345"<br /><br />addUserToGroup(9872, 345) == "User 9872 added to Group 345"<br /><br />addUserToGroup(9873, 345) == "User 9873 added to Group 345"<br /><br />splitUnevenlyKeyboardMarkup(345,False) == splitUnevenlyReplyMarkupForTestManual|addGroup((345, 'groupname')) == "Group groupname 345 inserted"<br /><br />addUser((456, 'userusername', 0, 'userfirstname')) == "User 456 inserted"<br /><br />addUser((9871, 'dummyusername1', 0, 'dummyuser1')) == "User 9871 inserted"<br /><br />addUser((9872, 'dummyusername2', 0, 'dummyuser2')) == "User 9872 inserted"<br /><br />addUser((9873, 'dummyusername3', 0, 'dummyuser3')) == "User 9873 inserted”<br /><br />addUserToGroup(456, 345) == "User 456 added to Group 345"<br /><br />addUserToGroup(9871, 345) == "User 9871 added to Group 345"<br /><br />addUserToGroup(9872, 345) == "User 9872 added to Group 345"<br /><br />addUserToGroup(9873, 345) == "User 9873 added to Group 345"<br /><br />splitUnevenlyKeyboardMarkup(345,False) == splitUnevenlyReplyMarkupForTestManual|
 
 ### Integration Testing
 
