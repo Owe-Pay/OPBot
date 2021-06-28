@@ -25,8 +25,6 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
         - [User Setup](#user-setup)
         - [Group Setup](#group-setup)
         - [Splitting bills](#splitting-bills)
-           - [Splitting Evenly](#splitting-evenly)
-           - [Splitting Unevenly](#splitting-unevenly)
         - [Checking your Debtors](#checking-your-debtors)
         - [Checking your Creditors](#checking-your-creditors)
         - [Getting Help in a Group](#getting-help-in-a-group)
