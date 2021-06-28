@@ -210,21 +210,62 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    
    4. Start splitting!
 
-#### Splitting bills among 
+#### Splitting bills
 	
    1. Begin your message with the following: @OwePay_bot and an inline message asking you to key in the amount to be split should appear
    
-   2. Key in the amount to be split (currently, only $ is supported) and two popups will appear above the textbox asking you to choose whether you wish to split the bill evenly among everyone or among some people
+   2. Key in the amount to be split (currently, only $ is supported) and two popups will appear above the textbox asking you to choose whether you wish to split the bill evenly or unevenly.
    
-   3. Selecting the ‘split among everyone’ option will cause a message to be sent in the group by you detailing the amount to be split and that everyone is partaking
+   3. Splitting Evenly:
    
-   4. The bot will now prompt you to send in a name for the bill
+      1. Selecting the ‘split evenly’ option will cause a message to be sent in the group by you detailing the amount to be split and that it is to be split evenly.
+      
+      2. The bot will prompt you to send in a name for the bill and the next message you send will be registered as the bill's name.
+
+      3. The bot then send a message to the group with buttons for every user in the group where you can click on their name to add them to the split for the bill.
+
+      4. When you are done selecting the users involved in the bill, press the "Create Order" button to create the bill.
+      
+      5.  The bot will finally send a message to the group with the total amount, amount to be paid by each person, and a list of people who have yet to pay and below this message will be clickable buttons ‘I've paid!’ and I've not paid!'.
+      
+      6.  Other users can click the ‘I've paid!’ button in the message from the previous step in order to remove their name from the list.
+   
+   4. Splitting Unevenly:
+      
+      1. Selecting the ‘split unevenly’ option will cause a message to be sent in the group by you detailing the amount to be split and that it is to be split unevenly.
+      
+      2. The bot will prompt you to send in a name for the bill and the next message you send will be registered as the bill's name.
+      
+      3. The bot will prompt you to send in the items to be split for the bill in the appropriate format and the next message you send will be registered as the item list.
+      
+      4. The bot will then request for you to send in the send a message to the group with buttons for every user in the group where you can click on their name to add them to the split for each item in the item list you sent in the previous step.
+      
+      5. When you are done selecting the users involved for each item, you have the option of adding Goods and Services Tax (GST) and/or Service Charge to the bill.
+      
+      6. After you are done accounting for additional costs, press the "Create Order" button to create the bill.
+      
+      7. The bot will finally send a message to the group with the total amount and a list of people who have yet to pay with the amount they owe you next to their respective names and below this message will be a clickable button ‘I paid!’.
+      
+      6.  Other users can click the ‘I paid!’ button in the message from the previous step in order to remove their name from the list.
    
    5. The next message you send will be registered as the bill’s name
    
-   6. The bot will finally send a message to the group with the total amount, amount to be paid by each person, and a list of people who have yet to pay and below this message will be a clickable button ‘I paid!’
+   6. The bot will finally send a message to the group with the total amount, amount to be paid by each person, and a list of people who have yet to pay and below this message will be clickable buttons ‘I've paid!’ and and I've not paid!'.
    
-   7. Other users can click the ‘I paid!’ button in step 6 in order to remove their name from the list.
+   7. Other users can click the ‘I've paid!’ button in step 6 in order to remove their name from the list.
+	
+#### Checking who owes you money
+
+   1. Send the /whoowesme command to @OwePay_bot via private message
+   
+   2. The bot will send a list of the people who still owe you money organised by the bills they are associated with along with the option next to each person to notify them or settle the debt. Please only press settle if you have guaranteed the bill has been settled.
+
+#### Checking whom you owe money to
+  
+   1. Send the /whoomeowes command to @OwePay_bot via private message
+   
+   2. The bot will send a list of the people whom you still owe money to organised by the bills they are associated with along with the option to settle the debt. Please only press settle if you have guaranteed the bill has been settled.
+
 	
 #### Getting Help in a Group
 	
@@ -242,6 +283,7 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
 
 # Developer Guide
 
+With this developer guide, we hope that collaborating with our project will be something a person with the relevant python skillset will be able to easily start on.
 
 ## Setup
    
