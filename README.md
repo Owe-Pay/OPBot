@@ -48,7 +48,7 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
           - [Testing the *messageContains* functions of *owepaybot.py*](#testing-the-messagecontainssplitevenly-and-messagecontainssplitunevenly-functions-of-owepaybotpy)
           - [Testing the *splitUnevenlyOrderNameCatcher* function of *owepaybot.py*](#testing-the-splitunevenlyordernamecatcher-function-of-owepaybotpy)
           - [Testing the *splitEvenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*](#testing-the-splitevenlykeyboardmarkup-function-of-helpmehelperfunctionspy)
-          - Testing the *splitUnevenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*](#testing-the-splitunevenlykeyboardmarkup-function-of-helpmehelperfunctionspy)
+          - [Testing the *splitUnevenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*](#testing-the-splitunevenlykeyboardmarkup-function-of-helpmehelperfunctionspy)
         - [Integration Testing](#integration-testing)
            - [Testing the *groupMemberScanner* function of *owepaybot.py*](#testing-the-groupmemberscanner-function-of-owepaybotpy)
            - [Testing the *waitingForSomeNames* function of *owepaybot.py*](#testing-the-waitingforsomenames-function-of-owepaybotpy)
