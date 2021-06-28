@@ -54,6 +54,11 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
            - [Testing the *getDebtors* function of *owepaybot.py*](#testing-the-getdebtors-function-of-owepaybotpy)
            - [Testing the *catchOrderFromUpdate* function of *owepaybot.py*](#testing-the-catchorderfromupdate-function-of-owepaybotpy)
         - [System Testing](#system-testing)
+           - [Testing *Start Command* via Private Message](#testing-start-command-via-private-message)
+           - [Testing *Start Command* via Group Message](#testing-start-command-via-group-message)
+           - [Testing *help Command*](#testing-help-command)
+           - [Testing Inline Query](#testing-inline-query)
+           - [Testing Order Formatting](#testing-order-formatting)
     - [Prototyping](#prototyping)
       - [O$P$ Mobile Application](#op-mobile-application)
       - [Telegram Bot (@OwePay_bot)](#telegram-bot-owepay_bot)
@@ -698,14 +703,83 @@ The main purpose of this test is to test if the splitDifferentAmounts function r
 
 System Tests would involve testing whether the system would function properly on day to day usage. In our case, we will be testing whether any bugs arise when the system is subjected to heavy user load among other tests.
 
+### Testing *start Command* via Private Message
+
+| Test Name | Description | Expected           | Actual             |
+| --------- |-------------| -------------------| -------------------|
+|/start once| To test basic functionality of the /start command|Bot sends user register message|Bot sends user register message|
+|/start twice in a row without registering|To test basic functionality of the /start function given multiple /start inputs|Bot sends user register message after each /start command|Bot sends user register message after each /start command|
+|/start once, user presses register button, /start again user presses register button|To test basic functionality of the /start function given multiple /start inputs with registration|Bot sends user register message after first /start command and sends user already registered after second /start command|Bot sends user register message after first /start command and sends user already registered after second /start command|
+
+### Testing *start Command* via Group Message
+
+| Test Name | Description | Expected           | Actual             |
+| --------- |-------------| -------------------| -------------------|
+|/start once|To test basic functionality of the /start command|Bot sends group register message|Bot sends group register message|
+|/start twice in a row without registering|To test basic functionality of the /start function given multiple /start inputs|Bot sends group register message after each /start command| Bot sends group register message after each /start command|
+|/start once, user presses register button, /start again user presses register button|To test basic functionality of the /start function given multiple /start inputs with registration|Bot sends group register message after first /start command and sends group already registered after second /start command|Bot sends group register message after first /start command and sends group already registered after second /start command|
+
+### Testing *help Command*
+
+| Test Name | Description | Expected           | Actual             |
+| --------- |-------------| -------------------| -------------------|
+|/help in group|To test basic functionality of the /help command in groups|Bot sends help message|Bot sends help message|
+|/help in private message|To test basic functionality of the /help command in private message|Bot sends help message|Bot sends help message|
+
+### Testing Inline Query
+
+| Test Name | Description | Expected           | Actual             |
+| --------- |-------------| -------------------| -------------------|
+|@OwePay_bot 123.00|To test if inline queries can handle a standard 2 decimal place float|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot 0123.00|To test if inline queries can handle a standard 2 decimal place float with an unnecessary 0|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot 123|To test if inline queries can handle a standard integer|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot 0123|To test if inline queries can handle a standard integer with an unnecessary 0|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot 123.00000|To test if inline queries can handle a standard 5 decimal place float|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot 00123.00912|To test if inline queries can handle a standard 5 decimal place float with rounding and 2 unnecessary 0’s|InlineResultArticles:<br />Split evenly: $123.01<br />Split unevenly: $123.01|InlineResultArticles:<br />Split evenly: $123.01<br />Split unevenly: $123.01|
+|@OwePay_bot .112|To test if inline queries can handle standard 3 decimal place float without a number prefixing the period|InlineResultArticles:<br />Split evenly: $0.11<br />Split unevenly: $0.11|InlineResultArticles:<br />Split evenly: $0.11<br />Split unevenly: $0.11|
+|@OwePay_bot $123.00|To test if inline queries can handle a standard 2 decimal place float  with $ sign at the front. |InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot $0123.00|To test if inline queries can handle a standard 2 decimal place float with an unnecessary 0  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot $123|To test if inline queries can handle a standard integer  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot $0123|To test if inline queries can handle a standard integer with an unnecessary 0  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot $123.00000|To test if inline queries can handle a standard 5 decimal place float  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00|
+|@OwePay_bot $00123.00912|To test if inline queries can handle a standard 5 decimal place float with rounding and 2 unnecessary 0’s  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.01<br />Split unevenly: $123.01|InlineResultArticles:<br />Split evenly: $123.01<br />Split unevenly: $123.01|
+|@OwePay_bot $.112|To test if inline queries can handle standard 3 decimal place float without a number prefixing the period  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $0.11<br />Split unevenly: $0.11|InlineResultArticles:<br />Split evenly: $0.11<br />Split unevenly: $0.11|
+|@OwePay_bot $123.10.1|To test if inline queries can recognise invalid amount|InlineResultArticle:<br />$123.10.1 is not a valid amount.|InlineResultArticle:<br />$123.10.1 is not a valid amount.|
+|@OwePay_bot 123d|To test if inline queries can recognise invalid amount|InlineResultArticle:<br />123d is not a valid amount.|InlineResultArticle:<br />123d is not a valid amount.|
+|@OwePay_bot 123.1d|To test if inline queries can recognise invalid amount|InlineResultArticle:<br />123.1d is not a valid amount.|InlineResultArticle:<br />123.1d is not a valid amount.|
+|@OwePay_bot abcd|To test if inline queries can recognise invalid amount|InlineResultArticle:<br />abcd is not a valid amount.|InlineResultArticle:<br />abcd is not a valid amount.|
+
+### Testing Order Formatting
+
+| Test Name | Description | Expected           | Actual             |
+| --------- |-------------| -------------------| -------------------|
+|Chicken rice - 5<br />Coke - 2|To test if the order list catcher can catch a correct order format|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice- 5<br />Coke- 2|To test if the order list catcher can catch a correct order format with no space between the item names and dashes|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice -5<br />Coke -2|To test if the order list catcher can catch a correct order format with no space between the dash and the item price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice-5<br />Coke-2|To test if the order list catcher can catch a correct order format with no space between the item name and the dash and the item price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice - 5<br />Coke -2|To test if the order list catcher can catch a correct order format with no space between the dash and the item price for one of the items only|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice- 5<br />Coke - 2|To test if the order list catcher can catch a correct order format with no space between the item name and the dash for one of the items only|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice-5<br />Coke - 2|To test if the order list catcher can catch a correct order format with no space between the item name and the dash and the price for one of the items only|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice - $5<br />Coke - $2|To test if the order list catcher can catch a correct order format with a $ sign in front of each price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice- $5<br />Coke- $2|To test if the order list catcher can catch a correct order format with no space between the item names and dashes with a $ sign in front of each price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice -$5<br />Coke -$2|To test if the order list catcher can catch a correct order format with no space between the dash and the item price with a $ sign in front of each price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice-$5<br />Coke-$2|To test if the order list catcher can catch a correct order format with no space between the item name and the dash and the item price with a $ sign in front of each price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice - $5<br />Coke -$2|To test if the order list catcher can catch a correct order format with no space between the dash and the item price for one of the items only with a $ sign in front of each price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice- $5<br />Coke - $2|To test if the order list catcher can catch a correct order format with no space between the item name and the dash for one of the items only with a $ sign in front of each price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice-$5<br />Coke - $2|To test if the order list catcher can catch a correct order format with no space between the item name and the dash and the price for one of the items only with a $ sign in front of each price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice - $5<br />Coke - 2|To test if the order list catcher can catch a correct order format with a $ sign in front of one of the prices only|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)|
+|Chicken rice -$5Coke - 2|To test if the order list catcher can recognise an invalid syntax and request for user to resend order|Invalid order format, please send again|Invalid order format, please send again|
+|Chicken rice - $5Coke - 2<br /><br />Followed by /cancel|To test if the order list catcher can recognise an invalid syntax and request for user to resend order and cancelling the order request will stop the bot from continually prompting for the user to send again|Invalid order format, please send again, bot cancelled|Invalid order format, please send again, bot cancelled|
+
 
 ## Prototyping
 ### O$P$ Mobile Application
 
 We plan to launch a mobile application with similar functionality to our Telegram Bot with certain extensions. You can find a demonstration of what we hope to see from it below.
+| Login Page | Home Page  |
+| ---------- | ---------- |
+|![sample Login Page](https://res.cloudinary.com/jianoway/image/upload/v1623863754/homepageGif_wtx6xh.gif)|![Sample Home Page](https://res.cloudinary.com/jianoway/image/upload/v1623863761/uiGif_sb9kka.gif)|
 
-![sample Login Page](https://res.cloudinary.com/jianoway/image/upload/v1623863754/homepageGif_wtx6xh.gif)
-![Sample Home Page](https://res.cloudinary.com/jianoway/image/upload/v1623863761/uiGif_sb9kka.gif)
 
 ### Telegram Bot (@OwePay_bot)
 
