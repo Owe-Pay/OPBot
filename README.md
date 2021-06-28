@@ -457,6 +457,38 @@ The tests designed are hopefully sufficient to catch out all bugs and leave no c
 
 Unit Tests would involve testing the functionality of individual functions used in our code so as to ensure that our code is safe and relatively bug-free.
 
+### **Testing the *startPrivate* function of *owepaybot.py***
+	
+The main purpose of this test is to test the functionality of the /start command in a private message setting.
+
+#### **Stubs used**
+
+* privateUpdate: The Update object passed into the startPrivate function when /start is called by the user
+
+* contextWithMarkup: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text, reply_markup)
+
+| Test Name| Description | Expected           | Actual             |
+| ---------|-------------| -------------------| -------------------|
+| test_startPrivate|To test if given an update, it will be able to respond in the correct chat with the correct message. | Message = startPrivate(privateUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234<br /><br />Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard)|Message = startPrivate(privateUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234<br /><br />Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard)|
+|test_invalid_user_id |To test if receiving an update with an invalid chat_id, it will flag a BadRequest error|BadRequest: Chat not found error caught|BadRequest: Chat not found error caught
+
+
+
+### **Testing the *startGroup* function of *owepaybot.py***
+	
+The main purpose of this test is to test the functionality of the /start command in a group chat setting.
+
+#### **Stubs used**
+
+* groupUpdate: The Update object passed into the startPrivate function when /start is called by the user
+
+* contextWithMarkup: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text, reply_markup)
+
+| Test Name        | Description | Expected           | Actual             |
+| ---------        |-------------| -------------------| -------------------|
+|test_startGroup|To test if given an update, it will be able to respond in the correct chat with the correct message.|Message = startGroup(groupUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234 Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard)|Message = startGroup(groupUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234 Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard|
+|test_invalid_group_id|To test if receiving an update with an invalid chat_id, it will flag a BadRequest error|BadRequest: Chat not found error caught |BadRequest: Chat not found error caught|
+
 ### **Testing the *help* function of *owepaybot.py***
 	
 #### **Stubs used**
@@ -504,7 +536,48 @@ Unit Tests would involve testing the functionality of individual functions used 
 
 ### Integration Testing
 
-Integration Tests would involve testing whether different parts of our software work together. In our case, we will be testing the interaction between our Telegram Bot and our backend MySQL database.
+Integration Tests would involve testing whether different parts of our software work together. In our case, we will be testing the integration of our different functions and how they work together along with the integration of our Telegram Bot and backend MySQL database.
+
+### **Testing the *groupMemberScanner* function of *owepaybot.py***
+	
+The main purpose of this test is to test the ability of our bot to catch messages in the group setting in for various processes such as catching order names or orders themselves based on the state of the users in the group.
+
+Due to the nature of the groupMemberScanner requiring certain conditions for certain tests to run e.g the group has to already have been added, we will be setting up these test environments within each of the tests before resetting the testing environment before the next test as seen by use of the massDelete function.
+
+#### **Stubs used**
+
+* notAddedUpdate: The update object to simulate the case where a user sends a message into the group
+
+* tempContext: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, **kwargs)
+
+| Test Name | Description | Expected           | Actual             |
+| --------- |-------------| -------------------| -------------------|
+|test_groupNotAdded|To test if groupMemberScanner can correctly check and return if the group has yet to be added yet.|groupMemberScanner(notAddedUpdate, tempContext) == 'Group with id 1234321 not added'|groupMemberScanner(notAddedUpdate, tempContext) == 'Group with id 1234321 not added'|
+|test_userNotAdded|To test if groupMemberScanner can check if the user is not added to the Users database yet when the group has already been added and proceeds to add the user to the database.|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted' <br /><br />userAlreadyAdded(11223344) == True|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted' <br /><br />userAlreadyAdded(11223344) == True|
+|test_userNotInGroup|To test if groupMemberScanner will associate a user to the group the message was sent in in the UserGroupRelational table after the message is sent|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />userInGroup('11223344', '1234321') == True|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />userInGroup('11223344', '1234321') == True|
+test_userStateSplitEvenly|To test if groupMemberScanner will be able to recognise when the user has state ‘splitevenly’|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />updateUserStateSplitEvenly('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitevenly'"<br /><br />updateUserTempAmount('11223344', '1234321', '123') == "User 11223344 in Group 1234321 has the temporary amount 123"<br /><br />groupMemberScanner(notAddedUpdate, tempContext) == "User 11223344 has state 'splitevenly'"|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />updateUserStateSplitEvenly('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitevenly'"<br /><br />updateUserTempAmount('11223344', '1234321', '123') == "User 11223344 in Group 1234321 has the temporary amount 123"<br /><br />groupMemberScanner(notAddedUpdate, tempContext) == "User 11223344 has state 'splitevenly'"|
+|test_userStateSplitUnevenly|To test if groupMemberScanner will be able to recognise when the user has state ‘splitunevenly’|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />updateUserStateSplitUnevenly('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitunevenly'"<br /><br />addOrder(('4321', '1234321', 'ordertestname', '123', '11223344', datetime.now())) == "Order 4321 has been added"<br /><br />updateUserTempAmount('11223344', '1234321', '123') == "User 11223344 in Group 1234321 has the temporary amount 123"<br /><br />updateOrderIDToUserGroupRelational('11223344', '1234321', '4321') == "User 11223344 in Group 1234321 has OrderID 4321"<br /><br />groupMemberScanner(notAddedUpdate, tempContext) == "User 11223344 has state 'splitunevenly'"| addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />updateUserStateSplitUnevenly('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitunevenly'"<br /><br />addOrder(('4321', '1234321', 'ordertestname', '123', '11223344', datetime.now())) == "Order 4321 has been added"<br /><br />updateUserTempAmount('11223344', '1234321', '123') == "User 11223344 in Group 1234321 has the temporary amount 123"<br /><br />updateOrderIDToUserGroupRelational('11223344', '1234321', '4321') == "User 11223344 in Group 1234321 has OrderID 4321"<br /><br />groupMemberScanner(notAddedUpdate, tempContext) == "User 11223344 has state 'splitunevenly'"|    
+|test_userStateSplitUnevenlyWaitingForName|To test if groupMemberScanner will be able to recognise when the user has state ‘splitunevenlywaitingforname’|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />updateUserStateSplitUnevenlyWaitingForName('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitunevenlywaitingname'"<br /><br />groupMemberScanner(notAddedUpdate, tempContext) == "Waiting for User 11223344 in Group 1234321 to send in their Order Name"|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />updateUserStateSplitUnevenlyWaitingForName('11223344', '1234321') == "User 11223344 in Group 1234321 has state 'splitunevenlywaitingname'"<br /><br />groupMemberScanner(notAddedUpdate, tempContext) == "Waiting for User 11223344 in Group 1234321 to send in their Order Name"|
+|test_viabotCheck|To test if groupMemberScanner will be able to recognise if the message was sent via_bot which is a message that is sent with the via_bot tag and that the bot sending the message is itself.m| addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />groupMemberScanner(viaBotUpdate, tempContext) == "Bot found %s" % BOT_ID* <br /><br /> *For security reasons, BOT_ID is left redacted|addGroup(('1234321', 'group')) == 'Group group 1234321 inserted'<br /><br />groupMemberScanner(viaBotUpdate, tempContext) == "Bot found %s" % BOT_ID|
+
+### **Testing the *waitingForSomeNames* function of *owepaybot.py***
+
+The main purpose of this test is to test the ability of our bot to produce the correct message with the correct keyboard markup, with the keyboard markup being constructed using the details of other users in the group.
+
+#### **Stubs used**
+
+* orderUpdate: The update object to simulate the case where a user sends a message into the group containing the order name
+
+* splitEvenlyReplyMarkupTestManual: A InlineKeyboardMarkup object that contains the expected InlineKeyboardButtons with their respective callback data
+
+* tempContext: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text, reply_markup) 
+
+| Test Name | Description | Expected           | Actual             |
+| --------- |-------------| -------------------| -------------------|
+|test_waitingForSomeNames|To test if waitingForSomeNames returns the correct Message object.|addGroup((345, 'groupname')) == "Group groupname 345 inserted"<br /><br />addUser((456, 'userusername', 0, 'userfirstname')) == "User 456 inserted"<br /><br />addUser((9871, 'dummyusername1', 0, 'dummyuser1')) == "User 9871 inserted"<br /><br />addUser((9872, 'dummyusername2', 0, 'dummyuser2')) == "User 9872 inserted"<br /><br />addUser((9873, 'dummyusername3', 0, 'dummyuser3')) == "User 9873 inserted"<br /><br />addUserToGroup(456, 345) == "User 456 added to Group 345"<br /><br />addUserToGroup(9871, 345) == "User 9871 added to Group 345"<br /><br />addUserToGroup(9872, 345) == "User 9872 added to Group 345"<br /><br />addUserToGroup(9873, 345) == "User 9873 added to Group 345"<br /><br />updateUserTempAmount('456', '345', '123') == "User 456 in Group 345 has the temporary amount 123"<br /><br />isinstance(waitingForSomeNames(orderUpdate, tempContext, '456', '345'), Message)<br /><br />waitingForSomeNames(orderUpdate, tempContext, '456', '345').chat_id == 345<br /><br />waitingForSomeNames(orderUpdate, tempContext, '456', '345').text == "People who have your cash money:"<br /><br />waitingForSomeNames(orderUpdate, tempContext, '456', '345').reply_markup == splitEvenlyKeyboardMarkup(345)<br /><br />waitingForSomeNames(orderUpdate, tempContext, '456', '345').reply_markup == splitEvenlyReplyMarkupForTestManual|addGroup((345, 'groupname')) == "Group groupname 345 inserted"<br /><br />addUser((456, 'userusername', 0, 'userfirstname')) == "User 456 inserted"<br /><br />addUser((9871, 'dummyusername1', 0, 'dummyuser1')) == "User 9871 inserted"<br /><br />addUser((9872, 'dummyusername2', 0, 'dummyuser2')) == "User 9872 inserted"<br /><br />addUser((9873, 'dummyusername3', 0, 'dummyuser3')) == "User 9873 inserted"<br /><br />addUserToGroup(456, 345) == "User 456 added to Group 345"<br /><br />addUserToGroup(9871, 345) == "User 9871 added to Group 345"<br /><br />addUserToGroup(9872, 345) == "User 9872 added to Group 345"<br /><br />addUserToGroup(9873, 345) == "User 9873 added to Group 345"<br /><br />updateUserTempAmount('456', '345', '123') == "User 456 in Group 345 has the temporary amount 123"<br /><br />isinstance(waitingForSomeNames(orderUpdate, tempContext, '456', '345'), Message)<br /><br />waitingForSomeNames(orderUpdate, tempContext, '456', '345').chat_id == 345<br /><br />waitingForSomeNames(orderUpdate, tempContext, '456', '345').text == "People who have your cash money:"<br /><br />waitingForSomeNames(orderUpdate, tempContext, '456', '345').reply_markup == splitEvenlyKeyboardMarkup(345)<br /><br />waitingForSomeNames(orderUpdate, tempContext, '456', '345').reply_markup == splitEvenlyReplyMarkupForTestManual|
+
+
+
 
 ### System Testing
 
