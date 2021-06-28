@@ -186,7 +186,7 @@ You will find our proposed timeline below:
    
 ![SQL Flow](https://res.cloudinary.com/jianoway/image/upload/v1624879445/photo_2021-06-28_19-22-28_a3mmfn.jpg)
 
-* This is an Entity Relationship (ER) diagram displaying how our data will be stored.
+* Our MySQL Database will be hosted on ClearDB via Heroku and will be interacted with using Pymysql The figure above is the Entity Relationship (ER) diagram representing how our data will be stored.
 
 * Users
    
@@ -216,8 +216,6 @@ You will find our proposed timeline below:
    * The Transactions table will be used to store the Transactiosn associated with the Orders created by Users where it will store the amount owed by the Debtor to the Creditor from that Order.
 
    * The PK we will be using for Orders will be a UUID generated using the UUID package.
-
-Our MySQL Database will be hosted on ClearDB via Heroku and will be interacted with using Pymysql
    
 # Guides
 
