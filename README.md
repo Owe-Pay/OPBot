@@ -41,9 +41,18 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
         - [Testing Methodology](#testing-methodology)
         - [Design of Tests](#design-of-tests)
         - [Unit Testing](#unit-testing)
+          - [Testing the *startPrivate* function of *owepaybot.py*](#testing-the-startprivate-function-of-owepayboypy)
+          - [Testing the *startGroup* function of *owepaybot.py*](#testing-the-startgroup-function-of-owepayboypy)
           - [Testing the *help* function of *owepaybot.py*](#testing-the-help-function-of-owepaybotpy)
           - [Testing the *button* function of *owepaybot.py*](#testing-the-button-function-of-owepaybotpy)
+          - [Testing the *messageContains* functions of *owepaybot.py*](#testing-the-messagecontainssplitevenly-and-messagecontainssplitunevenly-functions-of-owepayboypy)
+          - [Testing the *splitUnevenlyOrderNameCatcher* function of *owepaybot.py*](#testing-the-splitunevenlyordernamecatcher-function-of-owepayboypy)
         - [Integration Testing](#integration-testing)
+           - [Testing the *groupMemberScanner* function of *owepaybot.py*](#testing-the-groupmemberscanner-function-of-owepayboypy)
+           - [Testing the *waitingForSomeNames* function of *owepaybot.py*](#testing-the-waitingforsomenames-function-of-owepayboypy)
+           - [Testing the *getCreditors* function of *owepaybot.py*](#testing-the-getcreditors-function-of-owepayboypy)
+           - [Testing the *getDebtors* function of *owepaybot.py*](#testing-the-getdebtors-function-of-owepayboypy)
+           - [Testing the *catchOrderFromUpdate* function of *owepaybot.py*](#testing-the-catchorderfromupdate-function-of-owepayboypy)
         - [System Testing](#system-testing)
     - [Prototyping](#prototyping)
       - [O$P$ Mobile Application](#op-mobile-application)
@@ -535,7 +544,7 @@ The main purpose of this test is to test the functionality of the /start command
 | test_group_dont_register_callback_query    | To test if the correct callback_query is caught when when the User presses the Don’t Register button in a group<br /><br /> The test for groupAlreadyAdded is actually an integration test.|   query.data == ‘groupDontRegister’<br /><br /> query.from_user == self.from_user<br /> <br />query.chat_instance == self.chat_instance<br /><br />query.message == self.group_message<br /> <br />query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /><br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> <br />callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|  query.data == ‘groupDontRegister’<br /><br /> query.from_user == self.from_user<br /><br /> query.chat_instance == self.chat_instance<br /> <br />query.message == self.group_message<br /><br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> <br />callback_query.chat_instance == self.chat_instance<br /><br /> callback_query.message == self.group_message<br /> <br />callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|	
 
 
-### **Testing the *messageContainsSplitEvenly* and *messageContainsSplitUnevenly* function of *owepaybot.py***
+### **Testing the *messageContainsSplitEvenly* and *messageContainsSplitUnevenly* functions of *owepaybot.py***
 
 The main purpose of this test is to test if the two messageContains functions are able to return the expected output
 
