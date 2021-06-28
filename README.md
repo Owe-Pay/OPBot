@@ -184,7 +184,7 @@ You will find our proposed timeline below:
 
 ## MySQL Setup
    
-![SQL Flow](https://res.cloudinary.com/jianoway/image/upload/v1622380661/Screenshot_2021-05-30_at_9.17.34_PM_nccz5l.png)
+![SQL Flow](https://res.cloudinary.com/jianoway/image/upload/v1624879445/photo_2021-06-28_19-22-28_a3mmfn.jpg)
 This is a ER diagram displaying how our data will be stored.
 Each transaction would be any exchange of money between 2 users 
 Each order can consist of multiple transactions. 
