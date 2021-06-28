@@ -38,7 +38,6 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
         - [4. MySQL](#4-mysql)
         - [5. .env](#5-env)
     - [Testing](#testing)
-        - [Testing Methodology](#testing-methodology)
         - [Design of Tests](#design-of-tests)
         - [Unit Testing](#unit-testing)
           - [Testing the *startPrivate* function of *owepaybot.py*](#testing-the-startprivate-function-of-owepaybotpy)
@@ -484,9 +483,16 @@ Our codebase uses several plugins and we will go over how to install them.
 
 ## Testing
 
-### Testing Methodology 
+* We will be using the pytest framework to design our tests since most of our code is in Python. It is a very flexible testing framework and allows us to design test cases that are specific to our requirements. In pytest, the Stubs used in testing can be called fixtures and are defined before the execution of the test.
+
+     ![pytest gif](https://res.cloudinary.com/jianoway/image/upload/v1624888464/pytestgif2_jepnlu.gif)|
+
+
+
+
+
 	
-   We will be using the pytest framework to design our tests since most of our code is in Python. It is a very flexible testing framework and allows us to design test cases that are specific to our requirements. In pytest, the Stubs used in testing can be called fixtures and are defined before the execution of the test.
+
 
    We are currently in the process of designing tests for the rest of our functions.
 	
