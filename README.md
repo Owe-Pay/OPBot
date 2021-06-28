@@ -185,12 +185,39 @@ You will find our proposed timeline below:
 ## MySQL Setup
    
 ![SQL Flow](https://res.cloudinary.com/jianoway/image/upload/v1624879445/photo_2021-06-28_19-22-28_a3mmfn.jpg)
-This is a ER diagram displaying how our data will be stored.
-Each transaction would be any exchange of money between 2 users 
-Each order can consist of multiple transactions. 
-Each group will consist of the total orders in the group. The group will be the telegram groupid
 
-Our backend will be connected to the frontend using python
+* This is an Entity Relationship (ER) diagram displaying how our data will be stored.
+
+* Users
+   
+   * The Users table will be used to store the users whom our bot has interacted with as well as our bot's ability to privately message the User.
+   * The Primary Key (PK) we will be using for Users will be the User's unique chat_id provided by Telegram.
+   
+* TelegramGroups
+
+   * The TelegramGroups table will be used to store the groups that our bot has been added into and will also keep track of the number of users.
+
+   *  The PK we will be using for TelegramGroups will be the Group's unique chat_id provided by Telegram.
+
+* UserGroupRelational
+   
+   * The UserGroupRelational table will be used to create relationships between Users and TelegramGroups where the table will store which Users are Members of which TelegramGroups.
+
+   *  The PK we will be using for UserGroupRelational will be a combination of PKs' from the respective User and TelegramGroup.
+
+* Orders
+
+   * The Orders table will be used to store the Orders created by Users in their respective Groups.
+
+   * The PK we will be using for Orders will be a UUID generated using the UUID package.
+
+* Transactions
+
+   * The Transactions table will be used to store the Transactiosn associated with the Orders created by Users where it will store the amount owed by the Debtor to the Creditor from that Order.
+
+   * The PK we will be using for Orders will be a UUID generated using the UUID package.
+
+Our MySQL Database will be hosted on ClearDB via Heroku and will be interacted with using Pymysql
    
 # Guides
 
