@@ -184,7 +184,7 @@ You will find our proposed timeline below:
 
 ## MySQL Setup
    
-![SQL Flow](https://res.cloudinary.com/jianoway/image/upload/v1624879445/photo_2021-06-28_19-22-28_a3mmfn.jpg)
+![SQL Flow](https://res.cloudinary.com/jianoway/image/upload/v1624886060/er_diagram_orbital_zbuphe.jpg)
 
 * Our MySQL Database will be hosted on ClearDB via Heroku and will be interacted with using Pymysql The figure above is the Entity Relationship (ER) diagram representing how our data will be stored.
 
