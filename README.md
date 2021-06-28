@@ -276,7 +276,7 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
 
    1. Send the /whoowesme command to @OwePay_bot via private message
    
-   2. The bot will send a list of the people who still owe you money organised by the bills they are associated with along with the option next to each person to notify them or settle the debt. Please only press settle if you have guaranteed the bill has been settled.
+   2. The bot will send a list of the people who still owe you money organised by the bills they are associated with along with the option next to each person to notify them about the outstanding debt or to settle the debt. Please only press settle if you have guaranteed the bill has been settled.
 
 #### Checking your Creditors
   
