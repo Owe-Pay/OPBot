@@ -130,7 +130,7 @@ You will find our proposed timeline below:
    1. After Users and Groups are registered, we will store their unique chat_ids in our database 
    1. Due to the nature of Telegram Bots, for our bot to message the user, the user will have had to have messaged our bot first. Hence, to ensure our Notification feature works we will have a column dedicated to keeping track if a registered user is Notifiable.
 
-![New Order Flow](https://res.cloudinary.com/jianoway/image/upload/v1622368925/O_P_-_TeleBot_New_Order_Flow_qfpbtr.jpg)
+![New Order Flow](https://res.cloudinary.com/jianoway/image/upload/v1624865774/Untitled_Diagram_1_coovfs.jpg)
 *Figure 2: Process of creating a new order*
 
 * **Bill Splitting**
@@ -144,7 +144,7 @@ You will find our proposed timeline below:
 ![Get Debtors](https://res.cloudinary.com/jianoway/image/upload/v1622368841/O_P_-_TeleBot_Check_Debtors_t9mpw0.jpg)
 *Figure 3: Keeping track of creditor’s personal debtors*
    
-* **Creditor’s Debtors (To be implemented)**
+* **Creditor’s Debtors **
   1. The bot can retrieve a creditor’s debtors by looking up the respective creditor’s chat_id in the Transactions database where they are the creditor and reply to them with a list of their debtors sorted by their associated Order.
   1. If the creditor does not exist, it prompts the creditor to first register with us. In this case, since the creditor does not exist then it is not possible that our system has records of their transactions and will not return.
   1. After the bot replies to the creditor with the appropriate message listing their debtors, the creditor will have an option to select which debtors to notify or they can also choose to notify all debtors that they have yet to return the creditor their money. After the selection is done, the creditor then sends in the notification request to the bot and the bot will send out a private message to each debtor if they are notifiable.
@@ -155,7 +155,7 @@ You will find our proposed timeline below:
 ![Get Creditors](https://res.cloudinary.com/jianoway/image/upload/v1622368805/O_P_-_TeleBot_Check_Creditors_eo4x8i.jpg)
 *Figure 4: Keeping track of debtor’s personal creditors*
    
-* **Debtor’s Creditors (To be implemented)**
+* **Debtor’s Creditors **
   1. The bot can retrieve a debtor’s creditors by looking up the respective debtor’s chat_id in the Transactions database where they are the debtor and reply to them with a list of their creditors sorted by their associated Order.
      1. If the debtor does not exist, it prompts the debtor to first register with us. In this case, since the creditor does not exist then it is not possible that our system has records of their transactions and will not return.
   1. After the bot replies to the debtor with the appropriate message listing their creditors, the debtor will have an option to select which creditor to notify or they can also choose to notify all debtors that they have successfully returned the creditor their money. After the selection is done, the creditor then sends in the notification request to the bot and the bot will send out a private message to each creditor if they are notifiable.
