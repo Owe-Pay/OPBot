@@ -1028,7 +1028,7 @@ def groupRegister(update, context):
         context.bot.editMessageText(
             chat_id=query.message.chat_id,
             message_id=query.message.message_id,
-            text="Your group is now registered!\n\nBegin splitting bills by sending a message starting with @OwePay_bot followed by the amount to be split after registering the bot in the group with the /start command. For example:\n\n@OwePay_bot 123 ",
+            text="Your group is now registered!\n\nBegin splitting bills by sending a message starting with @OwePay_bot followed by the name of the bill. For example:\n\n@OwePay_bot Assorted Sausages",
         )
 
 
