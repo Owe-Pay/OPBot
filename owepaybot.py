@@ -152,6 +152,7 @@ def cancel(update, context):
     setUserStateInactive(userID, groupID)
     resetUserTempAmount(userID, groupID)
     resetUserTempOrderID(userID, groupID)
+    resetUserTempMessageID(userID, groupID)
     context.bot.send_message(
         chat_id=groupID,
         reply_to_message_id=messageID,
@@ -258,7 +259,55 @@ def button(update, context):
 
     if choice == 'debtorUnevenlyUnpaid':
         debtorUnevenlyUnpaid(update, context)
-        
+
+    if choice == 'newordersplitevenly':
+        newOrderSplitEvenly(update, context)
+
+    if choice == 'newordersplitunevenly':
+        newOrderSplitUnevenly(update, context)
+
+def newOrderSplitUnevenly(update, context):
+    query = update.callback_query
+    groupID = query.message.chat_id
+    message_id = query.message.message_id
+    userID = query.from_user.id
+
+    if not userStateNewOrder(userID, groupID) and userIsMessageCreator(userID, groupID, message_id):
+        return
+    
+    order = catchSplitUnevenlyOrder(userID, groupID)
+    orderID = order.orderID
+    updateOrderIDToUserGroupRelational(userID, groupID, orderID)
+    setOrderDifferentAmountsFromOrderID(orderID)
+    message = context.bot.editMessageText(
+        chat_id=groupID,
+        message_id=message_id,
+        text='Please send in the items in the following format:\nItem Name - Price\n\nFor example:\nChicken Rice - 5\nCurry Chicken - 5.50\nNasi Lemak - 4'
+    )
+    updateUserStateSplitUnevenly(userID, groupID)
+    return message
+
+
+def newOrderSplitEvenly(update, context):
+    query = update.callback_query
+    groupID = query.message.chat_id
+    message_id = query.message.message_id
+    userID = query.from_user.id
+
+    if not userStateNewOrder(userID, groupID) and userIsMessageCreator(userID, groupID, message_id):
+        return
+    
+    message = context.bot.editMessageText(
+        chat_id=groupID,
+        message_id=message_id,
+        text='Please send in the amount to split!'
+    )
+    updateUserStateSplitEvenly(userID, groupID)
+    return message
+    
+
+    
+    
 def debtorUnevenlyPaid(update, context):
     query = update.callback_query
     groupID = query.message.chat_id
@@ -386,6 +435,7 @@ def splitUnevenlyFinalise(update, context):
         reply_markup=splitUnevenlyFinalisedKeyboardMarkup()
     )
     resetUserTempOrderID(userID, groupID)
+    resetUserTempMessageID(userID, groupID)
 
         
 def splitGST(update, context):
@@ -1023,6 +1073,7 @@ def splitEvenly(update, context):
     setUserStateInactive(userID, groupID)
     resetUserTempAmount(userID, groupID)
     resetUserTempOrderID(userID, groupID)
+    resetUserTempMessageID(userID, groupID)
 
     messageText = "Please return @%s $%s each for %s" % (creditorUsername, getFormattedAmountFromString(splitAmount), orderName)
     for username in listOfUsers:
@@ -1097,45 +1148,48 @@ def getTotalAmountFromMessage(update, context):
 # amount of money
 ##############
 
-def messageContainsSplitUnevenly(update, context):
-    if "Split unevenly:" in update.message.text:
+
+def getOrderNameFromMessage(update):
+    text = update.message.text
+    return str(text.split('New Order: ')[1])
+
+def messageContainsNewOrder(update, context):
+    if "New Order:" in update.message.text:   
+        orderName = getOrderNameFromMessage(update)
         user_id = update.message.from_user.id
         GroupID = update.message.chat_id
-        updateUserStateSplitUnevenlyWaitingForName(user_id, GroupID)
+        updateUserStateNewOrder(user_id, GroupID)
+        updateOrderIDToUserGroupRelational(user_id, GroupID, orderName)
         message = context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=
-            "Hi! Please send the name of the order!",
+            "Please choose if you wish to split %s evenly or unevenly" % orderName,
+            reply_markup=waitingForUserToChooseSplitKeyboardMarkup()
         )
+        updateMessageIDToUserGroupRelational(user_id, GroupID, message.message_id)
         return message
 
-def messageContainsSplitEvenly(update, context):
-    if "Split evenly:" in update.message.text:
-        total_amount = getTotalAmountFromMessage(update,context)
-        user_id = update.message.from_user.id
-        GroupID = update.message.chat_id
-        updateUserStateSplitEvenly(user_id, GroupID)
-        updateUserTempAmount(user_id,GroupID, total_amount)
-        message = context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=
-            "Hi! Please send the name of the order!",
-        )
-        return message
-
-def catchOrderFromUpdate(update):
+def catchSplitEvenlyOrderFromUpdate(update):
     order_id = str(uuid1())
     user_id = update.message.from_user.id
     group_id = update.message.chat_id
-    order_name = update.message.text
-    order_amount= getUserTempAmount(user_id,group_id)
+    order_amount= update.message.text.replace('$', '', 1)
     date = datetime.now(tz).replace(microsecond=0)
+    order_name = getOrderIDFromUserIDAndGroupID(user_id, group_id)
+    addOrder((order_id, group_id, order_name, order_amount, user_id, date))
+    return Order(order_id, group_id, order_name, order_amount, user_id, date)
+
+def catchSplitUnevenlyOrder(user_id, group_id):
+    order_id = str(uuid1())
+    order_amount = 0
+    date = datetime.now(tz).replace(microsecond=0)
+    order_name = getOrderIDFromUserIDAndGroupID(user_id, group_id)
     addOrder((order_id, group_id, order_name, order_amount, user_id, date))
     return Order(order_id, group_id, order_name, order_amount, user_id, date)
 
 
 def waitingForSomeNames(update, context, user_id, group_id):
-    order = catchOrderFromUpdate(update)
+    order = catchSplitEvenlyOrderFromUpdate(update)
     orderID = order.orderID
 
     updateUserStateWaitingForSomeNames(user_id, group_id)
@@ -1233,22 +1287,15 @@ def echo(update, context):
     """Echo the update for debugging purposes."""
     print(update)
 
-def splitUnevenlyOrderNameCatcher(update, context, userID, groupID):
-    order = catchOrderFromUpdate(update)
-    orderID = order.orderID
-    messageID = update.message.message_id
-
-    updateOrderIDToUserGroupRelational(userID, groupID, orderID)
-    setOrderDifferentAmountsFromOrderID(orderID)
+def askUserToSendValidAmount(update, context):
+    group_id = update.message.chat_id
+    user_id = update.message.from_user.id
+    text = update.message.text
     message = context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        reply_to_message_id=messageID,
-        text='Please send in the items in the following format:\nItem Name - Price\n\nFor example:\nChicken Rice - 5\nCurry Chicken - 5.50\nNasi Lemak - 4'
+        chat_id=group_id,
+        text="%s is not a valid amount.\n\nPlease key in a valid amount e.g $123, 123, 123.10 or /cancel to stop the creation of the order." % text
     )
-    updateUserStateSplitUnevenly(userID, groupID)
     return message
-
-
 
 def groupMemberScanner(update, context):
     """"Constantly monitors group chat to check if members are counted in the group or not"""
@@ -1270,22 +1317,25 @@ def groupMemberScanner(update, context):
         addUserToGroup(user_id, group_id)
         
     if userStateSplitEvenly(user_id, group_id):
-        waitingForSomeNames(update, context, user_id, group_id)
-        return "User %s has state 'splitevenly'" % user_id
+        text = update.message.text
+        print(text)
+        if isValidAmount(text):
+            waitingForSomeNames(update, context, user_id, group_id)
+            return "User %s has state 'splitevenly'" % user_id
+        else:
+            askUserToSendValidAmount(update, context)
+            return "User %s sending invalid amount" % user_id
 
     if userStateSplitUnevenly(user_id, group_id):
         splitDifferentAmounts(update, context, user_id, group_id)
         return "User %s has state 'splitunevenly'" % user_id
 
-    if userStateSplitUnevenlyWaitingForName(user_id, group_id):
-        splitUnevenlyOrderNameCatcher(update, context, user_id, group_id)
-        return "Waiting for User %s in Group %s to send in their Order Name" % (user_id, group_id)
-
     if viabot_check(update, context):
         bot = update.message.via_bot.id
-        messageContainsSplitEvenly(update, context)
-        messageContainsSplitUnevenly(update, context)
+        messageContainsNewOrder(update, context)
         return "Bot found %s" % bot
+
+
 
 def main():
     """Start the bot."""

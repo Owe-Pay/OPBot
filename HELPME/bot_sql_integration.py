@@ -96,6 +96,25 @@ def makeNotifiable(user_id):
     closeConnection(mysqldb, mycursor)
     print("User is now notifiable!")
 
+def updateUserStateNewOrder(userId, groupId):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE UserGroupRelational SET State = 'neworder' WHERE UserID LIKE %s and GroupID LIKE %s" % (userId, groupId)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+
+def userStateNewOrder(user_id,group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE %s and GroupID LIKE %s and State = 'neworder' " % (user_id, group_id)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return (t!=None)
+
 def updateUserStateSplitAllEvenly(userId, groupId):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
@@ -231,6 +250,16 @@ def resetUserTempOrderID(user_id, group_id):
     closeConnection(mysqldb, mycursor)
     print("reset temp amount to 0")
 
+def resetUserTempMessageID(user_id, group_id):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE UserGroupRelational SET Temp_MessageID = NULL WHERE UserID LIKE %s and GroupID LIKE %s" % (user_id, group_id)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    # t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+
 def updateUserTempItemList(userID, groupID, itemList):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
@@ -337,6 +366,16 @@ def updateOrderIDToUserGroupRelational(userID, groupID, orderID):
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
     return "User %s in Group %s has OrderID %s" % (userID, groupID, orderID)
+  
+def updateMessageIDToUserGroupRelational(userID, groupID, messageID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "UPDATE UserGroupRelational SET Temp_MessageID = '%s' WHERE UserID LIKE '%s' and GroupID LIKE '%s'" % (messageID, userID, groupID)
+    mycursor.execute(mysql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+    return "User %s in Group %s has OrderID %s" % (userID, groupID, messageID)  
 
 def getOrderIDFromUserIDAndGroupID(userID, groupID):
     mysqldb = pymysql.connect(
@@ -666,6 +705,17 @@ def userIsCreditorForMessage(messageID, groupID, userID):
     orderIDFromOrders = getOrderIDFromMessageAndGroupID(messageID, groupID)
     orderIDFromGroupRelationalTable = getOrderIDFromUserIDAndGroupID(userID, groupID)
     return orderIDFromGroupRelationalTable == orderIDFromOrders
+
+def userIsMessageCreator(userID, groupID, messageID):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    mysql = "SELECT * FROM UserGroupRelational WHERE UserID LIKE '%s' AND GroupID LIKE '%s' AND Temp_MessageID LIKE '%s'" % (userID, groupID, messageID)
+    mycursor.execute(mysql)
+    t = mycursor.fetchone()
+    closeConnection(mysqldb, mycursor)
+    return (t!=None)
+
 
 def takeSecond(element):
     return element[1]

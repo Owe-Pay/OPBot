@@ -20,41 +20,57 @@ now = datetime.now(tz) # the current time in your local timezone
 
 def inlineQueryHelper(update):
     """Helps to provide the display text for the inline query pop-up"""
-    query = update.inline_query.query
-    if isValidAmount(query.replace('$', '', 1)):
-        query = query.replace('$','',1)
+    query =removeCrustFromString(update.inline_query.query)
+
+    if len(query) > 44:
         return [
             InlineQueryResultArticle(
                 id=str(uuid4()),
-                title="Split evenly: $%s" % getFormattedAmountFromString(query),
-                input_message_content=InputTextMessageContent("Split evenly: $" + getFormattedAmountFromString(query)),
-                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
-            ),
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title="Split unevenly: $%s" % getFormattedAmountFromString(query),
-                input_message_content=InputTextMessageContent("Split unevenly: $" + getFormattedAmountFromString(query)),
-                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
-            ),
-        ]
-    
-    if isinstance(query, str):
-        return [
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title=query + " is not a valid amount.",
+                title=query + " is too long for an order name.",
                 input_message_content=InputTextMessageContent(
-                    "Trying to split invalid amount: \n" + query + "\n\nPlease key in a valid amount to split!"
+                    "Trying to create order with invalid name: " + query + "\n\nPlease key in a valid order name to start splitting!"
                 ),
                 thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962567/icons8-cross-mark-96_zrk1p9.png',
             ),
         ]
+
+    if '\n' in query or 'New Order:' in query:
+        return [
+            InlineQueryResultArticle(
+                id=str(uuid4()),
+                title=query + " is not a valid order name.",
+                input_message_content=InputTextMessageContent(
+                    "Trying to create order with invalid name: " + query + "\n\nPlease key in a valid order name to start splitting!"
+                ),
+                thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962567/icons8-cross-mark-96_zrk1p9.png',
+            ),
+        ]
+
+    return [
+        InlineQueryResultArticle(
+            id = str(uuid4()),
+            title = "Create new order: " + query,
+            input_message_content=InputTextMessageContent(
+                "New Order: " + query
+            ),
+            thumb_url='https://res.cloudinary.com/jianoway/image/upload/b_rgb:ffffff/v1621962373/icons8-user-groups-100_nxolfi.png',
+        )
+    ]
 
 def formatListOfUsernames(usernameList):
     str = ''
     for username in usernameList:
         str += '\n@' + username
     return str
+
+def waitingForUserToChooseSplitKeyboardMarkup():
+    keyboard = [
+        [
+            InlineKeyboardButton("Unevenly", callback_data="newordersplitunevenly"),
+            InlineKeyboardButton("Evenly", callback_data="newordersplitevenly")
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
 
 def splitEvenlyFinalisedKeyboardMarkup():
     keyboard = [
@@ -232,6 +248,11 @@ def removeCrustFromString(str):
 
 def isValidAmount(amt):
     temp = amt.replace('.', '', 1)
+    if len(temp) < 1:
+        return False
+    else:
+        if temp[0] == '$':
+            temp = temp.replace('$', '', 1)
     return temp.isdigit()
 
 def getFormattedAmountFromString(amt):

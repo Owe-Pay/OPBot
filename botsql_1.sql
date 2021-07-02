@@ -68,5 +68,6 @@ CREATE TABLE `UserGroupRelational` (
     `Temp_Amount` double NOT NULL DEFAULT '0',
 	  `State` varchar(45) NOT NULL DEFAULT 'inactive',
     `Temp_OrderID` varchar(45),
+    `Temp_MessageID` varchar(45),
     PRIMARY KEY (`UserID`, `GroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
