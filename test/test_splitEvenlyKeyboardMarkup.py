@@ -11,10 +11,6 @@ from ..HELPME.helperFunctions import *
 
 
 @pytest.fixture(scope='class')
-def split_evenly_inline_keyboard_markup():
-    return splitEvenlyKeyboardMarkup(345)
-
-@pytest.fixture(scope='class')
 def testsplitevenlykeyboardmarkup():
     keyboardHolder = []
     buttonToFinalise = None
@@ -42,10 +38,10 @@ class tempContext:
 
 
 
-class TestSplitevenly:
+class TestSplitEvenlyKeyboardMarkup:
     
     @flaky(3, 1)
-    def test_splitevenly(self,split_evenly_inline_keyboard_markup,testsplitevenlykeyboardmarkup):
+    def test_splitEvenlyKeyboardMarkup(self, testsplitevenlykeyboardmarkup):
         
         massDelete("Users")
         massDelete("Orders")
@@ -61,7 +57,6 @@ class TestSplitevenly:
         assert addUserToGroup(9871, 345) == "User 9871 added to Group 345"
         assert addUserToGroup(9872, 345) == "User 9872 added to Group 345"
         assert addUserToGroup(9873, 345) == "User 9873 added to Group 345"
-        assert splitEvenlyKeyboardMarkup(345) == split_evenly_inline_keyboard_markup
         assert splitEvenlyKeyboardMarkup(345) == testsplitevenlykeyboardmarkup
         
         massDelete("Users")

@@ -51,10 +51,6 @@ def splitUpdate():
     )
 
 @pytest.fixture(scope='class')
-def splitUnevenlyReplyMarkupForTestUsingFunction():
-    return splitUnevenlyKeyboardMarkup(345, False)
-
-@pytest.fixture(scope='class')
 def splitUnevenlyReplyMarkupForTestManual():
     keyboardHolder = []
     buttonToFinalise = None
@@ -90,7 +86,7 @@ class tempContext:
 class TestSplitDifferentAmounts:
     
     @flaky(3, 1)
-    def test_splitDifferentAmounts(self, orderUpdate, splitUpdate, splitUnevenlyReplyMarkupForTestUsingFunction, splitUnevenlyReplyMarkupForTestManual):
+    def test_splitDifferentAmounts(self, orderUpdate, splitUpdate, splitUnevenlyReplyMarkupForTestManual):
         massDelete("Users")
         massDelete("Orders")
         massDelete("TelegramGroups")
@@ -109,7 +105,6 @@ class TestSplitDifferentAmounts:
         assert isinstance(splitUnevenlyOrderNameCatcher(orderUpdate, nameCatcherContext, '456', '345'), Message)
         assert isinstance(splitDifferentAmounts(splitUpdate, tempContext, 456, 345), Message)
         assert splitDifferentAmounts(splitUpdate, tempContext, 456, 345).text == 'Current split for %s:\n\nItems left to split:%s\n\nPeople paying for %s:' % ('testOrderName', '\nsalad ($10.00)\nfries ($12.00)', 'chicken ($5.00)')
-        assert splitDifferentAmounts(splitUpdate, tempContext, 456, 345).reply_markup == splitUnevenlyReplyMarkupForTestUsingFunction
         assert splitDifferentAmounts(splitUpdate, tempContext, 456, 345).reply_markup == splitUnevenlyReplyMarkupForTestManual
         
         massDelete("Users")

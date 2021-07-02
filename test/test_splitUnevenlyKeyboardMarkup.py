@@ -28,14 +28,13 @@ def splitUnevenlyReplyMarkupForTestManual():
     keyboardHolder.append([addEveryone])
     buttonToFinalise = InlineKeyboardButton("Next Item", callback_data='splitunevenlynextitem')
     keyboardHolder.append([buttonToFinalise])
-    print(InlineKeyboardMarkup(keyboardHolder))
     return InlineKeyboardMarkup(keyboardHolder)
 
 
-class TestSplitunevenly:
+class TestSplitUnevenly:
     
     @flaky(3, 1)
-    def test_splitunevenly(self,splitUnevenlyReplyMarkupForTestUsingFunction,splitUnevenlyReplyMarkupForTestManual):
+    def test_splitUnevenly(self, splitUnevenlyReplyMarkupForTestManual):
         
         massDelete("Users")
         massDelete("Orders")
@@ -51,7 +50,7 @@ class TestSplitunevenly:
         assert addUserToGroup(9871, 345) == "User 9871 added to Group 345"
         assert addUserToGroup(9872, 345) == "User 9872 added to Group 345"
         assert addUserToGroup(9873, 345) == "User 9873 added to Group 345"
-        assert splitUnevenlyKeyboardMarkup(345,False)== splitUnevenlyReplyMarkupForTestManual
+        assert splitUnevenlyKeyboardMarkup(345,False) == splitUnevenlyReplyMarkupForTestManual
         
         massDelete("Users")
         massDelete("Orders")

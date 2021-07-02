@@ -67,8 +67,6 @@ def startPrivate(update, context):
     username = update.message.chat.username
     firstname = update.message.chat.first_name
     user = (chat_id, username, 1, firstname)
-    if not userAlreadyAdded(chat_id):
-        addUser(user)
 
     keyboard = [
         [
@@ -528,8 +526,9 @@ def splitUnevenlyNextItem(update, context):
         return
     
     currentSplitList = []
-
-    amountBeforeSplit = float(re.sub(r"[^\d.]+", "", itemToRemove))
+    cleanAmountList = itemToRemove.split('(')
+    cleanAmount = cleanAmountList[len(cleanAmountList) - 1]
+    amountBeforeSplit = float(re.sub(r"[^\d.]+", "", cleanAmount))
     amountAfterSplit = amountBeforeSplit / numOfUsersToAdd
 
     count = -1

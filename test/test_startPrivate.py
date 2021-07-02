@@ -54,7 +54,6 @@ class TestStartPrivate:
         assert startPrivate(privateUpdate, contextWithMarkup).chat_id == 4321234
         assert startPrivate(privateUpdate, contextWithMarkup).text == self.text
         assert startPrivate(privateUpdate, contextWithMarkup).reply_markup == InlineKeyboardMarkup(self.keyboard)
-        assert userAlreadyAdded('4321234') == True
         massDelete("Users")
         
     @flaky(3, 1)

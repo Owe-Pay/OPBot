@@ -296,4 +296,3 @@ class Transaction:
         self.creditorID = creditorID
         self.userID = userID
 
-print(formatTransactionsForDebtorKeyboardMarkup(getUnsettledTransactionsForDebtor('1234')))
