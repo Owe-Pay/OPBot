@@ -651,6 +651,18 @@ def addUserToGroup(userId, groupId):
     closeConnection(mysqldb, mycursor)
     return "User %s added to Group %s" % (userId, groupId)
 
+def deleteUserFromGroup(userId, groupId):
+    mysqldb = pymysql.connect(
+        host=db_host, user=db_username, password=db_password, db=db_database)
+    mycursor = mysqldb.cursor()
+    sql = "DELETE FROM UserGroupRelational WHERE UserID LIKE '%s' AND GroupID LIKE '%s'" % (userId, groupId)
+    mycursor.execute(sql)
+    mysqldb.commit()
+    closeConnection(mysqldb, mycursor)
+    return "User %s removed from Group %s" % (userId, groupId)
+
+deleteUserFromGroup(497722299, -583617452)
+
 def increaseGroupMemberCount(group_id):
     mysqldb = pymysql.connect(
         host=db_host, user=db_username, password=db_password, db=db_database)
