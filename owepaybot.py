@@ -1191,7 +1191,8 @@ def catchSplitUnevenlyOrder(user_id, group_id):
 def waitingForSomeNames(update, context, user_id, group_id):
     order = catchSplitEvenlyOrderFromUpdate(update)
     orderID = order.orderID
-
+    orderAmount = order.orderAmount
+    updateUserTempAmount(user_id, group_id, orderAmount)
     updateUserStateWaitingForSomeNames(user_id, group_id)
     updateOrderIDToUserGroupRelational(user_id, group_id, orderID)
 
