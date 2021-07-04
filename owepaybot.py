@@ -166,11 +166,7 @@ def help(update, context):
         "List of commands:\n\n" +
         "/start Initialise and register with us.\n" +
         "/help For the confused souls.\n" +
-        "/whoowesme To see your debtors (only in private message).\n" +
-        "/whomeowes To see your creditors (only in private message).\n"+
-        "/cancel To cancel any creation of order.\n"
-        "\nAfter running /start and registering in the group you wish to split bills in, you can start splitting your bills by simply typing @OwePay_bot followed by name of the order." +
-        "\n\nDue to the nature of Telegram Bots, our bot will only be able to detect users if they have either sent a message in the group after I've been added or users added after me!" 
+        "\nSplit bills with us by simply typing @OwePay_bot followed by the amount to be split!"
     )
 
 def error(update, context):
@@ -1029,11 +1025,10 @@ def groupRegister(update, context):
         )
     else:
         addGroup(group)
-        print('donkey')
         context.bot.editMessageText(
             chat_id=query.message.chat_id,
             message_id=query.message.message_id,
-            text="Your group is now registered!\n\nBegin splitting bills by sending a message starting with @OwePay_bot followed by the name of the bill. For example:\n\n@OwePay_bot Assorted Sausages\n\nDue to the nature of Telegram Bots, our bot will only be able to detect users if they have either sent a message in the group after I've been added or users added after me!",
+            text="Your group is now registered!\n\nBegin splitting bills by sending a message starting with @OwePay_bot followed by the name of the bill. For example:\n\n@OwePay_bot Assorted Sausages",
         )
 
 
@@ -1256,7 +1251,7 @@ def userRegister(update, context):
             context.bot.editMessageText(
                 chat_id=chat_id,
                 message_id=message_id,
-                text="You are now registered!\n\nAdd this bot to your telegram groups to split bills among your friends! Bills can be split by sending a message starting with @OwePay_bot followed by the name of the order after registering the bot in the group with the /start command. For example:\n\n@OwePay_bot Assorted Meats\n\nDue to the nature of Telegram Bots, our bot will only be able to detect users if they have either sent a message in the group after I've been added or users added after me!",
+                text="You are now registered!\n\nAdd this bot to your telegram groups to split bills among your friends! Bills can be split by sending a message starting with @OwePay_bot followed by the amount to be split after registering the bot in the group with the /start command. For example:\n\n@OwePay_bot 123",
             )
         else:
             context.bot.editMessageText(
@@ -1269,7 +1264,7 @@ def userRegister(update, context):
         context.bot.editMessageText(
             chat_id=query.message.chat_id,
             message_id=query.message.message_id,
-            text="You are now registered!\n\nAdd this bot to your telegram groups to split bills among your friends! Bills can be split by sending a message starting with @OwePay_bot followed by the name of the order after registering the bot in the group with the /start command. For example:\n\n@OwePay_bot Assorted Meats\n\nDue to the nature of Telegram Bots, our bot will only be able to detect users if they have either sent a message in the group after I've been added or users added after me!",
+            text="You are now registered!\n\nAdd this bot to your telegram groups to split bills among your friends! Bills can be split by sending a message starting with @OwePay_bot followed by the amount to be split after registering the bot in the group with the /start command. For example:\n\n@OwePay_bot 123",
         )
 
 def userDontRegister(update, context):
@@ -1310,43 +1305,21 @@ def groupMemberScanner(update, context):
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     firstname = update.message.from_user.first_name
-    
-    if len(update.message.new_chat_members) > 0:
+
+    if len(update.message.new_chat_members) > 1:
         for newMember in update.message.new_chat_members:
-            if newMember.is_bot:
-                continue
-            newUserID = newMember.id
-            addUserToGroup(newUserID, group_id)
-            if not userAlreadyAdded(newUserID):
-                newUsername = newMember.username
-                newFirstname = newMember.first_name
-                user = (newUserID, newUsername, 0, newFirstname)
-                addUser(user)
-    
-    if update.message.left_chat_member != None:
-        print(update.message.left_chat_member.id)
-        leftMember = update.message.left_chat_member
-        leftMemberID = leftMember.id
-        if userInGroup(leftMemberID, group_id):
-            deleteUserFromGroup(leftMemberID, group_id)
-        if not userAlreadyAdded(leftMemberID):
-            leftUsername = leftMember.username
-            leftFirstname = leftMember.first_name
-            user = (leftMemberID, leftUsername, 0, leftFirstname)
-            addUser(user)
+        if len(update.memssage.left_chat_member) > 1:
+        print(update.member.left_chat_member.id)
+    if not(groupAlreadyAdded(group_id)):
+        return 'Group with id %s not added' % group_id
 
     if not(userAlreadyAdded(user_id)):
         user = (user_id, username, 0, firstname)
         addUser(user)
 
-
     if not(userInGroup(user_id, group_id)):
         increaseGroupMemberCount(group_id)
         addUserToGroup(user_id, group_id)
-    
-
-    if not(groupAlreadyAdded(group_id)):
-        return 'Group with id %s not added' % group_id
         
     if userStateSplitEvenly(user_id, group_id):
         text = update.message.text
