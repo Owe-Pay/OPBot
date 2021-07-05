@@ -330,7 +330,7 @@ With this developer guide, we hope that collaborating with our project will be s
 
 ## Setup
    
-All of our code can be found on our GitHub. Feel free to leave comments if you feel like there is anything we should work on! In the event that you have yet to install Git on your machine, please look to this guide here for instructions on how to do so.
+All of our code can be found on our [GitHub](https://github.com/Owe-Pay/OPBot). Feel free to leave comments if you feel like there is anything we should work on! In the event that you have yet to install Git on your machine, please look to this guide [here](https://github.com/git-guides/install-git) for instructions on how to do so.
    
 ### Telegram Bot
 	
@@ -338,7 +338,7 @@ The codebase for the Telegram Bot is written in mainly Python and we will requir
 
 ### 1. Install Python
    
-As of time of writing, we’re currently using Python 3.9.5 for development. You can download Python from their official website here. In the event that you are   experiencing difficulties, try to follow this guide here.
+As of time of writing, we’re currently using Python 3.9.5 for development. You can download Python from their official website [here](https://www.python.org/downloads/). In the event that you are experiencing difficulties, try to follow this guide [here](https://realpython.com/installing-python).
 
 ![Terminal Window](https://res.cloudinary.com/jianoway/image/upload/v1623863631/elegantTerminal.png)
 	
@@ -360,7 +360,7 @@ Navigate to the newly created OPBot directory. You will notice that this folder 
 	
 Our codebase uses several plugins and we will go over how to install them. 
 
-1. Pipenv
+1. [Pipenv](https://pypi.org/project/pipenv/)
    
    Pipenv is a tool that automatically creates and maintains a virtual environment for our project to maintain a consistent virtual environment across different machines. If you wish to run the code via you local machine please continue with the installation of other plugins.
     
@@ -374,28 +374,28 @@ Our codebase uses several plugins and we will go over how to install them.
    ```
    If you are still struggling with installing via pip feel free to contact us via GitHub and we’ll try our best to help you out! :)
 	
-2. Python-Telegram-Bot
+2. [Python-Telegram-Bot](https://github.com/python-telegram-bot/python-telegram-bot)
    
    Python-Telegram-Bot is a wrapper tool that helps us to control and interact with our bot and is the backbone of our bot. Please try to familiarize yourself with it’s API and wrappers as a fundamental understanding of their classes is crucial for developing the codebase for O$P$.
    ```
    pip install python-telegram-bot
    ```
 	
-3. Logging
+3. [Logging](https://pypi.org/project/logging/)
    
    Nothing much to say here. Just to create error logs for us to view later on.
    ```
    pip install logging
    ```
 	
-4. Cryptography
+4. [Cryptography](https://pypi.org/project/cryptography/)
 	
    This package allows us to conceal certain keys and tokens we wouldn’t want prying eyes to see. It is also a dependency for some of our other packages like python-telegram-bot.
    ```
    pip install cryptography
    ```
 
-5. Pytest
+5. [Pytest](https://docs.pytest.org/en/6.2.x/)
 	
    A very useful package that forms the backbone of our testing environment
 	
@@ -403,27 +403,27 @@ Our codebase uses several plugins and we will go over how to install them.
    pip install pytest
    ```
 	
-6. Flaky
+6. [Flaky](https://pypi.org/project/flaky/)
 	
    This package helps to rerun Pytest tests for some of the more gimmicky tests that might not pass on the first try.
 	
    ```
    pip install flaky
    ```
-7. Tabulate
+7. [Tabulate](https://pypi.org/project/tabulate/)
    
    This package helps to make printing of tables prettier. Mostly for aesthetic purposes only.	
    ```
    pip install tabulate
    ```
-8. Pymysql
+8. [Pymysql](https://pypi.org/project/PyMySQL/)
 	
    This package allows us to create MySQL queries with our Python functions in order to access our backend MySQL database.
 	
    ```
    pip install pymsysql
    ```
-9. os-sys
+9. [os-sys](https://pypi.org/project/os-sys/)
 	
    If for some odd reason you don’t have os-sys installed you can do so as follows. It is crucial for accessing environment variables which I will explain how to set up later.
 	
