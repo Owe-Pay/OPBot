@@ -6,7 +6,7 @@ from google.cloud import vision
 import os, io
 import pandas as pd
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS']=r'C:\Users\User\orbital\key.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']=r'gcloudkey.json'
 print("hello")
 # PATH = '../../grive/Belege/Gescannt_20200208-1357.pdf'
 # pages = convert_from_path(PATH, 501)
