@@ -5,15 +5,16 @@ from google.cloud import vision
 # from pdf2image import convert_from_path
 import os, io
 import pandas as pd
+from gcloudparser import GcloudParser
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS']=r'C:\Users\User\orbital\key.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']=r'gcloudkey.json'
 print("hello")
 # PATH = '../../grive/Belege/Gescannt_20200208-1357.pdf'
 # pages = convert_from_path(PATH, 501)
 # client = vision.ImageAnnotatorClient()
 
-FILE_NAME = 'receipt2.jpg'
-FOLDER_PATH = r'C:\Users\User\orbital'
+FILE_NAME = '1234.jpg'
+FOLDER_PATH = r'/Users/jianwei/Pictures'
 
 client = vision.ImageAnnotatorClient()
 with io.open(os.path.join(FOLDER_PATH,FILE_NAME), 'rb') as image_file:
@@ -31,11 +32,15 @@ response = client.text_detection(image=image)
 # df = pd.DataFrame(columns=['locale','description'])
 # for 
 
+parser = GcloudParser(debug=False)
+articles, dates, markets = parser.parse_response(response)
+for artcile in articles:
+    print(artcile)
 
-for text in response.text_annotations:
-    print('=' * 30)
-    print(text.description)
-    vertices = ['(%s,%s)' % (v.x, v.y) for v in text.bounding_poly.vertices]
-    print('bounds:', ",".join(vertices))
+# for text in response.text_annotations:
+#     print('=' * 30)
+#     print(text.description)
+#     vertices = ['(%s,%s)' % (v.x, v.y) for v in text.bounding_poly.vertices]
+#     print('bounds:', ",".join(vertices))
 
 
