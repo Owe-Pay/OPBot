@@ -835,7 +835,7 @@ System Tests would involve testing whether the system would function properly on
 We plan to launch a mobile application with similar functionality to our Telegram Bot with certain extensions. You can find a demonstration of what we hope to see from it below.
 | Login Page | Home Page  |
 | ---------- | ---------- |
-|![sample Login Page](https://res.cloudinary.com/jianoway/image/upload/v1623863754/homepageGif_wtx6xh.gif)|![Sample Home Page](https://res.cloudinary.com/jianoway/image/upload/v1623863761/uiGif_sb9kka.gif)|
+|![Sample Login Page](https://res.cloudinary.com/jianoway/image/upload/v1623863754/homepageGif_wtx6xh.gif)|![Sample Home Page](https://res.cloudinary.com/jianoway/image/upload/v1623863761/uiGif_sb9kka.gif)|
 
 
 ### Telegram Bot (@OwePay_bot)
@@ -845,7 +845,17 @@ Currently, we are hosting our Telegram Bot via Heroku so it should be up 24/7. Y
 
 ## Software Engineering Principles
 
-As with many other projects, ours utilises Object-Oriented Programming (OOP) to structure and design our code. 
+### Immutability
+
+Our values declared by our functions are immutable where possible, allowing us to predict the behaviour of our program with higher accuracy. An example of this would be the splitEvenlyKeyboardMarkup where define keyboardHolder as a list, an immutable data type for Python.
+
+   ![SWEP Immutability](https://res.cloudinary.com/jianoway/image/upload/v1626336857/Screenshot_2021-07-15_at_4.14.12_PM_bhxw4j.png)
+
+### Object-Oriented Programming (OOP)
+
+Our codebase uses a the python-telegram-bot API as our main tool to create the bot. It is a wrapper that has many pre-determined wrapper classes to allow us to easily abstract data from and predict their outcomes. This allowed us to use a more functional based approach since most of the relevant Classes have already been delcared and we did not require many new classes to design our bot.
+
+However, with that said we did use OOP principles which can be seen in the flow of logic of the program.
 
 Below you can find some UML diagrams for your reference.
 ![UML 1](https://res.cloudinary.com/jianoway/image/upload/v1624114145/startPrivateUMI_h25isz.png)
