@@ -16,6 +16,7 @@ pytz = "*"
 google-cloud = "*"
 google-cloud-vision = "*"
 pillow = "*"
+numpy = "*"
 
 [dev-packages]
 
