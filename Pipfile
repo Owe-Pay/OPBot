@@ -13,11 +13,8 @@ pytest = "*"
 cryptography = "*"
 flask = "*"
 pytz = "*"
-google = "*"
 google-cloud = "*"
 google-cloud-vision = "*"
-pandas = "*"
-numpy = "*"
 pillow = "*"
 
 [dev-packages]

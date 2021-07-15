@@ -4,7 +4,6 @@ from google.cloud import vision
 # import io
 # from pdf2image import convert_from_path
 import os, io
-import pandas as pd
 from gcloudparser import GcloudParser
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']=r'gcloudkey.json'
