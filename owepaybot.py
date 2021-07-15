@@ -1352,9 +1352,11 @@ def groupMemberScanner(update, context):
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     firstname = update.message.from_user.first_name
-
+    
     if len(update.message.new_chat_members) > 0:
         for newMember in update.message.new_chat_members:
+            if newMember.is_bot:
+                continue
             newUserID = newMember.id
             addUserToGroup(newUserID, group_id)
             if not userAlreadyAdded(newUserID):
