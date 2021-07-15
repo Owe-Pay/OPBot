@@ -30,7 +30,6 @@ response = client.text_detection(image=image)
 # response = client.text_detection(image=image)
 # print(response)
 # df = pd.DataFrame(columns=['locale','description'])
-# for 
 
 parser = GcloudParser(debug=False)
 articles, dates, markets = parser.parse_response(response)

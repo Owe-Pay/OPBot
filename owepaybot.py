@@ -4,15 +4,17 @@ from datetime import datetime, timedelta
 import time
 import os
 import sys
+from tokenize import Token
 import pytz
 import re
+import requests
 
 from HELPME.bot_sql_integration import *
 from HELPME.helperFunctions import *
 
 from uuid import uuid4, uuid1
 from telegram.utils.helpers import escape_markdown
-from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler
+from telegram.ext import InlineQueryHandler, Updater, CommandHandler, CallbackQueryHandler, CallbackContext, Filters, MessageHandler, ConversationHandler
 from telegram import Bot, InlineQueryResultArticle, ParseMode, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Update, message, replymarkup
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -87,6 +89,47 @@ def startPrivate(update, context):
         reply_markup=reply_markup,
     )
     return message
+
+def scanReceiptPrivateMessage(update, context):
+    chat_id = update.effective_chat.id
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=
+            "Please send in the receipt to be scanned! Alternatively, to cancel please type /cancelreceipt"
+    )
+    return "waitingonpicprivate"
+
+def scanReceiptPrivatePicture(update, context):
+    photos = update.message.photo
+    length = len(photos)
+    if length == 0:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=
+                "Please send in the receipt to be scanned! Alternatively, to cancel please type /cancelreceipt"
+        )
+        return "waitingonpicprivate"
+    else:
+        photo = photos[length - 1]
+        fileID = photo.file_id
+        filePathURL = "https://api.telegram.org/bot%s/getfile?file_id=%s" % (TOKEN, fileID)
+        filePath = requests.get(filePathURL).json()["result"]["file_path"]
+        fileURL = "https://api.telegram.org/file/bot%s/%s" % (TOKEN, filePath)
+        text = receiptParser(fileURL)
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=text
+        )
+        return ConversationHandler.END
+
+def cancelReceipt(update, context):
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=
+            "Your receipt scan has been cancelled!"
+    )
+    return ConversationHandler.END
+
 
 def getDebtors(update, context):
     userID = update.effective_chat.id
@@ -1248,7 +1291,6 @@ def userRegister(update, context):
     username = query.message.chat.username
     message_id = query.message.message_id
     firstname = query.message.chat.first_name
-    print(query.message)
     user = (chat_id, username, 1, firstname)
     if (userAlreadyAdded(chat_id)):
         if not(isNotifiable(chat_id)):
@@ -1348,7 +1390,6 @@ def groupMemberScanner(update, context):
         
     if userStateSplitEvenly(user_id, group_id):
         text = update.message.text
-        print(text)
         if isValidAmount(text):
             waitingForSomeNames(update, context, user_id, group_id)
             return "User %s has state 'splitevenly'" % user_id
@@ -1371,7 +1412,6 @@ def main():
     """Start the bot."""
     updater = Updater(
         TOKEN, use_context=True)
-
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
@@ -1386,15 +1426,28 @@ def main():
     dp.add_handler(InlineQueryHandler(inline))
     #dp.add_handler(MessageHandler(Filters.chat_type.groups, echo))
     dp.add_handler(MessageHandler(Filters.chat_type.groups, groupMemberScanner))
+    dp.add_handler(ConversationHandler(
+        [
+            CommandHandler("scanreceipt", scanReceiptPrivateMessage)
+        ], 
+        {
+            "waitingonpicprivate": [MessageHandler(Filters.chat_type.private, scanReceiptPrivatePicture), CommandHandler("cancelreceipt", cancelReceipt)],
+
+        }, 
+        [
+            CommandHandler("cancelreceipt", cancelReceipt)
+        ],
+        allow_reentry=True
+    ))
 
     # log all errors
     dp.add_error_handler(error)
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN,
-                          webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
-    # updater.start_polling()
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=PORT,
+    #                       url_path=TOKEN,
+    #                       webhook_url="https://owepaybot.herokuapp.com/" + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':

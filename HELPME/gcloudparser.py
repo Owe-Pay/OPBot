@@ -5,7 +5,7 @@ import io
 import os
 
 
-SKIPWORDS = ['eur', 'stk', 'x']
+SKIPWORDS = ['eur', 'stk', 'x', '#', 'total']
 STOPWORDS = ['summe', 'visa', 'mwst', 'brutto', 'netto', 'zahlen', 'kreditkarte', 'ust-id-nr', 'rück geld']
 MARKETS = ['drogerie', 'lidl', 'rewe', 'real', 'allguth', 'dm']
 BLACKLIST_WORDS = ['steuer-nr', 'eur*', 'pfand']
@@ -185,7 +185,7 @@ class GcloudParser:
                 xmax = np.max([v.x for v in annotation.bounding_poly.vertices])
                 ymin = np.min([v.y for v in annotation.bounding_poly.vertices])
                 ymax = np.max([v.y for v in annotation.bounding_poly.vertices])
-                if xmax > g_xmax/2:
+                if xmax > g_xmax/2.5:
                     continue
                 if (ymax + ymin)/2 < parsed_y:
                     # print('Skipping ' + annotation.description + ' ' + str(ymax) + ' ' + str(parsed_y))
@@ -244,8 +244,10 @@ class GcloudParser:
                             print('New price ' + str(current_price))
                         parsed_y = max(parsed_y, (p_ymax + p_ymin) / 2)
                     elif p_type == 'text':
-                        if p_xmax > g_xmax / 2:
+                        # print((p_description, p_xmax,p_xmin,p_ymax, p_ymin))
+                        if p_xmax > g_xmax / 2  :
                             continue
+
                         if p_ymax < ymin or p_ymin > ymax or ( y_current > 0 and p_ymin > y_current):
                             continue
                         used_idx.append(j)

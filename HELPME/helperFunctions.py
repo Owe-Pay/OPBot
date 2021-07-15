@@ -1,9 +1,15 @@
 from email.mime import text
 from datetime import *
+from google.cloud import vision
 import pytz
 import logging
 import os
 from tokenize import group
+import pandas as pd
+from .gcloudparser import GcloudParser
+from PIL import Image
+import requests
+from io import BytesIO
 
 from uuid import uuid4
 from telegram.utils.helpers import escape_markdown
@@ -14,7 +20,7 @@ from .bot_sql_integration import *
 
 
 TOKEN = os.environ['API_TOKEN']
-
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']=r'gcloudkey.json'
 tz = pytz.timezone('Asia/Singapore')
 now = datetime.now(tz) # the current time in your local timezone
 
@@ -114,7 +120,7 @@ def splitUnevenlyKeyboardMarkup(groupID, last):
             callback_data = 'splitunevenlycallbackdata' + '%s' % user 
             keyboardHolder.append([InlineKeyboardButton(firstNameWithUsername, callback_data=callback_data)])
         addEveryone = InlineKeyboardButton("Add Everyone!", callback_data='splitunevenlyaddeveryonecallbackdata')
-        
+         
         keyboardHolder.append([addEveryone])
         buttonToFinalise = InlineKeyboardButton("Next Item", callback_data='splitunevenlynextitem')
     
@@ -141,6 +147,24 @@ def splitEvenlyKeyboardMarkup(groupID):
 
     return InlineKeyboardMarkup(keyboardHolder)
         
+def receiptParser(url):
+    client = vision.ImageAnnotatorClient()
+    with BytesIO() as output:
+        with Image.open(requests.get("%s" % url, stream=True).raw) as img:
+            img.save(output, 'BMP')
+        content = output.getvalue()
+    image = vision.Image(content = content)
+    response = client.text_detection(image=image)
+    parser = GcloudParser(debug=False)
+    articles, dates, markets = parser.parse_response(response)
+    formattedString = ""
+    for article in articles:
+        name = article["name"]
+        price = article["price"]
+        tempStr = "%s - $%s\n" % (name, price)
+        formattedString += tempStr
+    return formattedString
+
 
 def removeUUIDDashes(uuid):
     return "".join(str(uuid).split("-"))
