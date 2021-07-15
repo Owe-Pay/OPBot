@@ -20,7 +20,7 @@ from .bot_sql_integration import *
 
 
 TOKEN = os.environ['API_TOKEN']
-os.environ['GOOGLE_APPLICATION_CREDENTIALS']=r'gcloudkey.json'
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS']=r'gcloudkey.json'
 tz = pytz.timezone('Asia/Singapore')
 now = datetime.now(tz) # the current time in your local timezone
 
