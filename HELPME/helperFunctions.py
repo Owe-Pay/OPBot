@@ -5,7 +5,6 @@ import pytz
 import logging
 import os
 from tokenize import group
-import pandas as pd
 from .gcloudparser import GcloudParser
 from PIL import Image
 import requests
