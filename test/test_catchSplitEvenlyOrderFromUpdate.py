@@ -3,8 +3,9 @@ from flaky import flaky
 import datetime
 from datetime import *
 
-from telegram import Update, User, Message, Chat
-from ..owepaybot import catchOrderFromUpdate, groupMemberScanner
+from telegram import Update, User, Message, Chat, InlineKeyboardMarkup, InlineKeyboardButton
+from ..HELPME.helperFunctions import Order
+from ..owepaybot import catchSplitEvenlyOrderFromUpdate
 from ..HELPME.bot_sql_integration import *
 from ..HELPME.helperFunctions import *
 
@@ -14,7 +15,7 @@ def orderUpdate():
         123, 
         Message(
             234, 
-            text='testOrderName', 
+            text='1234', 
             chat=Chat(
                 345, 
                 'groupname'
@@ -26,33 +27,28 @@ def orderUpdate():
                 username='userusername'
                 ),
             date=datetime.now()
-            ),
         )
+    )
 
-class TestCatchOrderFromUpdate:
+class TestCatchSplitEvenlyOrderFromUpdate:
 
     @flaky(3, 1)
-    def test_catchOrderFromUpdate(self, orderUpdate):
-        massDelete("Users")
+    def test_catchSplitEvenlyOrderFromUpdate(self, orderUpdate):
         massDelete("Orders")
         massDelete("TelegramGroups")
+        massDelete("Users")
         massDelete("UserGroupRelational")
-
         assert addGroup((345, 'groupname')) == "Group groupname 345 inserted"
         assert addUser((456, 'userusername', 0, 'userfirstname')) == "User 456 inserted"
         assert addUserToGroup(456, 345) == "User 456 added to Group 345"
-        assert updateUserTempAmount('456', '345', '123') == "User 456 in Group 345 has the temporary amount 123"
-        order = catchOrderFromUpdate(orderUpdate)
-        orderID = order.orderID
-        assert order.creditorID == 456
-        assert order.date.replace(tzinfo=None) == getOrderDateFromOrderID(orderID).replace(tzinfo=None)
-        assert order.groupID == 345
-        assert order.orderName == "testOrderName"
-        assert order.orderAmount == 123
+        assert updateOrderIDToUserGroupRelational(456, 345, 'tempOrderName') == "User 456 in Group 345 has OrderID tempOrderName"
+        assert isinstance(catchSplitEvenlyOrderFromUpdate(orderUpdate), Order)
+        assert catchSplitEvenlyOrderFromUpdate(orderUpdate).groupID == 345
+        assert catchSplitEvenlyOrderFromUpdate(orderUpdate).orderName == 'tempOrderName'
+        assert catchSplitEvenlyOrderFromUpdate(orderUpdate).orderAmount == '1234'
+        assert catchSplitEvenlyOrderFromUpdate(orderUpdate).creditorID == 456
 
-        massDelete("Users")
         massDelete("Orders")
         massDelete("TelegramGroups")
+        massDelete("Users")
         massDelete("UserGroupRelational")
-        
-

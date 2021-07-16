@@ -186,9 +186,13 @@ class TestHelp():
     group_message = Message(3, None, Chat(4123123, 'group', username='bot'), from_user=User(5, 'bot', False, username='bot'))
     text = (
          "List of commands:\n\n" +
-         "/start Initialise and register with us.\n" +
-         "/help For the confused souls.\n" +
-         "\nSplit bills with us by simply typing @OwePay_bot followed by the amount to be split!"
+        "/start Initialise and register with us.\n" +
+        "/help For the confused souls.\n" +
+        "/whoowesme To see your debtors (only in private message).\n" +
+        "/whomeowes To see your creditors (only in private message).\n"+
+        "/cancel To cancel any creation of order.\n"
+        "\nAfter running /start and registering in the group you wish to split bills in, you can start splitting your bills by simply typing @OwePay_bot followed by name of the order." +
+        "\n\nDue to the nature of Telegram Bots, our bot will only be able to detect users if they have either sent a message in the group after I've been added or users added after me!" 
     )
 
     @flaky(3, 1)

@@ -34,7 +34,7 @@ class tempContext:
         def send_message(chat_id, text, reply_markup):
             return Message(1, datetime.now(), chat=Chat(chat_id, 'groupname'), text=text, reply_markup=reply_markup)
 
-class TestMessageContainsNewOrder:
+class TestMessageContainsText:
 
     def test_messageContainsNewOrder(self, containsSplitNewOrderUpdate):
         massDelete("Users")

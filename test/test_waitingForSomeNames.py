@@ -4,7 +4,7 @@ import datetime
 from datetime import *
 
 from telegram import Update, User, Message, Chat
-from ..owepaybot import catchOrderFromUpdate, groupMemberScanner, waitingForSomeNames
+from ..owepaybot import groupMemberScanner, waitingForSomeNames
 from ..HELPME.bot_sql_integration import *
 from ..HELPME.helperFunctions import *
 
@@ -14,7 +14,7 @@ def orderUpdate():
         123, 
         Message(
             234, 
-            text='testOrderName', 
+            text='123', 
             chat=Chat(
                 345, 
                 'groupname'
@@ -76,6 +76,7 @@ class TestWaitingForSomeNames:
         assert addUserToGroup(9872, 345) == "User 9872 added to Group 345"
         assert addUserToGroup(9873, 345) == "User 9873 added to Group 345"
         assert updateUserTempAmount('456', '345', '123') == "User 456 in Group 345 has the temporary amount 123"
+        assert updateOrderIDToUserGroupRelational(456, 345, 'testOrderName')
         assert isinstance(waitingForSomeNames(orderUpdate, tempContext, '456', '345'), Message)
         assert waitingForSomeNames(orderUpdate, tempContext, '456', '345').chat_id == 345
         assert waitingForSomeNames(orderUpdate, tempContext, '456', '345').text == "People who have your cash money:"

@@ -4,7 +4,7 @@ import datetime
 from datetime import *
 
 from telegram import Update, User, Message, Chat, InlineKeyboardMarkup, InlineKeyboardButton
-from ..owepaybot import splitDifferentAmounts, splitUnevenlyOrderNameCatcher, waitingForSomeNames
+from ..owepaybot import splitDifferentAmounts, waitingForSomeNames
 from ..HELPME.bot_sql_integration import *
 from ..HELPME.helperFunctions import *
 
@@ -101,8 +101,8 @@ class TestSplitDifferentAmounts:
         assert addUserToGroup(9871, 345) == "User 9871 added to Group 345"
         assert addUserToGroup(9872, 345) == "User 9872 added to Group 345"
         assert addUserToGroup(9873, 345) == "User 9873 added to Group 345"
-        assert updateUserTempAmount('456', '345', '123') == "User 456 in Group 345 has the temporary amount 123"
-        assert isinstance(splitUnevenlyOrderNameCatcher(orderUpdate, nameCatcherContext, '456', '345'), Message)
+        assert addOrder(('temporderid123', '345', 'testOrderName', 123, '345', datetime.now(tz).replace(microsecond=0))) == "Order temporderid123 has been added"
+        assert updateOrderIDToUserGroupRelational(456, 345, 'temporderid123') == "User 456 in Group 345 has OrderID temporderid123"
         assert isinstance(splitDifferentAmounts(splitUpdate, tempContext, 456, 345), Message)
         assert splitDifferentAmounts(splitUpdate, tempContext, 456, 345).text == 'Current split for %s:\n\nItems left to split:%s\n\nPeople paying for %s:' % ('testOrderName', '\nsalad ($10.00)\nfries ($12.00)', 'chicken ($5.00)')
         assert splitDifferentAmounts(splitUpdate, tempContext, 456, 345).reply_markup == splitUnevenlyReplyMarkupForTestManual
