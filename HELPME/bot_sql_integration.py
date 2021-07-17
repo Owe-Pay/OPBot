@@ -104,6 +104,7 @@ def updateUserStateNewOrder(userId, groupId):
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
+    return  "User %s in Group %s has state 'neworder'" % (userId, groupId)
 
 def userStateNewOrder(user_id,group_id):
     mysqldb = pymysql.connect(
@@ -375,7 +376,7 @@ def updateMessageIDToUserGroupRelational(userID, groupID, messageID):
     mycursor.execute(mysql)
     mysqldb.commit()
     closeConnection(mysqldb, mycursor)
-    return "User %s in Group %s has OrderID %s" % (userID, groupID, messageID)  
+    return "User %s in Group %s has MessageID %s" % (userID, groupID, messageID)  
 
 def getOrderIDFromUserIDAndGroupID(userID, groupID):
     mysqldb = pymysql.connect(

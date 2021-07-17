@@ -1224,8 +1224,6 @@ def catchSplitEvenlyOrderFromUpdate(update):
     order_amount= update.message.text.replace('$', '', 1)
     date = datetime.now(tz).replace(microsecond=0)
     order_name = getOrderIDFromUserIDAndGroupID(user_id, group_id)
-    print(user_id)
-    print(group_id)
     addOrder((order_id, group_id, order_name, order_amount, user_id, date))
     return Order(order_id, group_id, order_name, order_amount, user_id, date)
 
