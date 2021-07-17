@@ -43,7 +43,7 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
         - [Unit Testing](#unit-testing)
           - [Testing the *startPrivate* function of *owepaybot.py*](#testing-the-startprivate-function-of-owepaybotpy)
           - [Testing the *startGroup* function of *owepaybot.py*](#testing-the-startgroup-function-of-owepaybotpy)
-          - [Testing the *help* function of *owepaybot.py*](#testing-the-help-function-of-owepaybotpy)
+          - [Testing the *help* function of *owepaybot.py*](#testing-the-help-function-of-owepaybotpy-)
           - [Testing the *button* function of *owepaybot.py*](#testing-the-button-function-of-owepaybotpy)
           - [Testing the *messageContains* functions of *owepaybot.py*](#testing-the-messagecontainssplitevenly-and-messagecontainssplitunevenly-functions-of-owepaybotpy)
           - [Testing the *splitUnevenlyOrderNameCatcher* function of *owepaybot.py*](#testing-the-splitunevenlyordernamecatcher-function-of-owepaybotpy)
@@ -537,7 +537,7 @@ The main purpose of this test is to test the functionality of the /start command
 |test_startGroup|To test if given an update, it will be able to respond in the correct chat with the correct message.|Message = startGroup(groupUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234 Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard)|Message = startGroup(groupUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234 Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard|
 |test_invalid_group_id|To test if receiving an update with an invalid chat_id, it will flag a BadRequest error|BadRequest: Chat not found error caught |BadRequest: Chat not found error caught|
 
-### **Testing the *help* function of *owepaybot.py***
+### **Testing the *help* function of *owepaybot.py*** 🔬
 	
 #### **Stubs used**
 	
@@ -553,12 +553,12 @@ The main purpose of this test is to test the functionality of the /start command
 
 * tempContext: A Context object to simulate the functionality of an actual Context object
 
-| Test Name       | Description | Expected           | Actual             |
-| ---------       |-------------| -------------------| -------------------|
-| test_help_group | To test if when given the correct Group Update and Context objects as parameters, it will return the correct Message object  | Message.chat_id == 4123123 <br /> <br /> Message.text == self.text | Message.chat_id == 4123123 <br /> <br />Message.text == self.text|
-| test_help_private    | To test if when given the correct User Update and Context objects as parameters, it will return the correct Message object       |   Message.chat_id == 4123123 <br /> <br />Message.text == self.text|  Message.chat_id == 4123123 <br /> <br /> Message.text == self.text |
-| test_help_wrong_group_id    | To test if an error is raised when an Group Update is sent from an Invalid chat_id (bot not added to this group, chat_id does not exist)|   BadRequest: Chat not found error caught|  BadRequest: Chat not found error caught |
-| test_help_wrong_private_id    | To test if an error is raised when an Group Update is sent from an Invalid chat_id (bot has not conversed with user before, user does not exist)|   BadRequest: Chat not found error caught|  BadRequest: Chat not found error caught |
+| Test Case       | Expected    | Result|
+| ---------       |-------------| :----:|
+| Using the /help command in a Group Setting | The correct /help message for groups is displayed. | :white_check_mark:|
+| Using the /help command in a Private Message Setting | The correct /help message for users is displayed. | :white_check_mark:|
+| Using the /help command with an invalid group ID   | BadRequest: Chat not found error caught. | :white_check_mark:|
+| Using the /help command with an invalid user ID | BadRequest: Chat not found error caught. | :white_check_mark:|
 
 
 ### Testing the *button* function of *owepaybot.py*
