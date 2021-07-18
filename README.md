@@ -41,8 +41,8 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
     - [Testing](#testing)
         - [Design of Tests](#design-of-tests)
         - [Unit Testing](#unit-testing)
-          - [Testing the *startPrivate* function of *owepaybot.py*](#testing-the-startprivate-function-of-owepaybotpy)
-          - [Testing the *startGroup* function of *owepaybot.py*](#testing-the-startgroup-function-of-owepaybotpy)
+          - [Testing the *startPrivate* function of *owepaybot.py*](#testing-the-startprivate-function-of-owepaybotpy-)
+          - [Testing the *startGroup* function of *owepaybot.py*](#testing-the-startgroup-function-of-owepaybotpy-)
           - [Testing the *help* function of *owepaybot.py*](#testing-the-help-function-of-owepaybotpy-)
           - [Testing the *button* function of *owepaybot.py*](#testing-the-button-function-of-owepaybotpy)
           - [Testing the *messageContains* functions of *owepaybot.py*](#testing-the-messagecontainssplitevenly-and-messagecontainssplitunevenly-functions-of-owepaybotpy)
@@ -505,7 +505,7 @@ The tests designed are hopefully sufficient to catch out all bugs and leave no c
 
 Unit Tests would involve testing the functionality of individual functions used in our code so as to ensure that our code is safe and relatively bug-free.
 
-### **Testing the *startPrivate* function of *owepaybot.py***
+### **Testing the *startPrivate* function of *owepaybot.py*** 🔬
 	
 The main purpose of this test is to test the functionality of the /start command in a private message setting.
 
@@ -515,14 +515,14 @@ The main purpose of this test is to test the functionality of the /start command
 
 * contextWithMarkup: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text, reply_markup)
 
-| Test Name| Description | Expected           | Actual             |
-| ---------|-------------| -------------------| -------------------|
-| test_startPrivate|To test if given an update, it will be able to respond in the correct chat with the correct message. | Message = startPrivate(privateUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234<br /><br />Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard)|Message = startPrivate(privateUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234<br /><br />Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard)|
-|test_invalid_user_id |To test if receiving an update with an invalid chat_id, it will flag a BadRequest error|BadRequest: Chat not found error caught|BadRequest: Chat not found error caught
+| Test Case| Expected| Result           | 
+| ---------|---------| -----------------| 
+| Using the /start command in a Private Message Setting |The correct /start message for users is displayed. |✅|
+| Using the /start command with an invalid user ID |BadRequest: Chat not found error caught.BadRequest: Chat not found error caught|✅|
 
 
 
-### **Testing the *startGroup* function of *owepaybot.py***
+### **Testing the *startGroup* function of *owepaybot.py*** 🔬
 	
 The main purpose of this test is to test the functionality of the /start command in a group chat setting.
 
@@ -532,10 +532,10 @@ The main purpose of this test is to test the functionality of the /start command
 
 * contextWithMarkup: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text, reply_markup)
 
-| Test Name        | Description | Expected           | Actual             |
-| ---------        |-------------| -------------------| -------------------|
-|test_startGroup|To test if given an update, it will be able to respond in the correct chat with the correct message.|Message = startGroup(groupUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234 Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard)|Message = startGroup(groupUpdate, contextWithMarkup)<br /><br />Message.chat_id == 4321234 Message.text == self.text<br /><br />Message.reply_markup == InlineKeyboardMarkup(self.keyboard|
-|test_invalid_group_id|To test if receiving an update with an invalid chat_id, it will flag a BadRequest error|BadRequest: Chat not found error caught |BadRequest: Chat not found error caught|
+| Test Case| Expected| Result           | 
+| ---------|---------| -----------------| 
+| Using the /start command in a Group Setting |The correct /start message for groups is displayed. |✅|
+| Using the /start command with an invalid group ID |BadRequest: Chat not found error caught.BadRequest: Chat not found error caught|✅|
 
 ### **Testing the *help* function of *owepaybot.py*** 🔬
 	
@@ -555,10 +555,10 @@ The main purpose of this test is to test the functionality of the /start command
 
 | Test Case       | Expected    | Result|
 | ---------       |-------------| :----:|
-| Using the /help command in a Group Setting | The correct /help message for groups is displayed. | :white_check_mark:|
-| Using the /help command in a Private Message Setting | The correct /help message for users is displayed. | :white_check_mark:|
-| Using the /help command with an invalid group ID   | BadRequest: Chat not found error caught. | :white_check_mark:|
-| Using the /help command with an invalid user ID | BadRequest: Chat not found error caught. | :white_check_mark:|
+| Using the /help command in a Group Setting | The correct /help message for groups is displayed. | ✅ |
+| Using the /help command in a Private Message Setting | The correct /help message for users is displayed. | ✅ |
+| Using the /help command with an invalid group ID   | BadRequest: Chat not found error caught. | ✅ |
+| Using the /help command with an invalid user ID | BadRequest: Chat not found error caught. | ✅ |
 
 
 ### Testing the *button* function of *owepaybot.py*
@@ -575,9 +575,10 @@ The main purpose of this test is to test the functionality of the /start command
 
 * tempContext: A Context object to simulate the functionality of an actual Context object
 
-| Test Name | Description | Expected           | Actual             |
+| Test Case | Expected | Result          | Remarks     |
 | --------- |-------------| -------------------| -------------------|
-| test_user_register_callback_query | To test if the correct callback_query is caught when when the User presses the Register button via private message<br /><br />The test for userAlreadyAdded is actually an integration test. | query.data == ‘userRegister’<br /><br /> query.from_user == self.from_user <br /><br /> query.chat_instance == self.chat_instance <br /><br /> query.message == self.private_message <br /><br /> query.inline_message_id == ‘userRegisterInlineMessageID’<br /><br /> userAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> callback_query.chat_instance == self.chat_instance <br /><br /> callback_query.message == self.private_message <br /><br /> callback_query.inline_message_id == ‘userRegisterInlineMessageID’| query.data == ‘userRegister’<br /> <br /> query.from_user == self.from_user <br /> <br />query.chat_instance == self.chat_instance <br /><br /> query.message == self.private_message <br /><br /> query.inline_message_id == ‘userRegisterInlineMessageID’ <br /> <br />userAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /><br /> callback_query.chat_instance == self.chat_instance <br /><br /> callback_query.message == self.private_message <br /> <br />callback_query.inline_message_id == ‘userRegisterInlineMessageID’|
+| Register button via Private Message| Correct CallbackQuery is caught when the user presses the Register button via Private Message | ✅ | 
+| Don't Register button via Private Message | Correct CallbackQuery is caught when the user presses the Don't Register button via Private Message | ✅|
 | test_user_dont_register_callback_query    | To test if the correct callback_query is caught when when the User presses the Don’t Register button via private message <br /><br /> The test for userAlreadyAdded is actually an integration test.|   query.data == ‘userDontRegister’ <br /><br /> query.from_user == self.from_user <br /> <br />query.chat_instance == self.chat_instance <br /> query.message == sel.private_message query.inline_message_id <br /> <br />== ‘userDontRegisterInlineMessageID’ <br /><br />query.data == ‘userDontRegister’ NOT userAlreadyAdded(chat_id) <br />  <br />  callback_query.from_user == self.from_user <br /> <br />callback_query.chat_instance == self.chat_instance <br /><br /> callback_query.message == self.private_message <br /> <br />callback_query.inline_message_id == ‘userDontRegisterInlineMessageID’| query.data == ‘userDontRegister’ <br /><br /> query.from_user == self.from_user <br /><br /> query.chat_instance == self.chat_instance <br /> <br />query.message == self.private_message<br /> <br /> query.inline_message_id == ‘userDontRegisterInlineMessageID’ <br /><br /> NOT userAlreadyAdded(chat_id)  <br />  <br /> callback_query.from_user == self.from_user <br /> <br />callback_query.chat_instance == self.chat_instance <br /> <br />callback_query.message == self.private_message <br /> <br />callback_query.inline_message_id == ‘userDontRegisterInlineMessageID’
 | test_group_register_callback_query | To test if the correct callback_query is caught when when the User presses the Register button in a group. <br /><br /> The test for groupAlreadyAdded is actually an integration test.|query.data == ‘groupRegister’ <br /> <br />query.from_user == self.from_user <br /><br /> query.chat_instance == self.chat_instance <br /><br /> query.message == self.group_message<br /><br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> <br />groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> c<br />allback_query.chat_instance == self.chat_instance <br /><br /> callback_query.message == self.group_message<br /><br /> callback_query.inline_message_id == ‘groupRegisterInlineMessageID’| query.data == ‘groupRegister’ <br /> <br />query.from_user == self.from_user <br /><br /> query.chat_instance == self.chat_instance <br /> <br />query.message == self.group_message<br /><br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /><br /> groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> c<br />allback_query.chat_instance == self.chat_instance <br /><br /> callback_query.message == self.group_message<br /> <br />callback_query.inline_message_id == ‘groupRegisterInlineMessageID’ |query.data == ‘groupRegister’ <br /><br /> query.from_user == self.from_user <br /> <br />query.chat_instance == self.chat_instance <br /><br /> query.message == self.group_message<br /><br /> query.inline_message_id == ‘groupRegisterInlineMessageID’<br /> <br />groupAlreadyAdded(chat_id) <br /> <br /> callback_query.from_user == self.from_user <br /> <br />callback_query.chat_instance == self.chat_instance <br /> <br />callback_query.message == self.group_message<br /> <br />callback_query.inline_message_id == ‘groupRegisterInlineMessageID’
 | test_group_dont_register_callback_query    | To test if the correct callback_query is caught when when the User presses the Don’t Register button in a group<br /><br /> The test for groupAlreadyAdded is actually an integration test.|   query.data == ‘groupDontRegister’<br /><br /> query.from_user == self.from_user<br /> <br />query.chat_instance == self.chat_instance<br /><br />query.message == self.group_message<br /> <br />query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /><br /> callback_query.chat_instance == self.chat_instance<br /> callback_query.message == self.group_message<br /> <br />callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|  query.data == ‘groupDontRegister’<br /><br /> query.from_user == self.from_user<br /><br /> query.chat_instance == self.chat_instance<br /> <br />query.message == self.group_message<br /><br /> query.inline_message_id == ‘groupDontRegisterInlineMessageID’ NOT groupAlreadyAdded(chat_id)<br /> <br /> callback_query.from_user == self.from_user<br /> <br />callback_query.chat_instance == self.chat_instance<br /><br /> callback_query.message == self.group_message<br /> <br />callback_query.inline_message_id == ‘groupDontRegisterInlineMessageID’|	
