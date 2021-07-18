@@ -488,13 +488,6 @@ Our codebase uses several plugins and we will go over how to install them.
 
      ![pytest gif](https://res.cloudinary.com/jianoway/image/upload/v1624888464/pytestgif2_jepnlu.gif)|
 
-
-
-
-
-	
-
-
    We are currently in the process of designing tests for the rest of our functions.
 	
 ### Design of Tests
@@ -516,7 +509,7 @@ The main purpose of this test is to test the functionality of the /start command
 * contextWithMarkup: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text, reply_markup)
 
 | Test Case| Expected| Result           | 
-| ---------|---------| -----------------| 
+| ---------|---------| :---------------:| 
 | Using the /start command in a Private Message Setting |The correct /start message for users is displayed. |✅|
 | Using the /start command with an invalid user ID |BadRequest: Chat not found error caught.BadRequest: Chat not found error caught|✅|
 
@@ -533,7 +526,7 @@ The main purpose of this test is to test the functionality of the /start command
 * contextWithMarkup: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text, reply_markup)
 
 | Test Case| Expected| Result           | 
-| ---------|---------| -----------------| 
+| ---------|---------| :---------------:| 
 | Using the /start command in a Group Setting |The correct /start message for groups is displayed. |✅|
 | Using the /start command with an invalid group ID |BadRequest: Chat not found error caught.BadRequest: Chat not found error caught|✅|
 
@@ -576,7 +569,7 @@ The main purpose of this test is to test the functionality of the /start command
 * tempContext: A Context object to simulate the functionality of an actual Context object
 
 | Test Case | Expected | Result          |
-| --------- |-------------| -------------------|
+| --------- |-------------| :----------------:|
 | Register button via Private Message| Correct CallbackQuery is caught when the user presses the Register button via Private Message | ✅ | 
 | Don't Register button via Private Message | Correct CallbackQuery is caught when the user presses the Don't Register button via Private Message | ✅|
 | Register button via Group | Correct CallbackQuery is caught when the user presses the Register button in a Group | ✅ | 
@@ -593,7 +586,7 @@ The main purpose of this test is to test if the two messageContains functions ar
 * tempContext: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text)
 
 | Test Case | Expected | Result          | 
-| --------- |-------------| -------------------|
+| --------- |-------------| :-----------------:|
 | Check if message contains 'New Order:' accurately | Returns a Message | ✅ |
 | Correct Message is returned | Text and Message ID is as expected | ✅ |
 | User's state is updated | User's state in the UserGroupRelational table is updated to 'neworder' | ✅ |
@@ -607,7 +600,7 @@ The main purpose of this test is to test if the splitEvenlyKeyboardMarkup functi
 * testsplitevenlykeyboardmarkup: A hardcoded version of the expected InlineKeyboardMarkup object with the expected buttons and their respective callback data.
 
 | Test Case | Expected | Result          | 
-| --------- |-------------| -------------------|
+| --------- |-------------| :-----------------:|
 | Function returns the expected InlineKeyboardMarkup | The InlineKeyboardMarkup returnes with the expected InlineKeyboardButtons and formatting | ✅ |
 
 
@@ -620,7 +613,7 @@ The main purpose of this test is to test if the splitUnevenlyKeyboardMarkup func
 * splitUnevenlyReplyMarkupForTestManual: A hardcoded version of the expected InlineKeyboardMarkup object with the expected buttons and their respective callback data.
 
 | Test Case | Expected | Result          | 
-| --------- |-------------| -------------------|
+| --------- |-------------| :-----------------:|
 | Function returns the expected InlineKeyboardMarkup | The InlineKeyboardMarkup returnes with the expected InlineKeyboardButtons and formatting | ✅ |
 
 ### Integration Testing
@@ -640,7 +633,7 @@ Due to the nature of the groupMemberScanner requiring certain conditions for cer
 * tempContext: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, **kwargs)
 * 
 | Test Case | Expected | Result          | Remarks |
-| --------- |-------------| -------------------| --------|
+| --------- |-------------| :-----------------:| --------|
 | Group has yet to be added to the database | Returns message for the case when a group has yet to be added | ✅ |
 | Group has been added to the database but the user has yet to be added to the database | The user is added to the database and is added to the group in the database| ✅ | Nothing is returned as the user could be issuing a command/starting an order in this messsage |
 | Group has been added to the database and user has been added to the database but the user has yet to be added to the group in the database | The user is added to the group in the database | ✅ | Nothing is returned as the user could be issuing a command/starting an order in this messsage |
@@ -661,7 +654,7 @@ The main purpose of this test is to test the ability of our bot to produce the c
 * tempContext: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text, reply_markup) 
 
 | Test Case | Expected | Result          | Remarks |
-| --------- |-------------| -------------------| --------|
+| --------- |-------------| :-----------------:| --------|
 | User sends message contain order amount | A Message with the expected InlineKeyboardMarkup, text and Chat ID is returned | ✅ | Due to the Message's InlineKeyboardMarkup depending on the other members of the Telegram Group, we tested both the function to create the ReplyMarkup (splitEvenlyKeyboardarkup) as well as a manual iteration of the InlineKeyboardMarkup| 
 
 ### **Testing the *getCreditors* function of *owepaybot.py***
@@ -680,7 +673,7 @@ The main purpose of this test is to test the ability of our bot to produce the c
 
 
 | Test Case | Expected | Result          |
-| --------- |-------------| -------------------|
+| --------- |-------------| :-----------------:|
 | User not added to database | User will be sent message prompting them to register with us first | ✅ |
 | User is added to database but does not owe anyone money | User will be sent message informing them they aren't in debt with anyone | ✅ |
 | User is added to database and owes other users money | The correct Message will be sent to the user with all the User's debts in the InlineKeyboardMarkup | ✅ |
@@ -702,7 +695,7 @@ Markup: A Context object to simulate the functionality of an actual Context obje
 
 
 | Test Case | Expected | Result          |
-| --------- |-------------| -------------------|
+| --------- |-------------| :-----------------:|
 | User not added to database | User will be sent message prompting them to register with us first | ✅ |
 | User is added to database but is not owed any money | User will be sent message informing them they aren't owed any money| ✅ |
 | User is added to database and is owed money by other users | The correct Message will be sent to the user with all the User's credits in the InlineKeyboardMarkup | ✅ |
@@ -726,7 +719,7 @@ The main purpose of this test is to test if the splitDifferentAmounts function r
 * tempContext: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, text, reply_markup)
 
 | Test Case | Expected | Result          |
-| --------- |-------------| -------------------|
+| --------- |-------------| :-----------------:|
 | User is splitting unevenly and has sent in the order list | A Message with the expected Text and InlineKeyboardMarkup is returned | ✅ |
 
 ### System Testing
@@ -736,7 +729,7 @@ System Tests would involve testing whether the system would function properly on
 ### Testing *start Command* via Private Message
 
 | Test Case | Description | Expected           | Result             |
-| --------- |-------------| -------------------| -------------------|
+| --------- |-------------| -------------------| :-----------------:|
 |/start once| To test basic functionality of the /start command|Bot sends user register message| ✅ |
 |/start twice in a row without registering|To test basic functionality of the /start function given multiple /start inputs|Bot sends user register message after each /start command| ✅ |
 |/start once, user presses register button, /start again user presses register button|To test basic functionality of the /start function given multiple /start inputs with registration|Bot sends user register message after first /start command and sends user already registered after second /start command| ✅ |
@@ -744,7 +737,7 @@ System Tests would involve testing whether the system would function properly on
 ### Testing *start Command* via Group Message
 
 | Test Case | Description | Expected           | Result             |
-| --------- |-------------| -------------------| -------------------|
+| --------- |-------------| -------------------| :-----------------:|
 |/start once|To test basic functionality of the /start command|Bot sends group register message| ✅ |
 |/start twice in a row without registering|To test basic functionality of the /start function given multiple /start inputs|Bot sends group register message after each /start command|  ✅ |
 |/start once, user presses register button, /start again user presses register button|To test basic functionality of the /start function given multiple /start inputs with registration|Bot sends group register message after first /start command and sends group already registered after second /start command| ✅ |
@@ -752,14 +745,14 @@ System Tests would involve testing whether the system would function properly on
 ### Testing *help Command*
 
 | Test Case | Description | Expected           | Result             |
-| --------- |-------------| -------------------| -------------------|
+| --------- |-------------| -------------------| :-----------------:|
 |/help in group|To test basic functionality of the /help command in groups|Bot sends help message| ✅ |
 |/help in private message|To test basic functionality of the /help command in private message|Bot sends help message| ✅ |
 
 ### Testing Inline Query
 
 | Test Case | Description | Expected           | Result             |
-| --------- |-------------| -------------------| -------------------|
+| --------- |-------------| -------------------| :-------------------:|
 |@OwePay_bot 123.00|To test if inline queries can handle a standard 2 decimal place float|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
 |@OwePay_bot 0123.00|To test if inline queries can handle a standard 2 decimal place float with an unnecessary 0|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
 |@OwePay_bot 123|To test if inline queries can handle a standard integer|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
@@ -782,7 +775,7 @@ System Tests would involve testing whether the system would function properly on
 ### Testing Order Formatting
 
 | Test Case | Description | Expected           | Result             |
-| --------- |-------------| -------------------| -------------------|
+| --------- |-------------| -------------------| :-------------------:|
 |Chicken rice - 5<br />Coke - 2|To test if the order list catcher can catch a correct order format|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)| ✅ |
 |Chicken rice- 5<br />Coke- 2|To test if the order list catcher can catch a correct order format with no space between the item names and dashes|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)| ✅ |
 |Chicken rice -5<br />Coke -2|To test if the order list catcher can catch a correct order format with no space between the dash and the item price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)| ✅ |
@@ -799,7 +792,7 @@ System Tests would involve testing whether the system would function properly on
 |Chicken rice-$5<br />Coke - $2|To test if the order list catcher can catch a correct order format with no space between the item name and the dash and the price for one of the items only with a $ sign in front of each price|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)| ✅ |
 |Chicken rice - $5<br />Coke - 2|To test if the order list catcher can catch a correct order format with a $ sign in front of one of the prices only|Order List:<br />Chicken rice ($5.00)<br />Coke ($2.00)| ✅ |
 |Chicken rice -$5Coke - 2|To test if the order list catcher can recognise an invalid syntax and request for user to resend order|Invalid order format, please send again| ✅ |
-|Chicken rice - $5Coke - 2<br /><br />Followed by /cancel|To test if the order list catcher can recognise an invalid syntax and request for user to resend order and cancelling the order request will stop the bot from continually prompting for the user to send again| ✅ |
+|Chicken rice - $5Coke - 2<br /><br />Followed by /cancel|To test if the order list catcher can recognise an invalid syntax and request for user to resend order and cancelling the order request will stop the bot from continually prompting for the user to send again| Invalid order format, please send again | ✅ |
 
 
 ## Prototyping
