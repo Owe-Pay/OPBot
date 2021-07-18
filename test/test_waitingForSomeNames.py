@@ -75,7 +75,7 @@ class TestWaitingForSomeNames:
         assert addUserToGroup(9871, 345) == "User 9871 added to Group 345"
         assert addUserToGroup(9872, 345) == "User 9872 added to Group 345"
         assert addUserToGroup(9873, 345) == "User 9873 added to Group 345"
-        assert updateUserTempAmount('456', '345', '123') == "User 456 in Group 345 has the temporary amount 123"
+        # assert updateUserTempAmount('456', '345', '123') == "User 456 in Group 345 has the temporary amount 123"
         assert updateOrderIDToUserGroupRelational(456, 345, 'testOrderName')
         assert isinstance(waitingForSomeNames(orderUpdate, tempContext, '456', '345'), Message)
         assert waitingForSomeNames(orderUpdate, tempContext, '456', '345').chat_id == 345

@@ -53,6 +53,7 @@ class TestGroupMemberScanner:
         massDelete("Users") 
         groupMemberScanner(notAddedUpdate, tempContext)
         assert userAlreadyAdded(11223344) == True # User is added in the Users table
+        assert userInGroup('11223344', '1234321') == True
         massDelete("Users") 
         massDelete("TelegramGroups")
         massDelete("UserGroupRelational")
