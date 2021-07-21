@@ -234,17 +234,19 @@ Our bot then tracks this order and takes note of who has yet to pay and sends a 
 Due to the nature of the Telegram Bot API, in order for our bot to send a private message to users, we will require them to have started a private conversation with the bot first. This can be done through the User Setup found below.
    
 #### User Setup
-	
+
+   ![User Setup gif](https://res.cloudinary.com/jianoway/image/upload/v1626871244/user_setup_dzeycp.gif)
+   
    1. Start a private conversation with our bot (@OwePay_bot)
    
    2. Send the /start command
    
-   3. Click on ‘Register’ to get registered in our database
-
-   
+   3. Click on ‘Register’ to get registered in our database  
 
 #### Group Setup
 	
+   ![Group Setup gif](https://res.cloudinary.com/jianoway/image/upload/v1626865206/group_setup_tl2q9g.gif)
+   
    1. Add the bot (@OwePay_bot) to the group
    
    2. Send the /start@OwePay_bot command
@@ -254,6 +256,10 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    4. Start splitting!
 
 #### Splitting bills
+
+| Split Evenly | Split Unevenly|
+| ----------   | ----------    |
+|![Split evenly gif](https://res.cloudinary.com/jianoway/image/upload/v1626877497/split_evenly_cut_final_nor3nd.gif)| ![Split unevenly gif](https://res.cloudinary.com/jianoway/image/upload/v1626878198/split_unevenly_cut_finals_o0o3df.gif)|
 	
    1. Begin your message with the following: @OwePay_bot and an inline message asking you to key in the amount to be split should appear
    
