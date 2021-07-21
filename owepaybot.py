@@ -1166,7 +1166,14 @@ def splitDifferentAmounts(update, context, userID, groupID):
             )
             return
         tempList.append(item[0])
-        tempList.append(getFormattedAmountFromString(item[1]))
+        if (isValidAmount(item[1])):
+            tempList.append(getFormattedAmountFromString(item[1]))
+        else:
+            context.bot.send_message(
+                chat_id=groupID,
+                reply_to_message_id=messageID,
+                text='%s is not a valid amount' % (item[1])
+            )
         itemList.append(tempList)
 
     firstItem = itemList.pop(0)

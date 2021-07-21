@@ -4,7 +4,7 @@ from google.cloud import vision
 import pytz
 import logging
 import os
-from tokenize import group
+from tokenize import String, group
 from .gcloudparser import GcloudParser
 from PIL import Image
 import requests
@@ -279,7 +279,10 @@ def isValidAmount(amt):
     return temp.isdigit()
 
 def getFormattedAmountFromString(amt):
-    tempAmt = float(float(amt) + float(0.005))
+    newAmt = amt
+    if isinstance(newAmt, str):
+        newAmt.replace("$", "", 1)
+    tempAmt = float(float(newAmt) + float(0.005))
     strAmt = str(tempAmt)
     decimalPosition = strAmt.find('.')
     temp = list(strAmt)
