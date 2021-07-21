@@ -259,7 +259,7 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
 
 | Split Evenly | Split Unevenly|
 | ----------   | ----------    |
-|![Split evenly gif](https://res.cloudinary.com/jianoway/image/upload/v1626877497/split_evenly_cut_final_nor3nd.gif)| ![Split unevenly gif](https://res.cloudinary.com/jianoway/image/upload/v1626878198/split_unevenly_cut_finals_o0o3df.gif)|
+|<img src="/demos/split evenly cut final.gif?raw=true">| <img src="/demos/split unevenly cut finals.gif?raw=true">)|
 	
    1. Begin your message with the following: @OwePay_bot and an inline message asking you to key in the amount to be split should appear
    
