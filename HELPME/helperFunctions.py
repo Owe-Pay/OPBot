@@ -281,7 +281,7 @@ def isValidAmount(amt):
 def getFormattedAmountFromString(amt):
     newAmt = amt
     if isinstance(newAmt, str):
-        newAmt.replace("$", "", 1)
+        newAmt = newAmt.replace("$", "", 1)
     tempAmt = float(float(newAmt) + float(0.005))
     strAmt = str(tempAmt)
     decimalPosition = strAmt.find('.')
