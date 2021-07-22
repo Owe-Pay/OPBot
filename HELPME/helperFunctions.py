@@ -188,6 +188,7 @@ def takeSecond(element):
 def formatTransactionsForCreditorKeyboardMarkup(transactions):
     if len(transactions) < 1:
         return
+    print(transactions)
     
     firstTransaction = transactions[0]
     currentOrderID = firstTransaction[1]

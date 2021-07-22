@@ -186,8 +186,6 @@ def getCreditors(update, context):
     )
     return message
     
-    # user already added
-    
 def cancel(update, context):
     groupID = update.effective_chat.id
     userID = update.message.from_user.id
@@ -856,7 +854,7 @@ def updateOrderMessageAsSettledWhenTransactionSettled(transactionID):
     debtorID = getDebtorIDFromTransactionID(transactionID)
     messageID = getMessageIDFromOrder(orderID)
     groupID = getGroupIDFromOrder(orderID)
-
+    
     debtorName = getFirstName(debtorID)
     debtorUsername = getUsername(debtorID)
     entry = '%s (@%s)' % (debtorName, debtorUsername)
@@ -930,26 +928,27 @@ def settleDebtForDebtor(update, context):
     userID = query.from_user.id
     text = query.message.text
 
-    transactionID = query.data.replace('settledebtfordebtor', '', 1)
-    updateOrderMessageAsSettledWhenTransactionSettled(transactionID)
-    updateTransactionAsSettledWithTransactionID(transactionID)
+    transactionID = query.data.replace('settledebtfordebtorcallbackdata', '', 1)
+    try:
+        updateTransactionAsSettledWithTransactionID(transactionID)
+        updateOrderMessageAsSettledWhenTransactionSettled(transactionID)
+    finally:
+        unsettledTransactions = getUnsettledTransactionsForDebtor(userID)
+        keyboardMarkup = formatTransactionsForDebtorKeyboardMarkup(unsettledTransactions)
 
-    unsettledTransactions = getUnsettledTransactionsForDebtor(userID)
-    keyboardMarkup = formatTransactionsForDebtorKeyboardMarkup(unsettledTransactions)
-
-    if (keyboardMarkup!=None):
-        context.bot.editMessageText(
-            chat_id=chat_id,
-            message_id=message_id,
-            text=text,
-            reply_markup=keyboardMarkup
-        )
-    else:
-        context.bot.editMessageText(
-            chat_id=chat_id,
-            message_id=message_id,
-            text='All debts settled! How responsible of you...'
-        )
+        if (keyboardMarkup!=None):
+            context.bot.editMessageText(
+                chat_id=chat_id,
+                message_id=message_id,
+                text=text,
+                reply_markup=keyboardMarkup
+            )
+        else:
+            context.bot.editMessageText(
+                chat_id=chat_id,
+                message_id=message_id,
+                text='All debts settled! How responsible of you...'
+            )
     
 
 def editMessageForSplitEvenly(update, context):

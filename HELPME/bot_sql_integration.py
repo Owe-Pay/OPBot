@@ -469,6 +469,7 @@ def updateTransactionAsSettledWithTransactionID(transactionID):
     sql = "UPDATE Transactions SET settled = '1' WHERE Transaction_ID = '%s'" % transactionID
     mycursor.execute(sql)
     mysqldb.commit()
+    print(transactionID)
     closeConnection(mysqldb, mycursor)
 
 def getLastNotifiedTimeFromTransactionID(transactionID):
