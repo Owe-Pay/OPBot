@@ -794,11 +794,20 @@ System Tests would involve testing whether the system would function properly on
 |Chicken rice -$5Coke - 2|To test if the order list catcher can recognise an invalid syntax and request for user to resend order|Invalid order format, please send again| ✅ |
 |Chicken rice - $5Coke - 2<br /><br />Followed by /cancel|To test if the order list catcher can recognise an invalid syntax and request for user to resend order and cancelling the order request will stop the bot from continually prompting for the user to send again| Invalid order format, please send again | ✅ |
 
+## Limitations and Constraints
+
+### Virtual Hosting via Heroku
+
+   1. Downtime of Bot
+      * Due to the free service nature of Heroku, there are times that Heroku is down or takes a while to respond due to various issues such as ping and server load. This causes some inconsistency when relying on Heroku to host our Telegram bot as there are times that the bot will take a little over 10 seconds to 'start' which can be detrimental to the User Experience
+      * A possible solution to this would be utilising Heroku's paid plans which would allow the bot to have better uptime and priority in the server.
 
 ## Prototyping
+
 ### O$P$ Mobile Application
 
 We plan to launch a mobile application with similar functionality to our Telegram Bot with certain extensions. You can find a demonstration of what we hope to see from it below.
+
 | Login Page | Home Page  |
 | ---------- | ---------- |
 |![Sample Login Page](https://res.cloudinary.com/jianoway/image/upload/v1623863754/homepageGif_wtx6xh.gif)|![Sample Home Page](https://res.cloudinary.com/jianoway/image/upload/v1623863761/uiGif_sb9kka.gif)|
