@@ -1,7 +1,3 @@
-
-
-# **PLEASE NOTE THAT WE HAVE MADE CHANGES TO THE ORDER CREATION FLOW SUCH THAT WE WILL ASK FOR ORDER NAME FIRST BEFORE THE SPLIT TYPE (EVEN, UNEVEN) BUT HAVE YET TO UPDATE OUR README AND GUIDES SO WE WOULD APPRECIATE IT IF YOU TAKE THAT INTO ACCOUNT DURING YOUR EVALUATION, THANKS! :)**
-
 # O$P$
 
 We at Owe$Pay$ hope to make the tracking payments for ordering of food simple and integrable into Telegram group chats.
@@ -233,9 +229,9 @@ Our bot then tracks this order and takes note of who has yet to pay and sends a 
 
 Due to the nature of the Telegram Bot API, in order for our bot to send a private message to users, we will require them to have started a private conversation with the bot first. This can be done through the User Setup found below.
    
-#### User Setup
+### User Setup
 
-   ![User Setup gif](https://res.cloudinary.com/jianoway/image/upload/v1626871244/user_setup_dzeycp.gif)
+   ![User Setup gif](https://res.cloudinary.com/jianoway/image/upload/v1626965154/user_setup_yksgcl.gif)
    
    1. Start a private conversation with our bot (@OwePay_bot)
    
@@ -243,7 +239,7 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    
    3. Click on ‘Register’ to get registered in our database  
 
-#### Group Setup
+### Group Setup
 	
    ![Group Setup gif](https://res.cloudinary.com/jianoway/image/upload/v1626865206/group_setup_tl2q9g.gif)
    
@@ -255,7 +251,7 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    
    4. Start splitting!
 
-#### Splitting bills
+### Splitting bills
 
 | Split Evenly | Split Unevenly|
 | ----------   | ----------    |
@@ -309,27 +305,25 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    
    2. The bot will send a list of the people who still owe you money organised by the bills they are associated with along with the option next to each person to notify them about the outstanding debt or to settle the debt. Please only press settle if you have guaranteed the bill has been settled.
 
-#### Checking your Creditors
+### Checking your Creditors
   
    1. Send the /whoomeowes command to @OwePay_bot via private message
    
    2. The bot will send a list of the people whom you still owe money to organised by the bills they are associated with along with the option to settle the debt. Please only press settle if you have guaranteed the bill has been settled.
 
 	
-#### Getting Help in a Group
+### Getting Help in a Group
 	
    1. Send the /help@OwePay_bot command
    
    2. The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot
 
-#### Getting Help via Private message
+### Getting Help via Private message
 	
    1. Send the /help command
    
    2. The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot 
    
-   3. To document your work, please start creating a user guide and a developer guide.
-
 # Developer Guide
 
 With this developer guide, we hope that collaborating with our project will be something a person with the relevant python skillset will be able to easily start on.
