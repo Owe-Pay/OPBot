@@ -794,13 +794,22 @@ System Tests would involve testing whether the system would function properly on
 |Chicken rice -$5Coke - 2|To test if the order list catcher can recognise an invalid syntax and request for user to resend order|Invalid order format, please send again| ✅ |
 |Chicken rice - $5Coke - 2<br /><br />Followed by /cancel|To test if the order list catcher can recognise an invalid syntax and request for user to resend order and cancelling the order request will stop the bot from continually prompting for the user to send again| Invalid order format, please send again | ✅ |
 
-## Limitations and Constraints
+## Feature Limitations and Constraints
 
 ### Virtual Hosting via Heroku
 
    1. Downtime of Bot
       * Due to the free service nature of Heroku, there are times that Heroku is down or takes a while to respond due to various issues such as ping and server load. This causes some inconsistency when relying on Heroku to host our Telegram bot as there are times that the bot will take a little over 10 seconds to 'start' which can be detrimental to the User Experience
-      * A possible solution to this would be utilising Heroku's paid plans which would allow the bot to have better uptime and priority in the server.
+      * A possible solution to this would be utilising Heroku's paid plans which would allow the bot to have better uptime and priority in the server. However, this is an unlikely solution as the bot is not profitable to begin with so investing into a paid plan would not make economical sense.
+
+   2. Security on Heroku
+      * Currently, we do not encrypt any of our token and API keys without any end-to-end encryption. This means that anyone with our CloudDB token is able to access the database and edit it. This is quite dangerous for the functionality of our bot but fortunately, we do not store any critical information from our users.
+      * A possible way to solve this would be to use the cryptography API to encrypt our sensitive keys so that they won't be compromised.
+
+   3. Scanning of Receipts
+      * We have utilised Google Cloud Vision API to digitise and read documents (in this case receipts). It can recognise a variety of text types and is the cornerstone for our receipt scanning feature to work and referenced [lutzkuen's receipt parser](https://github.com/lutzkuen/receipt-parser) for the algorithm.
+      * We underestimated the complexity of receipt scanning on the whole as after reviewing the many different types of receipt formats, it became difficult to consistently be able to detect the item's name and the price. This was further complicated by receipts with the price having a discount next to the original price, leaving our algorithm confused as to which price is the price assigned to the item, causing one of the prices to be ignored (usually the price further away from the item's name). As a result of this, it has caused our algorithm to be rather inaccurate when parsing the receipt with large gaps between the expected and actual result. Depending on the receipt, sometimes it would be more accurate but most of the time it was not.
+      * A possible way to fix this would be to incorporate Machine Learning into the algorithm where the algorithm gradually learns to better read receipts but this is way beyond our depth.
 
 ## Prototyping
 
