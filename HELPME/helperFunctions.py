@@ -241,6 +241,7 @@ def formatTransactionsForDebtorKeyboardMarkup(transactions):
     currentGroupName = getGroupNameFromGroupID(currentGroupID)
     keyboardHolder = []
     keyboardHolder.append([InlineKeyboardButton('Order: %s %s (%s)' % (currentOrderName, formattedDate, currentGroupName), callback_data='null')])
+    print('reached 1')
     for transaction in transactions:
         transactionID = transaction[0]
         transactionOrderID = transaction[1]
@@ -252,6 +253,7 @@ def formatTransactionsForDebtorKeyboardMarkup(transactions):
             formattedDate = date.strftime("%d %B %Y")
             currentOrderName = getOrderNameFromOrderID(currentOrderID)
             keyboardHolder.append([InlineKeyboardButton('Order: %s %s (%s)' % (currentOrderName, formattedDate, currentGroupName), callback_data='null')])
+            print('reached 2')
         
         creditorID = transaction[2]
         amountOwed = getFormattedAmountFromString(transaction[3])
@@ -263,6 +265,7 @@ def formatTransactionsForDebtorKeyboardMarkup(transactions):
             InlineKeyboardButton('$%s' % amountOwed, callback_data='null'),
             InlineKeyboardButton('Settle', callback_data="settledebtfordebtorcallbackdata%s" % transactionID)
         ]
+        print('reached3')
         keyboardHolder.append(tempKeyboard)
     
     return InlineKeyboardMarkup(keyboardHolder)
