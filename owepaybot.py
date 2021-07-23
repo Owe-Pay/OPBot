@@ -178,12 +178,13 @@ def getCreditors(update, context):
             text="Wow! Amazing! You don't owe anyone any money!"
         )
         return message
-    
+    print('reached 4')
     message = context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="The kind people who you've taken from:",
         reply_markup=keyboardMarkup
     )
+    print('reached 5')
     return message
     
 def cancel(update, context):
