@@ -178,13 +178,11 @@ def getCreditors(update, context):
             text="Wow! Amazing! You don't owe anyone any money!"
         )
         return message
-    print('reached 4')
     message = context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="The kind people who you've taken from:",
         reply_markup=keyboardMarkup
     )
-    print('reached 5')
     return message
     
 def cancel(update, context):
@@ -929,7 +927,7 @@ def settleDebtForDebtor(update, context):
     userID = query.from_user.id
     text = query.message.text
 
-    transactionID = query.data.replace('settledebtfordebtorcallbackdata', '', 1)
+    transactionID = query.data.replace('settledebtfordebtor', '', 1)
     try:
         updateTransactionAsSettledWithTransactionID(transactionID)
         updateOrderMessageAsSettledWhenTransactionSettled(transactionID)
