@@ -63,7 +63,7 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
       - [Cloud Hosting on Heroku](#cloud-hosting-on-heroku)
       - [Scanning of Receipts](#scanning-of-receipts)
       - [Mobile Application](#mobile-application)
-      - [Telegram Bot](#telegram-bot)
+      - [Telegram's Bot API](#telegrams-bot-api)
       - [Geographical Restriction](#geographical-restriction)
     - [Prototyping](#prototyping)
       - [O$P$ Mobile Application](#op-mobile-application)
@@ -870,7 +870,7 @@ System Tests would involve testing whether the system would function properly on
    * Lack of time to develop
       * Setting out, we had planned the mobile application to be the main feature of our product, with us including Flutter in our main techstack. Unfortunately, by Milestone 2, we had just finished our bot's main features and felt we lacked the time to develop a proper up-and-running mobile application. The application would have aimed to synergise with the features of our bot, using it to notify users and settle debts as well since the basic functions to execute these actions are already in place we could have ran them via the application.
 
-### Telegram Bot
+### Telegram's Bot API
    * Restricted User Interface Expression
       * Telegram's Bot API has been wonderful to work with, especially with the wrapper classes from python-telegram-bot. However, when it came to designing functional buttons for our keyboards or designing customised messaged from our bot, it was rather restrictive with buttons only being able to be below the message instead of a side-by-side. This User Interface (UI) restriction is evident in the admittedly clumsy design of the message sent to the user using the /whoowesme or /whomeowes commands where we used placeholder buttons to display the relevant text fields.
       * Designing of custom buttons was also troublesome as we could not choose how wide we wanted our buttons to be individually, with each button in a single row having the same width. This made it difficult to add buttons with longer text as sometimes the text would be truncated and overall looks unprofessional with two obviously differing text length buttons having the same width.
