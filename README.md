@@ -59,7 +59,7 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
            - [Testing *help Command*](#testing-help-command)
            - [Testing Inline Query](#testing-inline-query)
            - [Testing Order Formatting](#testing-order-formatting)
-    - [Limitations and Constraints]
+    - [Feature Limitations and Constraints](#feature-limitations-and-constraints)
       - [Cloud Hosting on Heroku](#cloud-hosting-on-heroku)
       - [Scanning of Receipts](#scanning-of-receipts)
       - [Mobile Application](#mobile-application)
