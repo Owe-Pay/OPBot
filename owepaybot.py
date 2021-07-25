@@ -91,15 +91,17 @@ def startPrivate(update, context):
     return message
 
 def scanReceiptPrivateMessage(update, context):
+    """Prompt the user to send their receipt."""
     chat_id = update.effective_chat.id
     context.bot.send_message(
-        chat_id=update.effective_chat.id,
+        chat_id=chat_id,
         text=
             "Please send in the receipt to be scanned! Alternatively, to cancel please type /cancelreceipt"
     )
     return "waitingonpicprivate"
 
 def scanReceiptPrivatePicture(update, context):
+    """Parses the image if possible, otherwise will prompt user to send a valid image."""
     photos = update.message.photo
     length = len(photos)
     if length == 0:
@@ -123,6 +125,7 @@ def scanReceiptPrivatePicture(update, context):
         return ConversationHandler.END
 
 def cancelReceipt(update, context):
+    """Cancels the receipt scanning procedure."""
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=
@@ -133,6 +136,7 @@ def cancelReceipt(update, context):
 
 
 def getDebtors(update, context):
+    """Sends the user the message in response to the /whoowesme command."""
     userID = update.effective_chat.id
     if not userAlreadyAdded(userID):
         message = context.bot.send_message(
@@ -161,6 +165,7 @@ def getDebtors(update, context):
     return message
 
 def getCreditors(update, context):
+    """Sends the user the message in response to the /whomeowes command."""
     userID = update.effective_chat.id
     if not userAlreadyAdded(userID):
         message = context.bot.send_message(
@@ -187,6 +192,7 @@ def getCreditors(update, context):
     return message
     
 def cancel(update, context):
+    """Cancels any ongoing operation for the user in a group."""
     groupID = update.effective_chat.id
     userID = update.message.from_user.id
     messageID = update.message.message_id
@@ -201,6 +207,7 @@ def cancel(update, context):
     )
 
 def help(update, context):
+    """Sends the user the help message."""
     return context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=
@@ -219,6 +226,7 @@ def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 def inline(update, context):
+    """Handles the Inline Queries sent by the user."""
     query = update.inline_query.query
     if query == "":
         return
@@ -312,6 +320,7 @@ def button(update, context):
         newOrderSplitUnevenly(update, context)
 
 def newOrderSplitUnevenly(update, context):
+    """Prompts the user to send in the list of items to be added to the order."""
     query = update.callback_query
     groupID = query.message.chat_id
     message_id = query.message.message_id
@@ -334,6 +343,7 @@ def newOrderSplitUnevenly(update, context):
 
 
 def newOrderSplitEvenly(update, context):
+    """Prompts the user to send in the amount to be split in the order."""
     query = update.callback_query
     groupID = query.message.chat_id
     message_id = query.message.message_id
@@ -354,6 +364,7 @@ def newOrderSplitEvenly(update, context):
     
     
 def debtorUnevenlyPaid(update, context):
+    """"""
     query = update.callback_query
     groupID = query.message.chat_id
     message_id = query.message.message_id
