@@ -62,6 +62,9 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
     - [Limitations and Constraints]
       - [Cloud Hosting on Heroku](#cloud-hosting-on-heroku)
       - [Scanning of Receipts](#scanning-of-receipts)
+      - [Mobile Application](#mobile-application)
+      - [Telegram Bot](#telegram-bot)
+      - [Geographical Restriction](#geographical-restriction)
     - [Prototyping](#prototyping)
       - [O$P$ Mobile Application](#op-mobile-application)
       - [Telegram Bot (@OwePay_bot)](#telegram-bot-owepay_bot)
