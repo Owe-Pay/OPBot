@@ -835,14 +835,15 @@ def notifyUserFromPrivateMessage(update, context):
     creditorName = getFirstName(creditorID)
     creditorUsername = getUsername(creditorID)
     amountOwed = getAmountOwedFromTransactionID(transactionID)
+    formattedAmount = getFormattedAmountFromString(amountOwed)
 
     context.bot.send_message(
         chat_id=debtorID,
-        text='Hi %s! Your friend %s (@%s) from the group %s is asking you to return them their $%s for %s %s.' % (debtorName, creditorName, creditorUsername,groupName, amountOwed, orderName, formattedDate)
+        text='Hi %s! Your friend %s (@%s) from the group %s is asking you to return them their $%s for %s %s.' % (debtorName, creditorName, creditorUsername,groupName, formattedAmount, orderName, formattedDate)
     )
     context.bot.send_message(
         chat_id=creditorID,
-        text='%s (@%s) has been notified to return $%s for %s in %s' % (debtorName, debtorUsername, amountOwed, orderName, groupName)
+        text='%s (@%s) has been notified to return $%s for %s in %s' % (debtorName, debtorUsername, formattedAmount, orderName, groupName)
     )
 
 def updateOrderMessageAsSettledWhenTransactionSettled(transactionID):
