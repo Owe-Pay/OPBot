@@ -323,6 +323,16 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    1. Send the /help command
    
    2. The bot will send a list of commands that you can use with our bot as well as detailed instructions on how to use the bot 
+
+### Scanning Receipts
+
+   In conjunction with our Split Unevenly, our /scanreceipt function is able to help digitise your receipts into a format that you can copy and paste to send our bot when creating unevenly split orders!
+   
+   1. Send the /scanreceipt command via Private Message
+   
+   2. The bot will prompt you to send a picture of a receipt
+   
+   3. Send in the picture of the receipt and the bot will reply with the digitised receipt
    
 # Developer Guide
 
@@ -806,7 +816,8 @@ System Tests would involve testing whether the system would function properly on
       * Currently, we do not encrypt any of our token and API keys without any end-to-end encryption. This means that anyone with our CloudDB token is able to access the database and edit it. This is quite dangerous for the functionality of our bot but fortunately, we do not store any critical information from our users.
       * A possible way to solve this would be to use the cryptography API to encrypt our sensitive keys so that they won't be compromised.
 
-   3. Scanning of Receipts
+### Scanning of Receipts
+   1. Inaccuracy of Receipt Scan 
       * We have utilised Google Cloud Vision API to digitise and read documents (in this case receipts). It can recognise a variety of text types and is the cornerstone for our receipt scanning feature to work and referenced [lutzkuen's receipt parser](https://github.com/lutzkuen/receipt-parser) for the algorithm.
       * We underestimated the complexity of receipt scanning on the whole as after reviewing the many different types of receipt formats, it became difficult to consistently be able to detect the item's name and the price. This was further complicated by receipts with the price having a discount next to the original price, leaving our algorithm confused as to which price is the price assigned to the item, causing one of the prices to be ignored (usually the price further away from the item's name). As a result of this, it has caused our algorithm to be rather inaccurate when parsing the receipt with large gaps between the expected and actual result. Depending on the receipt, sometimes it would be more accurate but most of the time it was not.
       * A possible way to fix this would be to incorporate Machine Learning into the algorithm where the algorithm gradually learns to better read receipts but this is way beyond our depth.
