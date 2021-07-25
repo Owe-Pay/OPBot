@@ -26,6 +26,7 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
         - [Checking your Creditors](#checking-your-creditors)
         - [Getting Help in a Group](#getting-help-in-a-group)
         - [Getting Help via Private message](#getting-help-via-private-message)
+        - [Scanning Receipts](#scanning-receipts)
   - [Developer Guide](#developer-guide)
     - [Setup](#setup)
       - [Telegram Bot](#telegram-bot)
@@ -40,23 +41,30 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
           - [Testing the *startPrivate* function of *owepaybot.py*](#testing-the-startprivate-function-of-owepaybotpy-)
           - [Testing the *startGroup* function of *owepaybot.py*](#testing-the-startgroup-function-of-owepaybotpy-)
           - [Testing the *help* function of *owepaybot.py*](#testing-the-help-function-of-owepaybotpy-)
-          - [Testing the *button* function of *owepaybot.py*](#testing-the-button-function-of-owepaybotpy)
-          - [Testing the *messageContains* functions of *owepaybot.py*](#testing-the-messagecontainssplitevenly-and-messagecontainssplitunevenly-functions-of-owepaybotpy)
-          - [Testing the *splitUnevenlyOrderNameCatcher* function of *owepaybot.py*](#testing-the-splitunevenlyordernamecatcher-function-of-owepaybotpy)
-          - [Testing the *splitEvenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*](#testing-the-splitevenlykeyboardmarkup-function-of-helpmehelperfunctionspy)
-          - [Testing the *splitUnevenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*](#testing-the-splitunevenlykeyboardmarkup-function-of-helpmehelperfunctionspy)
+          - [Testing the *button* function of *owepaybot.py*](#testing-the-button-function-of-owepaybotpy-)
+          - [Testing the *messageContainsNewOrder* functions of *owepaybot.py*](#testing-the-messagecontainsneworder-function-of-owepaybotpy-)
+          - [Testing the *splitEvenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*](#testing-the-splitevenlykeyboardmarkup-function-of-helpmehelperfunctionspy-)
+          - [Testing the *splitUnevenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*](#testing-the-splitunevenlykeyboardmarkup-function-of-helpmehelperfunctionspy-)
         - [Integration Testing](#integration-testing)
-           - [Testing the *groupMemberScanner* function of *owepaybot.py*](#testing-the-groupmemberscanner-function-of-owepaybotpy)
-           - [Testing the *waitingForSomeNames* function of *owepaybot.py*](#testing-the-waitingforsomenames-function-of-owepaybotpy)
-           - [Testing the *getCreditors* function of *owepaybot.py*](#testing-the-getcreditors-function-of-owepaybotpy)
-           - [Testing the *getDebtors* function of *owepaybot.py*](#testing-the-getdebtors-function-of-owepaybotpy)
-           - [Testing the *catchOrderFromUpdate* function of *owepaybot.py*](#testing-the-catchorderfromupdate-function-of-owepaybotpy)
+           - [Testing the *groupMemberScanner* function of *owepaybot.py*](#testing-the-groupmemberscanner-function-of-owepaybotpy-)
+           - [Testing the *waitingForSomeNames* function of *owepaybot.py*](#testing-the-waitingforsomenames-function-of-owepaybotpy-)
+           - [Testing the *getCreditors* function of *owepaybot.py*](#testing-the-getcreditors-function-of-owepaybotpy-)
+           - [Testing the *getDebtors* function of *owepaybot.py*](#testing-the-getdebtors-function-of-owepaybotpy-)
+           - [Testing the *splitDifferentAmounts* function of *owepaybot.py*](#testing-the-splitdifferentamounts-function-of-owepaybotpy-)
+           - [Testing the *newOrderSplitEvenly* function of *owepaybot.py*](#testing-the-newordersplitevenly-function-of-owepaybotpy-)
+           - [Testing the *newOrderSplitUnevenly* function of *owepaybot.py*](#testing-the-newordersplitunevenly-function-of-owepaybotpy-)
         - [System Testing](#system-testing)
            - [Testing *Start Command* via Private Message](#testing-start-command-via-private-message)
            - [Testing *Start Command* via Group Message](#testing-start-command-via-group-message)
            - [Testing *help Command*](#testing-help-command)
            - [Testing Inline Query](#testing-inline-query)
            - [Testing Order Formatting](#testing-order-formatting)
+    - [Feature Limitations and Constraints](#feature-limitations-and-constraints)
+      - [Cloud Hosting on Heroku](#cloud-hosting-on-heroku)
+      - [Scanning of Receipts](#scanning-of-receipts)
+      - [Mobile Application](#mobile-application)
+      - [Telegram's Bot API](#telegrams-bot-api)
+      - [Geographical Restriction](#geographical-restriction)
     - [Prototyping](#prototyping)
       - [O$P$ Mobile Application](#op-mobile-application)
       - [Telegram Bot (@OwePay_bot)](#telegram-bot-owepay_bot)
@@ -299,13 +307,17 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    
    7. Other users can click the ‘I've paid!’ button in step 6 in order to remove their name from the list.
 	
-#### Checking your Debtors
+### Checking your Debtors
+
+![whoowesme gif](https://res.cloudinary.com/jianoway/image/upload/v1627209292/whoowesme_gif_optz_ilfpbl.gif)
 
    1. Send the /whoowesme command to @OwePay_bot via private message
    
    2. The bot will send a list of the people who still owe you money organised by the bills they are associated with along with the option next to each person to notify them about the outstanding debt or to settle the debt. Please only press settle if you have guaranteed the bill has been settled.
 
 ### Checking your Creditors
+
+![whomeowes gif](https://res.cloudinary.com/jianoway/image/upload/v1627209299/whomeowes_gif_optz_bgimxn.gif)
   
    1. Send the /whoomeowes command to @OwePay_bot via private message
    
@@ -326,7 +338,9 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
 
 ### Scanning Receipts
 
-   In conjunction with our Split Unevenly, our /scanreceipt function is able to help digitise your receipts into a format that you can copy and paste to send our bot when creating unevenly split orders!
+![scan receipt gif](https://res.cloudinary.com/jianoway/image/upload/v1627209288/scan_receipt_gif_optz_soldo7.gif)
+
+   In conjunction with our Split Unevenly, our /scanreceipt function is able to help digitise your receipts into a format that you can copy and paste to send our bot when creating unevenly split orders! Unfortunately, our algorithm is rather inaccurate and we are not able to effectively scan receipts :(
    
    1. Send the /scanreceipt command via Private Message
    
@@ -500,11 +514,11 @@ Our codebase uses several plugins and we will go over how to install them.
 
    We are currently in the process of designing tests for the rest of our functions.
 	
-### Design of Tests
+### **Design of Tests**
 
 The tests designed are hopefully sufficient to catch out all bugs and leave no cases unaccounted for. We will be designing them with the mindset of the trying to capture all possible inputs and how will our functions and system react when given these inputs either directly fed from the User or passed in as a result of another function,
 	
-### Unit Testing
+### **Unit Testing**
 
 Unit Tests would involve testing the functionality of individual functions used in our code so as to ensure that our code is safe and relatively bug-free.
 
@@ -564,7 +578,7 @@ The main purpose of this test is to test the functionality of the /start command
 | Using the /help command with an invalid user ID | BadRequest: Chat not found error caught. | ✅ |
 
 
-### Testing the *button* function of *owepaybot.py*
+### **Testing the *button* function of *owepaybot.py*** 🔬
 	
 #### **Stubs used**
 
@@ -585,7 +599,7 @@ The main purpose of this test is to test the functionality of the /start command
 | Register button via Group | Correct CallbackQuery is caught when the user presses the Register button in a Group | ✅ | 
 | Don't Register button via Group | Correct CallbackQuery is caught when the user presses the Don't Register button in a Group | ✅|
 
-### **Testing the *messageContainsNewOrder* function of *owepaybot.py***
+### **Testing the *messageContainsNewOrder* function of *owepaybot.py*** 🔬
 
 The main purpose of this test is to test if the two messageContains functions are able to return the expected output
 
@@ -601,7 +615,7 @@ The main purpose of this test is to test if the two messageContains functions ar
 | Correct Message is returned | Text and Message ID is as expected | ✅ |
 | User's state is updated | User's state in the UserGroupRelational table is updated to 'neworder' | ✅ |
 
-### **Testing the *splitEvenlyKeyboardMarkup* function of *HELPME/helperFunctions.py***
+### **Testing the *splitEvenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*** 🔬
 
 The main purpose of this test is to test if the splitEvenlyKeyboardMarkup function returns the expected InlineKeyboardMarkup given a certain input.
 
@@ -614,7 +628,7 @@ The main purpose of this test is to test if the splitEvenlyKeyboardMarkup functi
 | Function returns the expected InlineKeyboardMarkup | The InlineKeyboardMarkup returnes with the expected InlineKeyboardButtons and formatting | ✅ |
 
 
-### **Testing the *splitUnevenlyKeyboardMarkup* function of *HELPME/helperFunctions.py***
+### **Testing the *splitUnevenlyKeyboardMarkup* function of *HELPME/helperFunctions.py*** 🔬
 
 The main purpose of this test is to test if the splitUnevenlyKeyboardMarkup function returns the expected InlineKeyboardMarkup given a certain input.
 
@@ -626,11 +640,11 @@ The main purpose of this test is to test if the splitUnevenlyKeyboardMarkup func
 | --------- |-------------| :-----------------:|
 | Function returns the expected InlineKeyboardMarkup | The InlineKeyboardMarkup returnes with the expected InlineKeyboardButtons and formatting | ✅ |
 
-### Integration Testing
+### **Integration Testing**
 
 Integration Tests would involve testing whether different parts of our software work together. In our case, we will be testing the integration of our different functions and how they work together along with the integration of our Telegram Bot and backend MySQL database.
 
-### **Testing the *groupMemberScanner* function of *owepaybot.py***
+### **Testing the *groupMemberScanner* function of *owepaybot.py*** 🔬
 	
 The main purpose of this test is to test the ability of our bot to catch messages in the group setting in for various processes such as catching order names or orders themselves based on the state of the users in the group.
 
@@ -641,7 +655,7 @@ Due to the nature of the groupMemberScanner requiring certain conditions for cer
 * notAddedUpdate: The update object to simulate the case where a user sends a message into the group
 
 * tempContext: A Context object to simulate the functionality of an actual Context object with the send_message method that takes in (chat_id, **kwargs)
-* 
+
 | Test Case | Expected | Result          | Remarks |
 | --------- |-------------| :-----------------:| --------|
 | Group has yet to be added to the database | Returns message for the case when a group has yet to be added | ✅ |
@@ -651,7 +665,7 @@ Due to the nature of the groupMemberScanner requiring certain conditions for cer
 | User and Group both added completely and User has state 'splitunevenly' | Returns the message for when function is executed with user with state 'splitunevenly' | ✅ |
 | User and Group both added completely and User sends message via a Telegram Bot | Returns the message for when the function is executed with the message being via a Telegram Bot | ✅ | 
 
-### **Testing the *waitingForSomeNames* function of *owepaybot.py***
+### **Testing the *waitingForSomeNames* function of *owepaybot.py*** 🔬
 
 The main purpose of this test is to test the ability of our bot to produce the correct message with the correct keyboard markup, with the keyboard markup being constructed using the details of other users in the group.
 
@@ -667,7 +681,7 @@ The main purpose of this test is to test the ability of our bot to produce the c
 | --------- |-------------| :-----------------:| --------|
 | User sends message contain order amount | A Message with the expected InlineKeyboardMarkup, text and Chat ID is returned | ✅ | Due to the Message's InlineKeyboardMarkup depending on the other members of the Telegram Group, we tested both the function to create the ReplyMarkup (splitEvenlyKeyboardarkup) as well as a manual iteration of the InlineKeyboardMarkup| 
 
-### **Testing the *getCreditors* function of *owepaybot.py***
+### **Testing the *getCreditors* function of *owepaybot.py*** 🔬
 
 The main purpose of this test is to test the ability of our bot to produce the correct message with the correct keyboard markup, with the keyboard markup being constructed using the details of other users in the group.
 
@@ -688,7 +702,7 @@ The main purpose of this test is to test the ability of our bot to produce the c
 | User is added to database but does not owe anyone money | User will be sent message informing them they aren't in debt with anyone | ✅ |
 | User is added to database and owes other users money | The correct Message will be sent to the user with all the User's debts in the InlineKeyboardMarkup | ✅ |
 
-### **Testing the *getDebtors* function of *owepaybot.py***
+### **Testing the *getDebtors* function of *owepaybot.py*** 🔬
 
 The main purpose of this test is to test if the getDebtors is able to return the correct Message given different states of the user and group.
 
@@ -710,7 +724,7 @@ Markup: A Context object to simulate the functionality of an actual Context obje
 | User is added to database but is not owed any money | User will be sent message informing them they aren't owed any money| ✅ |
 | User is added to database and is owed money by other users | The correct Message will be sent to the user with all the User's credits in the InlineKeyboardMarkup | ✅ |
 
-### **Testing the *splitDifferentAmounts* function of *owepaybot.py***
+### **Testing the *splitDifferentAmounts* function of *owepaybot.py*** 🔬
 
 The main purpose of this test is to test if the splitDifferentAmounts function returns the expected Message object given a certain input
 
@@ -731,6 +745,36 @@ The main purpose of this test is to test if the splitDifferentAmounts function r
 | Test Case | Expected | Result          |
 | --------- |-------------| :-----------------:|
 | User is splitting unevenly and has sent in the order list | A Message with the expected Text and InlineKeyboardMarkup is returned | ✅ |
+
+
+### **Testing the *newOrderSplitEvenly* function of *owepaybot.py*** 🔬
+
+The main purpose of this test is to test if the newOrderSplitEvenly is able to return the correct Message and changes the User's state appropriately.
+
+#### **Stubs used**
+
+* orderUpdate: An Update object simulating the Callback Query when the user presses the "Split Evenly" button
+
+* tempContext: A Context object to simulate the functionality of an actual Context object with the editMessageText method that takes in (chat_id, message_id, text)
+
+| Test Case | Expected | Result          |
+| --------- |-------------| :-----------------:|
+| User presses the Split Evenly button | The bot edits the message to give the correct message asking for the user to send in the order amount as well as the user's state being changed to 'splitevenly'| ✅ |
+
+
+### **Testing the *newOrderSplitUnevenly* function of *owepaybot.py*** 🔬
+
+The main purpose of this test is to test if the newOrderSplitEvenly is able to return the correct Message and changes the User's state appropriately.
+
+#### **Stubs used**
+
+* orderUpdate: An Update object simulating the Callback Query when the user presses the "Split Unevenly" button
+
+* tempContext: A Context object to simulate the functionality of an actual Context object with the editMessageText method that takes in (chat_id, message_id, text)
+
+| Test Case | Expected | Result          |
+| --------- |-------------| :-----------------:|
+| User presses the Split Unevenly button | The bot edits the message to give the correct message asking for the user to send in the list of items to be split as well as the user's state being changed to 'splitunevenly'| ✅ |
 
 ### System Testing
 
@@ -806,21 +850,38 @@ System Tests would involve testing whether the system would function properly on
 
 ## Feature Limitations and Constraints
 
-### Virtual Hosting via Heroku
+### Cloud Hosting on Heroku
 
-   1. Downtime of Bot
+   * Downtime of Bot
       * Due to the free service nature of Heroku, there are times that Heroku is down or takes a while to respond due to various issues such as ping and server load. This causes some inconsistency when relying on Heroku to host our Telegram bot as there are times that the bot will take a little over 10 seconds to 'start' which can be detrimental to the User Experience
       * A possible solution to this would be utilising Heroku's paid plans which would allow the bot to have better uptime and priority in the server. However, this is an unlikely solution as the bot is not profitable to begin with so investing into a paid plan would not make economical sense.
 
-   2. Security on Heroku
+   * Security on Heroku
       * Currently, we do not encrypt any of our token and API keys without any end-to-end encryption. This means that anyone with our CloudDB token is able to access the database and edit it. This is quite dangerous for the functionality of our bot but fortunately, we do not store any critical information from our users.
       * A possible way to solve this would be to use the cryptography API to encrypt our sensitive keys so that they won't be compromised.
 
 ### Scanning of Receipts
-   1. Inaccuracy of Receipt Scan 
+   * Inaccuracy of Scanned Receipt
       * We have utilised Google Cloud Vision API to digitise and read documents (in this case receipts). It can recognise a variety of text types and is the cornerstone for our receipt scanning feature to work and referenced [lutzkuen's receipt parser](https://github.com/lutzkuen/receipt-parser) for the algorithm.
       * We underestimated the complexity of receipt scanning on the whole as after reviewing the many different types of receipt formats, it became difficult to consistently be able to detect the item's name and the price. This was further complicated by receipts with the price having a discount next to the original price, leaving our algorithm confused as to which price is the price assigned to the item, causing one of the prices to be ignored (usually the price further away from the item's name). As a result of this, it has caused our algorithm to be rather inaccurate when parsing the receipt with large gaps between the expected and actual result. Depending on the receipt, sometimes it would be more accurate but most of the time it was not.
-      * A possible way to fix this would be to incorporate Machine Learning into the algorithm where the algorithm gradually learns to better read receipts but this is way beyond our depth.
+      * A possible way to fix this would be to incorporate Machine Learning into the algorithm where the algorithm gradually learns to better read receipts but this is way beyond our depth at this time.
+ 
+### Mobile Application
+   * Lack of time to develop
+      * Setting out, we had planned the mobile application to be the main feature of our product, with us including Flutter in our main techstack. Unfortunately, by Milestone 2, we had just finished our bot's main features and felt we lacked the time to develop a proper up-and-running mobile application. The application would have aimed to synergise with the features of our bot, using it to notify users and settle debts as well since the basic functions to execute these actions are already in place we could have ran them via the application.
+
+### Telegram's Bot API
+   * Restricted User Interface Expression
+      * Telegram's Bot API has been wonderful to work with, especially with the wrapper classes from python-telegram-bot. However, when it came to designing functional buttons for our keyboards or designing customised messaged from our bot, it was rather restrictive with buttons only being able to be below the message instead of a side-by-side. This User Interface (UI) restriction is evident in the admittedly clumsy design of the message sent to the user using the /whoowesme or /whomeowes commands where we used placeholder buttons to display the relevant text fields.
+      * Designing of custom buttons was also troublesome as we could not choose how wide we wanted our buttons to be individually, with each button in a single row having the same width. This made it difficult to add buttons with longer text as sometimes the text would be truncated and overall looks unprofessional with two obviously differing text length buttons having the same width.
+   * Group Member Retrieval
+      * As of time of writing, Telegram's Bot API does not support any way for the bot to consistently retrieve the members of a group it has been added to. Hence, we had to manually monitor users in the group by them entering/leaving the group as well as their messages using our groupMemberScanner function.
+      * This leads to a breach of privacy as we are actively parsing every single message in the group in order to setup our database with the users in the group. However, we do not store any of these messages sent by the user and do not use the contents of their messages in any meaningful way aside from the ones directed towards the bot.
+
+### Geographical Restriction
+   * Dollar Limitation
+      * Currently, our bot only supports the '$' currency system and is not customisable to fit other countries. Additional, the local prevailing taxes are unlikely to be the same in other countries
+      * A possible solution would be to have a command to set the country, with different countries having different profiles with their localised currency symbol as well as their common taxes.
 
 ## Prototyping
 
