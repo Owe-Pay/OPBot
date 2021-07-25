@@ -128,6 +128,7 @@ def cancelReceipt(update, context):
         text=
             "Your receipt scan has been cancelled!"
     )
+    print('ok')
     return ConversationHandler.END
 
 
@@ -1439,7 +1440,7 @@ def main():
             CommandHandler("scanreceipt", scanReceiptPrivateMessage)
         ], 
         {
-            "waitingonpicprivate": [MessageHandler(Filters.chat_type.private, scanReceiptPrivatePicture), CommandHandler("cancelreceipt", cancelReceipt)],
+            "waitingonpicprivate": [CommandHandler("cancelreceipt", cancelReceipt), MessageHandler(Filters.chat_type.private, scanReceiptPrivatePicture)],
 
         }, 
         [
