@@ -299,13 +299,17 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
    
    7. Other users can click the ‘I've paid!’ button in step 6 in order to remove their name from the list.
 	
-#### Checking your Debtors
+### Checking your Debtors
+
+![whoowesme gif](https://res.cloudinary.com/jianoway/image/upload/v1627209292/whoowesme_gif_optz_ilfpbl.gif)
 
    1. Send the /whoowesme command to @OwePay_bot via private message
    
    2. The bot will send a list of the people who still owe you money organised by the bills they are associated with along with the option next to each person to notify them about the outstanding debt or to settle the debt. Please only press settle if you have guaranteed the bill has been settled.
 
 ### Checking your Creditors
+
+![whomeowes gif](https://res.cloudinary.com/jianoway/image/upload/v1627209299/whomeowes_gif_optz_bgimxn.gif)
   
    1. Send the /whoomeowes command to @OwePay_bot via private message
    
@@ -326,7 +330,9 @@ Due to the nature of the Telegram Bot API, in order for our bot to send a privat
 
 ### Scanning Receipts
 
-   In conjunction with our Split Unevenly, our /scanreceipt function is able to help digitise your receipts into a format that you can copy and paste to send our bot when creating unevenly split orders!
+![scan receipt gif](https://res.cloudinary.com/jianoway/image/upload/v1627209288/scan_receipt_gif_optz_soldo7.gif)
+
+   In conjunction with our Split Unevenly, our /scanreceipt function is able to help digitise your receipts into a format that you can copy and paste to send our bot when creating unevenly split orders! Unfortunately, our algorithm is rather inaccurate and we are not able to effectively scan receipts :(
    
    1. Send the /scanreceipt command via Private Message
    
