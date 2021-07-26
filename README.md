@@ -59,6 +59,11 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
            - [Testing *help Command*](#testing-help-command)
            - [Testing Inline Query](#testing-inline-query)
            - [Testing Order Formatting](#testing-order-formatting)
+        - [User Acceptance Testing](#user-acceptance-testing)
+           - [Registration](#registration)
+           - [Splitting Bills](#splitting-bills)
+           - [List of Creditors/Debtors](#list-of-creditorsdebtors)
+           - [General Questions](#general-questions)
     - [Feature Limitations and Constraints](#feature-limitations-and-constraints)
       - [Cloud Hosting on Heroku](#cloud-hosting-on-heroku)
       - [Scanning of Receipts](#scanning-of-receipts)
@@ -69,6 +74,8 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
       - [O$P$ Mobile Application](#op-mobile-application)
       - [Telegram Bot (@OwePay_bot)](#telegram-bot-owepay_bot)
     - [Software Engineering Principles](#software-engineering-principles)
+      - [Immutability](#immutability)
+      - [Object-Oriented Programming](#object-oriented-programming) 
 
 
 # Motivation 
@@ -848,6 +855,38 @@ System Tests would involve testing whether the system would function properly on
 |Chicken rice -$5Coke - 2|To test if the order list catcher can recognise an invalid syntax and request for user to resend order|Invalid order format, please send again| ✅ |
 |Chicken rice - $5Coke - 2<br /><br />Followed by /cancel|To test if the order list catcher can recognise an invalid syntax and request for user to resend order and cancelling the order request will stop the bot from continually prompting for the user to send again| Invalid order format, please send again | ✅ |
 
+### User Acceptance Testing 
+
+   User Acceptance Testing was conducted on a small sample of individuals who were asked to utilise our bot and review it via Google Forms. Our main intention for the survey was to gather user feedback on the user experience and whether the features listed in the User Guide were satisfactory. Due to the incomplete nature of our 'Scan Receipt' feature, we have elected to exclude that from the survey. However, we were unable to secure more responses due to the fact that either most people had not had enough experience with our application due to the lack of social interation with others seeing as the survey was conduced during the Phase 2 Heightened Alert period of the Covid-19 pandemic.
+   
+   From our results, we gathered that there was an overall positive response to our application and many users were generally satisfied with the product.
+   
+   * #### Registration
+      
+      ![registration survey results](https://res.cloudinary.com/jianoway/image/upload/v1627297402/Screenshot_2021-07-26_at_7.03.07_PM_rvrbxm.png)
+      
+      * From the results, users generally found the registration in groups to be simpler than in private messages. A possible explanation for the disparity would be the lack of clarity for why users need to register privately. This is actually because of the way Telegram's Bot API is configured, it is unable to privately message a user (our notification feature) unless the user has sent a private message the bot first.
+
+   * #### Splitting Bills
+      
+      ![splitting bills survey results](https://res.cloudinary.com/jianoway/image/upload/v1627297670/Screenshot_2021-07-26_at_7.07.33_PM_sua2wh.png)
+      
+      * Overall, there was a positive result for the splitting of bills, with some users finding it easier and simpler to split bills evenly rather than unevenly. This could be due to the additional step of sending in the list of items in the required formatting in order for our bot to parse the input.
+    
+   * #### List of Creditors/Debtors
+   
+      ![list of creditors and debtors survey results](https://res.cloudinary.com/jianoway/image/upload/v1627297852/Screenshot_2021-07-26_at_7.10.42_PM_eoekng.png)
+      
+      * Comparing across the other features, this would be the worst performing feature objectively speaking, with both features receiving a higher Somewhat Agree to Strongly Agree ratio. This could be due to the complicated and non-user-friendly interface the debt message is displayed.
+      * One user wrote that the layout can be improved while another wrote that the formatting could be hard for new users to understand.
+
+   * #### General Questions
+   
+      ![general survey results](https://res.cloudinary.com/jianoway/image/upload/v1627298343/Screenshot_2021-07-26_at_7.13.55_PM_t1w4cf.png)
+      
+      * Reflecting upon the question asking about the User Interface (UI), the question should have been simply asked if the Bot was easy to use. However, hopefully the participants understood the intent of the question when submitting their response when asked if the UI was easy to use. Generally, the responses were positive and the issues with the UI design are likely due to the formatting of the list of creditors and debtors function.
+      * It is heartening to know that all **6** of our partipants would elect to use out bot!
+
 ## Feature Limitations and Constraints
 
 ### Cloud Hosting on Heroku
@@ -907,11 +946,24 @@ Our values declared by our functions are immutable where possible, allowing us t
 
    ![SWEP Immutability](https://res.cloudinary.com/jianoway/image/upload/v1626336857/Screenshot_2021-07-15_at_4.14.12_PM_bhxw4j.png)
 
-### Object-Oriented Programming (OOP)
+### Object-Oriented Programming
 
-Our codebase uses a the python-telegram-bot API as our main tool to create the bot. It is a wrapper that has many pre-determined wrapper classes to allow us to easily abstract data from and predict their outcomes. This allowed us to use a more functional based approach since most of the relevant Classes have already been delcared and we did not require many new classes to design our bot.
+   We employ the use of Object-Oriented Programming techniques in our code to ensure that it adheres to software engineering standards. Our codebase uses a the python-telegram-bot API as our main tool to create the bot. It is a wrapper that has many pre-determined wrapper classes to allow us to easily abstract data from and predict their outcomes. This allowed us to use a more functional based approach since most of the relevant Classes have already been delcared and we did not require many new classes to design our bot.
 
-However, with that said we did use OOP principles which can be seen in the flow of logic of the program.
+   However, with that said we did use OOP principles which can be seen in the flow of logic of the program.
+
+   * Encapsulation
+      * The use of getter and setter functions to deal with data objects in our MySQL database help to protect sensitive data and reduces instances of unnecessary exposure of data.
+      
+      ![getter example](https://res.cloudinary.com/jianoway/image/upload/v1627291196/Screenshot_2021-07-26_at_5.19.12_PM_hom5pb.png)
+      
+   * Tell, Don't Ask
+      * The employment of the Tell, Don't Ask principle is also evident in our functions where we choose to 'Tell' our functions what to do instead of 'Asking' for data from our objects. This is evident in the example below from line 199 to line 202 where our function 'cancel' is 'Telling' the other functions to execute their tasks given the input parameters.
+      
+      ![TDA example](https://res.cloudinary.com/jianoway/image/upload/v1627291799/Screenshot_2021-07-26_at_5.29.43_PM_mqhf6a.png)
+    
+   * Abstraction
+      * We utilise abstraction to hide the background processes of the bot and the logic that it runs with. The end user is only exposed to the features accessible as stated in the User Guide and is not required to have any know-how on the background processes running.
 
 Below you can find some UML diagrams for your reference.
 ![UML 1](https://res.cloudinary.com/jianoway/image/upload/v1624114145/startPrivateUMI_h25isz.png)
