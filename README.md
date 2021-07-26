@@ -76,6 +76,7 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
     - [Software Engineering Principles](#software-engineering-principles)
       - [Immutability](#immutability)
       - [Object-Oriented Programming](#object-oriented-programming) 
+      - [Unified Modeling Language](#unified-modeling-language)
 
 
 # Motivation 
