@@ -965,6 +965,9 @@ Our values declared by our functions are immutable where possible, allowing us t
    * Abstraction
       * We utilise abstraction to hide the background processes of the bot and the logic that it runs with. The end user is only exposed to the features accessible as stated in the User Guide and is not required to have any know-how on the background processes running.
 
-Below you can find some UML diagrams for your reference.
+### Unified Modeling Language
+
+   We have also included Unified Modeling Language (UML) diagrams to visually represent our system. These two diagrams illustrate the registration process for our bot for both Users and Groups.
+   
 ![UML 1](https://res.cloudinary.com/jianoway/image/upload/v1624114145/startPrivateUMI_h25isz.png)
 ![UML 1](https://res.cloudinary.com/jianoway/image/upload/v1624114139/startGroup_UML_ncnqol.png)
