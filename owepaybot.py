@@ -138,7 +138,7 @@ def cancelReceipt(update, context):
 def getDebtors(update, context):
     """Sends the user the message in response to the /whoowesme command."""
     userID = update.effective_chat.id
-    if not userAlreadyAdded(userID):
+    if not isNotifiable(userID):
         message = context.bot.send_message(
             chat_id=userID,
             text=
@@ -167,7 +167,7 @@ def getDebtors(update, context):
 def getCreditors(update, context):
     """Sends the user the message in response to the /whomeowes command."""
     userID = update.effective_chat.id
-    if not userAlreadyAdded(userID):
+    if not isNotifiable(userID):
         message = context.bot.send_message(
             chat_id=userID,
             text=
@@ -371,7 +371,7 @@ def debtorUnevenlyPaid(update, context):
     debtorID = query.from_user.id
     debtorUsername = getUsername(debtorID)
     text = query.message.text
-    orderID = getOrderIDFromMessageAndGroupID(message_id, groupID)
+    orderID = frOrderIDFromMessageAndGroupID(message_id, groupID)
     creditorID = getCreditorIDFromMessageAndGroupID(message_id, groupID)
 
     if str(creditorID) == str(debtorID):
