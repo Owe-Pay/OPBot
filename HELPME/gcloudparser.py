@@ -4,6 +4,7 @@ import datetime
 import io
 import os
 
+## Most of the code written here was adapted from https://github.com/lutzkuen/receipt-parser 
 
 SKIPWORDS = ['eur', 'stk', 'x', '#', 'total']
 STOPWORDS = ['summe', 'visa', 'mwst', 'brutto', 'netto', 'zahlen', 'kreditkarte', 'ust-id-nr', 'rück geld']
