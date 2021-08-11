@@ -57,7 +57,6 @@ Track our progress via our GitHub page: https://github.com/Owe-Pay/
            - [Testing *Start Command* via Private Message](#testing-start-command-via-private-message)
            - [Testing *Start Command* via Group Message](#testing-start-command-via-group-message)
            - [Testing *help Command*](#testing-help-command)
-           - [Testing Inline Query](#testing-inline-query)
            - [Testing Order Formatting](#testing-order-formatting)
         - [User Acceptance Testing](#user-acceptance-testing)
            - [Registration](#registration)
@@ -810,29 +809,6 @@ System Tests would involve testing whether the system would function properly on
 | --------- |-------------| -------------------| :-----------------:|
 |/help in group|To test basic functionality of the /help command in groups|Bot sends help message| ✅ |
 |/help in private message|To test basic functionality of the /help command in private message|Bot sends help message| ✅ |
-
-### Testing Inline Query
-
-| Test Case | Description | Expected           | Result             |
-| --------- |-------------| -------------------| :-------------------:|
-|@OwePay_bot 123.00|To test if inline queries can handle a standard 2 decimal place float|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot 0123.00|To test if inline queries can handle a standard 2 decimal place float with an unnecessary 0|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot 123|To test if inline queries can handle a standard integer|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot 0123|To test if inline queries can handle a standard integer with an unnecessary 0|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot 123.00000|To test if inline queries can handle a standard 5 decimal place float|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot 00123.00912|To test if inline queries can handle a standard 5 decimal place float with rounding and 2 unnecessary 0’s|InlineResultArticles:<br />Split evenly: $123.01<br />Split unevenly: $123.01| ✅ |
-|@OwePay_bot .112|To test if inline queries can handle standard 3 decimal place float without a number prefixing the period|InlineResultArticles:<br />Split evenly: $0.11<br />Split unevenly: $0.11| ✅ |
-|@OwePay_bot $123.00|To test if inline queries can handle a standard 2 decimal place float  with $ sign at the front. |InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot $0123.00|To test if inline queries can handle a standard 2 decimal place float with an unnecessary 0  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot $123|To test if inline queries can handle a standard integer  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot $0123|To test if inline queries can handle a standard integer with an unnecessary 0  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot $123.00000|To test if inline queries can handle a standard 5 decimal place float  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.00<br />Split unevenly: $123.00| ✅ |
-|@OwePay_bot $00123.00912|To test if inline queries can handle a standard 5 decimal place float with rounding and 2 unnecessary 0’s  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $123.01<br />Split unevenly: $123.01| ✅ |
-|@OwePay_bot $.112|To test if inline queries can handle standard 3 decimal place float without a number prefixing the period  with $ sign at the front.|InlineResultArticles:<br />Split evenly: $0.11<br />Split unevenly: $0.11| ✅ |
-|@OwePay_bot $123.10.1|To test if inline queries can recognise invalid amount|InlineResultArticle:<br />$123.10.1 is not a valid amount.| ✅ |
-|@OwePay_bot 123d|To test if inline queries can recognise invalid amount|InlineResultArticle:<br />123d is not a valid amount.| ✅ |
-|@OwePay_bot 123.1d|To test if inline queries can recognise invalid amount|InlineResultArticle:<br />123.1d is not a valid amount.| ✅ |
-|@OwePay_bot abcd|To test if inline queries can recognise invalid amount|InlineResultArticle:<br />abcd is not a valid amount.| ✅ |
 
 ### Testing Order Formatting
 
