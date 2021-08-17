@@ -6,6 +6,7 @@ In the future, we also hope to create a system to simplify the process of tracki
 
 Track our progress via our GitHub page: https://github.com/Owe-Pay/
 
+
 # Table of contents
 - [Motivation](#motivation)
 - [User Stories](#user-stories)
